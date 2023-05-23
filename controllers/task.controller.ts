@@ -1,5 +1,6 @@
-import { Request,NextFunction, Response } from "express";
+import { Request, NextFunction, Response } from "express";
 
-export const Index=(req:Request,res:Response,next:NextFunction)=>{
-    res.send("hello")
+
+
+export const Index = (req: Request, res: Response, next: NextFunction) => {
 }
