@@ -1,8 +1,12 @@
 import express from "express";
-import { Index } from "../controllers/task.controller";
+import { DeleteJob, Index, StartJob, StopJob, UpdateJob } from "../controllers/task.controller";
 
 const router = express.Router()
 
-router.route("/").get(Index)
+router.get("/", Index)
+router.get("/start", StartJob)
+router.get("/stop",StopJob)
+router.get("/delete",DeleteJob)
+router.get("/update",UpdateJob)
 
 export default router
