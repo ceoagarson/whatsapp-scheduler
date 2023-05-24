@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import path from 'path';
 import morgan from "morgan";
+import CronJobManager from "cron-job-manager";
 import { connectDatabase } from './config/db';
 import TaskRouter  from "./routes/task.route";
 
@@ -31,6 +32,8 @@ if (String(ENV) === "devlopment") {
 //connect database
 connectDatabase();
 
+//cron job manager for tasks
+export const TaskManager = new CronJobManager()
 
 //app routes
 app.use("/api/v1",TaskRouter)
