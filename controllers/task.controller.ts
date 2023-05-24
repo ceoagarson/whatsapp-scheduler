@@ -71,6 +71,7 @@ export const StartTaskScheduler = (req: Request, res: Response, next: NextFuncti
         if (tempTotal > 28 ||duplicates.length>0){
             return res.status(400).json({ message: "select correct format for week days like 1,2,7" });
         }
+        cronString = `${start_date.getMinutes()} ` + `${start_date.getHours()} ` + " *" + " * " + weekdays
     }
 
     if (monthdays.length > 0) {
@@ -83,6 +84,8 @@ export const StartTaskScheduler = (req: Request, res: Response, next: NextFuncti
         if (tempTotal > 28 || duplicates.length > 0) {
             return res.status(400).json({ message: "select correct format for month days like 1,2,7 till 31" });
         }
+        cronString = `${start_date.getMinutes()} ` + `${start_date.getHours()} ` + monthdays 
+        + " * " + "*"
     }
 
     res.status(200).json({ cronString: cronString })
