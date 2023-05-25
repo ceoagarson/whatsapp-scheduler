@@ -10,7 +10,7 @@ export const GetRefreshCronString = (frequency: IFrequency,start_date:Date) => {
     let monthdays =frequency?.monthdays
   
     let cronString =undefined
-    if (mf&&mf > 29) {
+    if (mf&&mf > 4) {
         cronString = "0-59" + `/${mf-2}` + " * * * *"
     }
     if (hf&&hf > 0) {

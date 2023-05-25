@@ -3,7 +3,6 @@ import { TaskBody } from "../types/task.type";
 import Task from "../models/tasks/Task";
 import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
-import { RestartJobs } from "../utils/RestartJobs";
 import { GetCronString } from "../utils/GetCronString";
 import { GetRefreshCronString } from "../utils/GetRefreshCronString";
 import TaskTrigger from "../models/tasks/TaskTrigger";
@@ -11,6 +10,8 @@ import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
 import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
 import { RefreshTask } from "../utils/RefreshTask";
+import { GetRunningDate } from "../utils/GetRunningDate";
+import { GetRefreshDate } from "../utils/GetRefreshDate";
 
 
 
@@ -131,7 +132,8 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                         })
 
                         await run_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger })
+                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger, running_date: GetRunningDate(frequency) })
+
                         TaskManager.add(`${run_trigger._id}`, runstring, SendTaskWhatsapp)
                         TaskManager.start(`${run_trigger._id}`)
                       
@@ -147,7 +149,8 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                         })
 
                         await refresh_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger })
+                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger, refresh_date: GetRefreshDate(frequency) })
+
                         TaskManager.add(`${refresh_trigger._id}`, refstring, RefreshTask)
                         TaskManager.start(`${refresh_trigger._id}`)
                     }
