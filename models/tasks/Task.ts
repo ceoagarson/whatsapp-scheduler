@@ -10,17 +10,20 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
     },
     task_detail: {
         type: String,
+        required: true,
         trim: true
     }
     ,
     person: {
         type: String,
         trim: true,
+        required: true,
         lowercase: true,
     },
     phone: {
         type: String,
         trim: true,
+        required: true,
         lowercase: true
     },
     whatsapp_status: {
@@ -55,7 +58,10 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TaskRefreshTrigger'
     },    
-    start_date: Date,
+    start_date: {
+        type:Date,
+        required: true
+    },
     next_run_date: Date,
     refresh_date: Date,
     created_at: Date,

@@ -42,7 +42,7 @@ export interface ITask{
     autoRefresh?:boolean,
     autostop?:boolean,
    
-    frequency?:IFrequency,
+    frequency:IFrequency,
     run_trigger?:ITaskTrigger,
     refresh_trigger?:ITaskRefreshTrigger,
     
