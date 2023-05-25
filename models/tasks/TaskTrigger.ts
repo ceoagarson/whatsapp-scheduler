@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ITaskTrigger } from "../types/trigger.type";
+import { ITaskTrigger } from "../../types/task.type";
 
 const TaskTriggerSchema = new mongoose.Schema<ITaskTrigger, mongoose.Model<ITaskTrigger>>({
     key: {
@@ -19,16 +19,8 @@ const TaskTriggerSchema = new mongoose.Schema<ITaskTrigger, mongoose.Model<ITask
         type: String,
         trim: true
     },
-    created_at: {
-        type: Date,
-        default: new Date(),
-        required: true,
-    },
-    updated_at: {
-        type: Date,
-        default: new Date(),
-        required: true,
-    },
+    created_at: Date,
+    updated_at: Date,
     task:
     {
         type: mongoose.Schema.Types.ObjectId,

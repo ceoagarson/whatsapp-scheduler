@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ITaskRefreshTrigger } from "../types/trigger.type";
+import { ITaskRefreshTrigger } from "../../types/task.type";
 
 const TaskRefreshTriggerSchema = new mongoose.Schema<ITaskRefreshTrigger, mongoose.Model<ITaskRefreshTrigger>>({
     key: {

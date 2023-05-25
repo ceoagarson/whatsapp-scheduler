@@ -1,9 +1,11 @@
 import express from "express";
-import { Index } from "../controllers/task.controller";
+import { CreateTask, GetTasks } from "../controllers/task.controller";
 
 const router = express.Router()
 
-router.get("/", Index)
+router.route("/tasks")
+    .get(GetTasks)
+    .post(CreateTask)
 
 
 export default router
