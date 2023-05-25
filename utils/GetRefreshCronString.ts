@@ -5,7 +5,6 @@ export const GetRefreshCronString = (frequency: IFrequency,start_date:Date) => {
     let mf =frequency?.minutes
     let hf =frequency?.hours
     let df =frequency?.days
-    let wf =frequency?.weeks
     let monthf =frequency?.months
     let weekdays =frequency?.weekdays
     let monthdays =frequency?.monthdays
@@ -20,9 +19,7 @@ export const GetRefreshCronString = (frequency: IFrequency,start_date:Date) => {
     if (df&&df > 0) {
         cronString = `${start_date.getMinutes()-30} ` + `${start_date.getHours()} ` + "1/" + `${df}` + " *" + " *"
     }
-    if (wf&&wf > 0) {
-        cronString = `${start_date.getMinutes() - 30} ` + `${start_date.getHours()} ` + " *" + " * " + "0/" + `${start_date.getDay() }`
-    }
+    
     if (monthf&&monthf > 0) {
         cronString = `${start_date.getMinutes()-30} ` + `${start_date.getHours()} ` + `${start_date.getDate()}` + " 1/" + `${monthf}` + " *"
     }

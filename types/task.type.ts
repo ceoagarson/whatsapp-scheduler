@@ -1,10 +1,10 @@
 export type IFrequency = {
     _id: string,
+    once:boolean,
     type: string,
     minutes?: number,
     hours?: number,
     days?: number,
-    weeks?: number,
     months?: number,
     weekdays?: string,
     monthdays?: string,
@@ -47,7 +47,7 @@ export interface ITask{
     refresh_trigger?:ITaskRefreshTrigger,
     
     start_date: Date,
-    next_run_date:Date,
+    running_date:Date,
     refresh_date?:Date,
     created_at?: Date,
     updated_at?: Date

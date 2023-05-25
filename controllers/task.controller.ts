@@ -1,11 +1,28 @@
 import { Request, NextFunction, Response } from "express";
 import { TaskBody } from "../types/task.type";
 import Task from "../models/tasks/Task";
-import Frequency from "../models/tasks/Frequency";
+import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
 import { RestartJobs } from "../utils/RestartJobs";
+import { GetCronString } from "../utils/GetCronString";
+import { GetRefreshCronString } from "../utils/GetRefreshCronString";
+import TaskTrigger from "../models/tasks/TaskTrigger";
+import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
+import { TaskManager } from "..";
+import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
+import { RefreshTask } from "../utils/RefreshTask";
+
+
+
+
+export const Index = async (req: Request, res: Response, next: NextFunction) => {
+    console.log(TaskManager)
+    res.status(200).json({ message: "ok" })
+}
 
 export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
+    TaskManager.add("job1", "1 * * * * ", () => console.log("running job1"))
+    TaskManager.start('job1')
     let tasks = await Task.find()
     res.status(200).json({ tasks: tasks })
 }
@@ -24,16 +41,14 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         let mf = frequency.minutes
         let hf = frequency.hours
         let df = frequency.days
-        let wf = frequency.weeks
         let monthf = frequency.months
         let weekdays = frequency.weekdays
         let monthdays = frequency.monthdays
         if (!hf || typeof (hf) !== "number") hf = 0
         if (!df || typeof (df) !== "number") df = 0
-        if (!wf || typeof (wf) !== "number") wf = 0
         if (!monthf || typeof (monthf) !== "number") monthf = 0
 
-        let TmpArr = [mf, hf, df, wf, monthf]
+        let TmpArr = [mf, hf, df, monthf]
         let count = 0
         TmpArr.forEach((item) => {
             if (item && item > 0) {
@@ -86,7 +101,6 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         minutes: frequency?.minutes,
         hours: frequency?.hours,
         days: frequency?.days,
-        weeks: frequency?.weeks,
         months: frequency?.months,
         weekdays: frequency?.weekdays,
         monthdays: frequency?.monthdays,
@@ -98,7 +112,57 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
 }
 
 export const StartTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
-    RestartJobs()
+    let tasks = await Task.find()
+    tasks.forEach(async (task) => {
+        if (task.frequency) {
+            let frequency = await Frequency.findById(task.frequency._id)
+            if (frequency) {
+                let runstring = GetCronString(frequency, new Date(task.start_date))
+                let refstring = GetRefreshCronString(frequency, new Date(task.start_date))
+                if (!task.run_trigger && !task.refresh_trigger) {
+                    if (runstring) {
+                        let run_trigger = new TaskTrigger({
+                            key: task._id,
+                            status: "running",
+                            cronString: runstring,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            task: task
+                        })
+
+                        await run_trigger.save()
+                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger })
+                        TaskManager.add(`${run_trigger._id}`, runstring, SendTaskWhatsapp)
+                        TaskManager.start(`${run_trigger._id}`)
+                      
+                    }
+                    if (refstring) {
+                        let refresh_trigger = new TaskRefreshTrigger({
+                            key: task._id,
+                            status: "running",
+                            cronString: refstring,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            task: task
+                        })
+
+                        await refresh_trigger.save()
+                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger })
+                        TaskManager.add(`${refresh_trigger._id}`, refstring, RefreshTask)
+                        TaskManager.start(`${refresh_trigger._id}`)
+                    }
+                    if (!runstring && !refstring) {
+                        await Task.findByIdAndUpdate(task._id, { once: true })
+                        let cronString = `${new Date(task.start_date).getMinutes()} ` + `${new Date(task.start_date).getHours()} ` + "1/" + `${1}` + " *" + " *"
+                        if (cronString) {
+                            TaskManager.add(`${task._id}`, cronString, SendTaskWhatsapp)
+                            TaskManager.start(`${task._id}`)
+                        }
+                    }
+                }
+            }
+        }
+    })
     return res.status(200).json({ message: "started successfully" })
 }
 

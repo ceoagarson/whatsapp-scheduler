@@ -1,11 +1,13 @@
-import Frequency from "../models/tasks/Frequency"
+import { TaskManager } from ".."
+import Frequency from "../models/Frequency"
 import Task from "../models/tasks/Task"
-import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger"
-import TaskTrigger from "../models/tasks/TaskTrigger"
 import { GetCronString } from "./GetCronString"
 import { GetRefreshCronString } from "./GetRefreshCronString"
+import { RefreshTask } from "./RefreshTask"
+import { SendTaskWhatsapp } from "./SendTaskWhatsapp"
 
 export async function RestartJobs() {
+    console.log(TaskManager)
     let tasks = await Task.find()
     tasks.forEach(async (task) => {
         if (task.frequency) {
@@ -13,35 +15,23 @@ export async function RestartJobs() {
             if (frequency) {
                 let runstring = GetCronString(frequency, new Date(task.start_date))
                 let refstring = GetRefreshCronString(frequency, new Date(task.start_date))
-                if (!task.run_trigger && !task.refresh_trigger) {
-                    if (runstring) {
-                        let run_trigger = new TaskTrigger({
-                            key: task._id,
-                            status: "running",
-                            cronString: runstring,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            task: task
-                        })
-
-                        await run_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger })
+                if (task.run_trigger?.status === "running" && task.refresh_trigger?.status === "running") {
+                    if (runstring && refstring) {
+                        TaskManager.add(`${task.run_trigger._id}`, runstring, SendTaskWhatsapp)
+                        TaskManager.add(`${task.refresh_trigger._id}`, refstring, RefreshTask)
+                        TaskManager.start(`${task.run_trigger._id}`)
+                        TaskManager.start(`${task.refresh_trigger._id}`)
                     }
-                    if (refstring) {
-                        let refresh_trigger = new TaskRefreshTrigger({
-                            key: task._id,
-                            status: "running",
-                            cronString: refstring,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            task: task
-                        })
-
-                        await refresh_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger })
+                }
+                if (task.frequency.once) {
+                    let cronString = `${new Date(task.start_date).getMinutes()} ` + `${new Date(task.start_date).getHours()} ` + "1/" + `${1}` + " *" + " *"
+                    if (cronString){
+                        TaskManager.add(`${task._id}`, cronString, SendTaskWhatsapp)
+                        TaskManager.start(`${task._id}`)
                     }
                 }
             }
         }
     })
+
 }

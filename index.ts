@@ -36,6 +36,7 @@ connectDatabase();
 //cron job manager for tasks
 export const TaskManager = new CronJobManager()
 
+
 //app routes
 app.use("/api/v1", TaskRouter)
 
@@ -43,6 +44,7 @@ if (!TaskManager.exists('check_status')) {
     TaskManager.add("check_status", "15 * * * *", () => console.log("checked status of all jobs "))
     RestartJobs()
 }
+
 //serve client
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
@@ -70,6 +72,7 @@ if (!PORT) {
     console.log("Server Port not specified in the environment")
     process.exit(1)
 }
+
 
 app.listen(PORT, () => {
     console.log(`⚡️[server]: Server is running at ${HOST}:${PORT}`);

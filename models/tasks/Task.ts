@@ -62,7 +62,7 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type:Date,
         required: true
     },
-    next_run_date: Date,
+    running_date: Date,
     refresh_date: Date,
     created_at: Date,
     updated_at: Date
