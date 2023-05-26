@@ -36,7 +36,6 @@ connectDatabase();
 //cron job manager for tasks
 export const TaskManager = new CronJobManager()
 
-
 //app routes
 app.use("/api/v1", TaskRouter)
 

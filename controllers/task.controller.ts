@@ -10,85 +10,32 @@ import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
 import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
 import { RefreshTask } from "../utils/RefreshTask";
-import { GetRunningDate } from "../utils/GetNextRunDate";
-import { GetRefreshDate } from "../utils/GetNextRefreshDate";
+import { GetNextRunDate } from "../utils/GetNextRunDate";
+import { GetNextRefreshDate } from "../utils/GetNextRefreshDate";
 
-
-
-
+//home page
 export const Index = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({ message: "ok" })
 }
 
+//get tasks
 export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
-    TaskManager.add("job1", "1 * * * * ", () => console.log("running job1"))
-    TaskManager.start('job1')
-    let tasks = await Task.find()
+    let tasks = await Task.find().populate('frequency').populate('run_trigger').populate('refresh_trigger')
     res.status(200).json({ tasks: tasks })
 }
 
+//create new task
 export const CreateTask = async (req: Request, res: Response, next: NextFunction) => {
     const { task_title, task_detail, person, phone, start_date, frequency } = req.body as TaskBody
     if (!task_title || !task_detail || !person || !phone || !start_date)
         return res.status(400).json({ message: "fill all the required fields" });
-    if ((String(phone).trim().length < 10))
+    if ((String(phone).trim().length != 12))
         return res.status(400).json({ message: "please provide valid mobile number" })
     if (!isvalidDate(new Date(start_date)))
         return res.status(400).json({ message: "please provide valid date" })
-    if (start_date < new Date())
+    if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
 
-    if (frequency) {
-        let mf = frequency.minutes
-        let hf = frequency.hours
-        let df = frequency.days
-        let monthf = frequency.months
-        let weekdays = frequency.weekdays
-        let monthdays = frequency.monthdays
-        if (!hf || typeof (hf) !== "number") hf = 0
-        if (!df || typeof (df) !== "number") df = 0
-        if (!monthf || typeof (monthf) !== "number") monthf = 0
-
-        let TmpArr = [mf, hf, df, monthf]
-        let count = 0
-        TmpArr.forEach((item) => {
-            if (item && item > 0) {
-                count++;
-            }
-        });
-
-        if (weekdays || monthdays)
-            count++
-        if (count > 1)
-            return res.status(400).json({ message: "Select one from minuts,hours,days,weeks,months,weekday and monthday" })
-
-
-        if (weekdays && weekdays.length > 0) {
-            let days = weekdays.split(",")
-            let duplicates = days.filter((item, index) => days.indexOf(item) !== index)
-            let tempTotal = 0
-            days.forEach((item) => {
-                tempTotal += Number(item)
-            })
-            if (tempTotal > 28 || duplicates.length > 0) {
-                return res.status(400).json({ message: "select correct format for week days like 1,2,7 till 7" })
-
-            }
-        }
-
-        if (monthdays && monthdays.length > 0) {
-            let days = monthdays.split(",")
-            let duplicates = days.filter((item, index) => days.indexOf(item) !== index)
-            let tempTotal = 0
-            days.forEach((item) => {
-                tempTotal += Number(item)
-            })
-            if (tempTotal > 28 || duplicates.length > 0) {
-                return res.status(400).json({ message: "select correct format for month days like 1,2,7 till 31" })
-
-            }
-        }
-    }
     let task = new Task({
         task_title,
         task_detail,
@@ -97,21 +44,97 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         start_date
     })
 
-    let fq = new Frequency({
-        type: frequency?.type,
-        minutes: frequency?.minutes,
-        hours: frequency?.hours,
-        days: frequency?.days,
-        months: frequency?.months,
-        weekdays: frequency?.weekdays,
-        monthdays: frequency?.monthdays,
-    })
-    task.frequency = fq
+    let errorStatus = false
+
+    if (frequency) {
+        let mf = frequency.minutes
+        let hf = frequency.hours
+        let df = frequency.days
+        let monthf = frequency.months
+        let weekdays = frequency.weekdays
+        let monthdays = frequency.monthdays
+        if (!mf) mf = 0
+        if (!hf) hf = 0
+        if (!df) df = 0
+        if (!monthf) monthf = 0
+        let TmpArr = [mf, hf, df, monthf]
+        let count = 0
+        TmpArr.forEach((item) => {
+            if (item > 0) {
+                count++;
+            }
+        });
+        if (weekdays)
+            count++
+        if (monthdays)
+            count++
+        if (count > 1)
+            return res.status(400).json({ message: "Select one from minuts,hours,days,weeks,months,weekday and monthday" })
+        let tmpWeekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        if (weekdays && weekdays.length > 0) {
+            weekdays.split(",").forEach((item) => {
+                if (!tmpWeekdays.includes(item.toLowerCase())) {
+                    errorStatus = true
+
+                }
+            })
+            if (errorStatus)
+                return res.status(400).json({ message: "Select week days in correct format" })
+            let numWeeks = weekdays.split(',').map((wd) => {
+                if (wd === "mon")
+                    return '1'
+                if (wd === "tue")
+                    return '2'
+                if (wd === "wed")
+                    return '3'
+                if (wd === "thu")
+                    return '4'
+                if (wd === "fri")
+                    return '5'
+                if (wd === "sat")
+                    return '6'
+                if (wd === "sun")
+                    return '7'
+
+            })
+            weekdays = numWeeks.toString()
+        }
+        if (monthdays && monthdays.length > 0) {
+            monthdays.split(",").forEach((item) => {
+                if (Number(item) < 10 && item.length > 1) {
+                    errorStatus = true
+
+                }
+
+                if (Number(item) === 0 || item.length > 2 || Number(item) > 31) {
+                    errorStatus = true
+                }
+            })
+            if (errorStatus) {
+                return res.status(400).json({ message: `Select month days in correct format` })
+            }
+        }
+
+        let fq = new Frequency({
+            type: frequency?.type,
+            minutes: mf,
+            hours: hf,
+            days: df,
+            months: monthf,
+            weekdays: weekdays,
+            monthdays: monthdays
+        })
+        if (fq)
+            await fq.save()
+        task.frequency = fq
+    }
+
     task = await task.save()
-    fq = await fq.save()
-    return res.status(201).json({ task: task, frequency: frequency })
+    if (!errorStatus)
+        return res.status(201).json({ task: task })
 }
 
+//start task scheduler
 export const StartTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
     let tasks = await Task.find()
     tasks.forEach(async (task) => {
@@ -130,13 +153,11 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                             updated_at: new Date(),
                             task: task
                         })
-
                         await run_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger, running_date: GetRunningDate(frequency) })
-
+                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger, running_date: GetNextRunDate(frequency, task.start_date) })
                         TaskManager.add(`${run_trigger._id}`, runstring, SendTaskWhatsapp)
                         TaskManager.start(`${run_trigger._id}`)
-                      
+
                     }
                     if (refstring) {
                         let refresh_trigger = new TaskRefreshTrigger({
@@ -147,10 +168,9 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                             updated_at: new Date(),
                             task: task
                         })
-
+                        
                         await refresh_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger, refresh_date: GetRefreshDate(frequency) })
-
+                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger, refresh_date: GetNextRefreshDate(frequency, task.start_date) })
                         TaskManager.add(`${refresh_trigger._id}`, refstring, RefreshTask)
                         TaskManager.start(`${refresh_trigger._id}`)
                     }
@@ -166,6 +186,7 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
             }
         }
     })
+    
     return res.status(200).json({ message: "started successfully" })
 }
 
