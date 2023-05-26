@@ -7,7 +7,6 @@ import { RefreshTask } from "./RefreshTask"
 import { SendTaskWhatsapp } from "./SendTaskWhatsapp"
 
 export async function RestartJobs() {
-    console.log(TaskManager)
     let tasks = await Task.find()
     tasks.forEach(async (task) => {
         if (task.frequency) {

@@ -10,14 +10,13 @@ import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
 import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
 import { RefreshTask } from "../utils/RefreshTask";
-import { GetRunningDate } from "../utils/GetRunningDate";
-import { GetRefreshDate } from "../utils/GetRefreshDate";
+import { GetRunningDate } from "../utils/GetNextRunDate";
+import { GetRefreshDate } from "../utils/GetNextRefreshDate";
 
 
 
 
 export const Index = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(TaskManager)
     res.status(200).json({ message: "ok" })
 }
 
@@ -27,6 +26,7 @@ export const GetTasks = async (req: Request, res: Response, next: NextFunction) 
     let tasks = await Task.find()
     res.status(200).json({ tasks: tasks })
 }
+
 export const CreateTask = async (req: Request, res: Response, next: NextFunction) => {
     const { task_title, task_detail, person, phone, start_date, frequency } = req.body as TaskBody
     if (!task_title || !task_detail || !person || !phone || !start_date)
