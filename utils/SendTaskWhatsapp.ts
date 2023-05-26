@@ -1,7 +1,4 @@
-import { TaskManager } from ".."
-import Task from "../models/tasks/Task"
 
-export const SendTaskWhatsapp=async()=>{
-    let tasks = await Task.find()
-    console.log("sending whatsapp")
+export const SendTaskWhatsapp = async (job_id: string) => {
+    console.log(`sending whatsapp for ${job_id}`)
 }

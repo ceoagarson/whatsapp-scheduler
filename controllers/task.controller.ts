@@ -155,9 +155,10 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                         })
                         await run_trigger.save()
                         await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger, running_date: GetNextRunDate(frequency, task.start_date) })
-                        TaskManager.add(`${run_trigger._id}`, runstring, SendTaskWhatsapp)
-                        TaskManager.start(`${run_trigger._id}`)
-
+                        if (run_trigger) {
+                            TaskManager.add(`${run_trigger._id}`, runstring, () => { SendTaskWhatsapp(run_trigger._id) })
+                            TaskManager.start(`${run_trigger._id}`)
+                        }
                     }
                     if (refstring) {
                         let refresh_trigger = new TaskRefreshTrigger({
@@ -168,17 +169,21 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                             updated_at: new Date(),
                             task: task
                         })
-                        
+
                         await refresh_trigger.save()
                         await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger, refresh_date: GetNextRefreshDate(frequency, task.start_date) })
-                        TaskManager.add(`${refresh_trigger._id}`, refstring, RefreshTask)
-                        TaskManager.start(`${refresh_trigger._id}`)
+
+                        if (refresh_trigger) {
+                            TaskManager.add(`${refresh_trigger._id}`, refstring, () => { RefreshTask (refresh_trigger._id)})
+                            TaskManager.start(`${refresh_trigger._id}`)
+                        }
+
                     }
                     if (!runstring && !refstring) {
                         await Task.findByIdAndUpdate(task._id, { once: true })
                         let cronString = `${new Date(task.start_date).getMinutes()} ` + `${new Date(task.start_date).getHours()} ` + "1/" + `${1}` + " *" + " *"
                         if (cronString) {
-                            TaskManager.add(`${task._id}`, cronString, SendTaskWhatsapp)
+                            TaskManager.add(`${task._id}`, cronString, () => { console.log("run once") })
                             TaskManager.start(`${task._id}`)
                         }
                     }
@@ -186,7 +191,7 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
             }
         }
     })
-    
+
     return res.status(200).json({ message: "started successfully" })
 }
 

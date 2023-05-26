@@ -6,11 +6,23 @@ import { SendTaskWhatsapp } from "./SendTaskWhatsapp"
 export async function RestartJobs() {
     let tasks = await Task.find().populate('frequency').populate('run_trigger').populate('refresh_trigger')
     tasks.forEach(async (task) => {
-        if(task.run_trigger&&task.refresh_trigger){
-            TaskManager.add(`${task.run_trigger._id}`, task.run_trigger.cronString, SendTaskWhatsapp)
-            TaskManager.add(`${task.refresh_trigger._id}`, task.refresh_trigger.cronString, RefreshTask)
-            TaskManager.start(`${task.run_trigger._id}`)
-            TaskManager.start(`${task.refresh_trigger._id}`)
+        let running_trigger = task.run_trigger
+        let refresh_trigger = task.refresh_trigger
+        let runsring = running_trigger?.cronString
+        let refstring = refresh_trigger?.cronString
+        if (running_trigger && runsring) {
+            TaskManager.add(`${running_trigger._id}`, runsring, () => {
+                if (running_trigger)
+                    SendTaskWhatsapp(running_trigger._id)
+            })
+            TaskManager.start(`${running_trigger._id}`)
+        }
+        if (refresh_trigger && refstring) {
+            TaskManager.add(`${refresh_trigger._id}`, refstring, () => {
+                if (refresh_trigger)
+                    RefreshTask(refresh_trigger?._id)
+            })
+            TaskManager.start(`${refresh_trigger._id}`)
         }
     })
 }

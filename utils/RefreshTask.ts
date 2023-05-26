@@ -1,3 +1,3 @@
-export const RefreshTask=()=>{
-    console.log("refreshing")
+export const RefreshTask=(id:string)=>{
+    console.log(`refreshing for ${id}`)
 }
