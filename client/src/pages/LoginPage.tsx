@@ -8,7 +8,7 @@ import { useMutation } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
-import { Form } from 'react-bootstrap'
+import { Container, Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import { paths } from '../Routes'
 import Alert from 'react-bootstrap/Alert';
@@ -56,36 +56,38 @@ function LoginPage() {
   }, [setUser, goto, isSuccess, data])
 
   return (
-    <Form onSubmit={formik.handleSubmit} className='p-2'>
-      {
-        isError ? (
-          <Alert variant="danger">
-            {error?.response.data.message}
-          </Alert>
+    <Container className='d-flex justify-content-center w-100'>
+      <Form onSubmit={formik.handleSubmit} className='w-50 p-2'>
+        {
+          isError ? (
+            <Alert variant="danger">
+              {error?.response.data.message}
+            </Alert>
 
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            logged in
-          </Alert>
-        ) : null
-      }
-      <Form.Group className="mb-3" >
-        <Form.Control type="username" placeholder="username or email"
-          {...formik.getFieldProps('username')}
-        />
-      </Form.Group>
-      <Form.Group className="mb-3" >
-        <Form.Control type="password" placeholder="password"
-          {...formik.getFieldProps('password')}
-        />
-      </Form.Group>
-      <Button variant="outline-primary" size="lg" className='w-100' type="submit"
-        disabled={isLoading}
-      >{isLoading ? "Logging in..." : "Login"}</Button>
-    </Form>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              logged in
+            </Alert>
+          ) : null
+        }
+        <Form.Group className="mb-3" >
+          <Form.Control type="username" placeholder="username or email"
+            {...formik.getFieldProps('username')}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" >
+          <Form.Control type="password" placeholder="password"
+            {...formik.getFieldProps('password')}
+          />
+        </Form.Group>
+        <Button variant="outline-primary" size="lg" className='w-100' type="submit"
+          disabled={isLoading}
+        >{isLoading ? "Logging in..." : "Login"}</Button>
+      </Form>
+    </Container>
   )
 }
 

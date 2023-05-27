@@ -1,8 +1,11 @@
-import React from 'react'
+import LogoutButton from '../components/LogoutButton'
 
 function UsersPage() {
   return (
-    <div>UsersPage</div>
+    <>
+      <div>UsersPage</div>
+      <LogoutButton/>
+      </>
   )
 }
 
