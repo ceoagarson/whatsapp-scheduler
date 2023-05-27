@@ -1,32 +1,28 @@
 import { Request, NextFunction, Response } from "express";
-import { TaskBody } from "../types/task.type";
-import Task from "../models/tasks/Task";
+import { GreetingBody } from "../types/greeting.type";
+import Greeting from "../models/greetings/Greeting";
 import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
 import { GetRunningDateCronString } from "../utils/GetRunningDateCronString";
 import { GetRefreshDateCronString } from "../utils/GetRefreshDateCronString";
-import TaskTrigger from "../models/tasks/TaskTrigger";
-import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
-import { TaskManager } from "..";
-import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
-import { RefreshTask } from "../utils/tasks/RefreshTask";
+import GreetingTrigger from "../models/greetings/GreetingTrigger";
+import GreetingRefreshTrigger from "../models/greetings/GreetingRefreshTrigger";
+import { GreetingManager } from "..";
 import cronParser from "cron-parser";
+import { SendGreetingWhatsapp } from "../utils/greetings/SendGreetingWhatsapp";
+import { RefreshGreeting } from "../utils/greetings/RefreshGreeting";
 
-//home page
-export const Index = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).json({ message: "ok" })
+
+//get greetings
+export const GetGreetings = async (req: Request, res: Response, next: NextFunction) => {
+    let greetings = await Greeting.find()
+    res.status(200).json({ greetings: greetings })
 }
 
-//get tasks
-export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
-    let tasks = await Task.find()
-    res.status(200).json({ tasks: tasks })
-}
-
-//create new task
-export const CreateTask = async (req: Request, res: Response, next: NextFunction) => {
-    const { task_title, task_detail, person, phone, start_date, frequency } = req.body as TaskBody
-    if (!task_title || !task_detail || !person || !phone || !start_date)
+//create new greeting
+export const CreateGreeting = async (req: Request, res: Response, next: NextFunction) => {
+    const { greeting_title, greeting_detail, person, phone, start_date, frequency } = req.body as GreetingBody
+    if (!greeting_title || !greeting_detail || !person || !phone || !start_date)
         return res.status(400).json({ message: "fill all the required fields" });
     if ((String(phone).trim().length != 12))
         return res.status(400).json({ message: "please provide valid mobile number" })
@@ -35,9 +31,9 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
 
-    let task = new Task({
-        task_title,
-        task_detail,
+    let greeting = new Greeting({
+        greeting_title,
+        greeting_detail,
         person,
         phone,
         start_date
@@ -125,64 +121,64 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         })
         if (fq)
             await fq.save()
-        task.frequency = fq
+        greeting.frequency = fq
     }
 
-    task = await task.save()
+    greeting = await greeting.save()
     if (!errorStatus)
-        return res.status(201).json({ task: task })
+        return res.status(201).json({ greeting: greeting })
 }
 
-//start task scheduler
-export const StartTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
-    let tasks = await Task.find()
-    tasks.forEach(async (task) => {
-        if (task.frequency) {
-            let frequency = await Frequency.findById(task.frequency._id)
+//start greeting scheduler
+export const StartGreetingScheduler = async (req: Request, res: Response, next: NextFunction) => {
+    let greetings = await Greeting.find()
+    greetings.forEach(async (greeting) => {
+        if (greeting.frequency) {
+            let frequency = await Frequency.findById(greeting.frequency._id)
             if (frequency) {
-                let runstring = GetRunningDateCronString(frequency, task.start_date)
-                let refstring = GetRefreshDateCronString(frequency, task.start_date)
+                let runstring = GetRunningDateCronString(frequency, greeting.start_date)
+                let refstring = GetRefreshDateCronString(frequency, greeting.start_date)
 
-                if (!task.running_trigger && !task.refresh_trigger && task.frequency) {
+                if (!greeting.running_trigger && !greeting.refresh_trigger && greeting.frequency) {
                     if (runstring) {
-                        let running_trigger = new TaskTrigger({
-                            key: task._id + "," + "run",
+                        let running_trigger = new GreetingTrigger({
+                            key: greeting._id + "," + "run",
                             status: "running",
                             cronString: runstring,
                             created_at: new Date(),
                             updated_at: new Date(),
-                            task: task
+                            greeting: greeting
                         })
                         await running_trigger.save()
-                        await Task.findByIdAndUpdate(task._id,
+                        await Greeting.findByIdAndUpdate(greeting._id,
                             {
                                 running_trigger: running_trigger, next_run_date: cronParser.parseExpression(running_trigger.cronString).next().toDate()
                             }
                         )
                         if (running_trigger) {
-                            TaskManager.add(running_trigger.key, runstring, () => { SendTaskWhatsapp(running_trigger.key) })
-                            TaskManager.start(running_trigger.key)
+                            GreetingManager.add(running_trigger.key, runstring, () => { SendGreetingWhatsapp(running_trigger.key) })
+                            GreetingManager.start(running_trigger.key)
                         }
                     }
                     if (refstring) {
-                        let refresh_trigger = new TaskRefreshTrigger({
-                            key: task._id + "," + "refresh",
+                        let refresh_trigger = new GreetingRefreshTrigger({
+                            key: greeting._id + "," + "refresh",
                             status: "running",
                             cronString: refstring,
                             created_at: new Date(),
                             updated_at: new Date(),
-                            task: task
+                            greeting: greeting
                         })
 
                         await refresh_trigger.save()
-                        await Task.findByIdAndUpdate(task._id,
+                        await Greeting.findByIdAndUpdate(greeting._id,
                             {
                                 refresh_trigger: refresh_trigger, next_refresh_date: cronParser.parseExpression(refresh_trigger.cronString).next().toDate()
                             })
 
                         if (refresh_trigger) {
-                            TaskManager.add(refresh_trigger.key, refstring, () => { RefreshTask(refresh_trigger.key) })
-                            TaskManager.start(refresh_trigger.key)
+                            GreetingManager.add(refresh_trigger.key, refstring, () => { RefreshGreeting(refresh_trigger.key) })
+                            GreetingManager.start(refresh_trigger.key)
                         }
 
                     }
@@ -196,26 +192,26 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
 }
 
 
-export const DeleteTask = async (req: Request, res: Response, next: NextFunction) => {
+export const DeleteGreeting = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
-    let task = await Task.findById(id).populate('refresh_trigger').populate('running_trigger')
+    let greeting = await Greeting.findById(id).populate('refresh_trigger').populate('running_trigger')
 
-    if (task) {
-        if (task.refresh_trigger) {
-            await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
-            if (TaskManager.exists(task.refresh_trigger.key))
-                TaskManager.deleteJob(task.refresh_trigger.key)
+    if (greeting) {
+        if (greeting.refresh_trigger) {
+            await GreetingRefreshTrigger.findByIdAndDelete(greeting.refresh_trigger._id)
+            if (GreetingManager.exists(greeting.refresh_trigger.key))
+                GreetingManager.deleteJob(greeting.refresh_trigger.key)
         }
-        if (task.running_trigger) {
-            await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
-            if (TaskManager.exists(task.running_trigger.key))
-                TaskManager.deleteJob(task.running_trigger.key)
+        if (greeting.running_trigger) {
+            await GreetingTrigger.findByIdAndDelete(greeting.running_trigger._id)
+            if (GreetingManager.exists(greeting.running_trigger.key))
+                GreetingManager.deleteJob(greeting.running_trigger.key)
         }
-        if (task.frequency)
-            await Frequency.findByIdAndDelete(task.frequency._id)
-        await Task.findByIdAndDelete(id)
-        return res.status(200).json({ message: "task deleted" })
+        if (greeting.frequency)
+            await Frequency.findByIdAndDelete(greeting.frequency._id)
+        await Greeting.findByIdAndDelete(id)
+        return res.status(200).json({ message: "greeting deleted" })
     }
-    return res.status(404).json({ message: "task not found" })
+    return res.status(404).json({ message: "greeting not found" })
 
 }

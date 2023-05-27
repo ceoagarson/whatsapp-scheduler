@@ -8,7 +8,8 @@ import morgan from "morgan";
 import CronJobManager from "cron-job-manager";
 import { connectDatabase } from './config/db';
 import TaskRouter from "./routes/task.route";
-import { RestartJobs } from './utils/RestartJobs';
+import { RestartTaskJobs } from './utils/RestartTaskJobs';
+import { RestartGreetingJobs } from './utils/greetings/RestartGreetingJobs';
 
 //exress app
 const app = express()
@@ -35,14 +36,20 @@ connectDatabase();
 
 //cron job manager for tasks
 export const TaskManager = new CronJobManager()
+export const GreetingManager = new CronJobManager() 
 
 //app routes
 app.use("/api/v1", TaskRouter)
 
 if (!TaskManager.exists('check_status')) {
     TaskManager.add("check_status", "15 * * * *", () => console.log("checked status of all jobs "))
-    console.log("restarted all cron jobs")
-    RestartJobs()
+    console.log("restarted all task cron jobs")
+    RestartTaskJobs()
+}
+if (!GreetingManager.exists('check_greeting_status')) {
+    GreetingManager.add("check_greeting_status", "15 * * * *", () => console.log("checked status of all jobs "))
+    console.log("restarted all greeting cron jobs")
+    RestartGreetingJobs()
 }
 
 //serve client

@@ -1,9 +1,9 @@
-import { TaskManager } from ".."
-import Task from "../models/tasks/Task"
+import { TaskManager } from "../.."
+import Task from "../../models/tasks/Task"
 import { RefreshTask } from "./RefreshTask"
 import { SendTaskWhatsapp } from "./SendTaskWhatsapp"
 
-export async function RestartJobs() {
+export async function RestartTaskJobs() {
     let tasks = await Task.find().populate("running_trigger").populate('refresh_trigger')
     tasks.forEach(async (task) => {
         let running_trigger = task.running_trigger
