@@ -3,15 +3,14 @@ import { TaskBody } from "../types/task.type";
 import Task from "../models/tasks/Task";
 import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
-import { GetCronString } from "../utils/GetCronString";
-import { GetRefreshCronString } from "../utils/GetRefreshCronString";
+import { GetRunningDateCronString } from "../utils/GetRunningDateCronString";
+import { GetRefreshDateCronString } from "../utils/GetRefreshDateCronString";
 import TaskTrigger from "../models/tasks/TaskTrigger";
 import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
 import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
 import { RefreshTask } from "../utils/RefreshTask";
-import { GetNextRunDate } from "../utils/GetNextRunDate";
-import { GetNextRefreshDate } from "../utils/GetNextRefreshDate";
+import cronParser from "cron-parser";
 
 //home page
 export const Index = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +19,7 @@ export const Index = async (req: Request, res: Response, next: NextFunction) => 
 
 //get tasks
 export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
-    let tasks = await Task.find().populate('frequency').populate('run_trigger').populate('refresh_trigger')
+    let tasks = await Task.find()
     res.status(200).json({ tasks: tasks })
 }
 
@@ -141,28 +140,33 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
         if (task.frequency) {
             let frequency = await Frequency.findById(task.frequency._id)
             if (frequency) {
-                let runstring = GetCronString(frequency, new Date(task.start_date))
-                let refstring = GetRefreshCronString(frequency, new Date(task.start_date))
-                if (!task.run_trigger && !task.refresh_trigger) {
+                let runstring = GetRunningDateCronString(frequency, task.start_date)
+                let refstring = GetRefreshDateCronString(frequency, task.start_date)
+
+                if (!task.running_trigger && !task.refresh_trigger && task.frequency) {
                     if (runstring) {
-                        let run_trigger = new TaskTrigger({
-                            key: task._id,
+                        let running_trigger = new TaskTrigger({
+                            key: task._id + "," + "run",
                             status: "running",
                             cronString: runstring,
                             created_at: new Date(),
                             updated_at: new Date(),
                             task: task
                         })
-                        await run_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { run_trigger: run_trigger, running_date: GetNextRunDate(frequency, task.start_date) })
-                        if (run_trigger) {
-                            TaskManager.add(`${run_trigger._id}`, runstring, () => { SendTaskWhatsapp(run_trigger._id) })
-                            TaskManager.start(`${run_trigger._id}`)
+                        await running_trigger.save()
+                        await Task.findByIdAndUpdate(task._id,
+                            {
+                                running_trigger: running_trigger, next_run_date: cronParser.parseExpression(running_trigger.cronString).next().toDate()
+                            }
+                        )
+                        if (running_trigger) {
+                            TaskManager.add(running_trigger.key, runstring, () => { SendTaskWhatsapp(running_trigger.key) })
+                            TaskManager.start(running_trigger.key)
                         }
                     }
                     if (refstring) {
                         let refresh_trigger = new TaskRefreshTrigger({
-                            key: task._id,
+                            key: task._id + "," + "refresh",
                             status: "running",
                             cronString: refstring,
                             created_at: new Date(),
@@ -171,29 +175,47 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
                         })
 
                         await refresh_trigger.save()
-                        await Task.findByIdAndUpdate(task._id, { refresh_trigger: refresh_trigger, refresh_date: GetNextRefreshDate(frequency, task.start_date) })
+                        await Task.findByIdAndUpdate(task._id,
+                            {
+                                refresh_trigger: refresh_trigger, next_refresh_date: cronParser.parseExpression(refresh_trigger.cronString).next().toDate()
+                            })
 
                         if (refresh_trigger) {
-                            TaskManager.add(`${refresh_trigger._id}`, refstring, () => { RefreshTask (refresh_trigger._id)})
-                            TaskManager.start(`${refresh_trigger._id}`)
+                            TaskManager.add(refresh_trigger.key, refstring, () => { RefreshTask(refresh_trigger.key) })
+                            TaskManager.start(refresh_trigger.key)
                         }
 
-                    }
-                    if (!runstring && !refstring) {
-                        await Task.findByIdAndUpdate(task._id, { once: true })
-                        let cronString = `${new Date(task.start_date).getMinutes()} ` + `${new Date(task.start_date).getHours()} ` + "1/" + `${1}` + " *" + " *"
-                        if (cronString) {
-                            TaskManager.add(`${task._id}`, cronString, () => { console.log("run once") })
-                            TaskManager.start(`${task._id}`)
-                        }
                     }
                 }
             }
         }
+
     })
 
     return res.status(200).json({ message: "started successfully" })
 }
 
 
+export const DeleteTask = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params
+    let task = await Task.findById(id).populate('refresh_trigger').populate('running_trigger')
 
+    if (task) {
+        if (task.refresh_trigger) {
+            await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
+            if (TaskManager.exists(task.refresh_trigger.key))
+                TaskManager.deleteJob(task.refresh_trigger.key)
+        }
+        if (task.running_trigger) {
+            await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
+            if (TaskManager.exists(task.running_trigger.key))
+                TaskManager.deleteJob(task.running_trigger.key)
+        }
+        if (task.frequency)
+            await Frequency.findByIdAndDelete(task.frequency._id)
+        await Task.findByIdAndDelete(id)
+        return res.status(200).json({ message: "task deleted" })
+    }
+    return res.status(404).json({ message: "task not found" })
+
+}

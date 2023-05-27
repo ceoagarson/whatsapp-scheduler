@@ -17,6 +17,7 @@ const TaskTriggerSchema = new mongoose.Schema<ITaskTrigger, mongoose.Model<ITask
     ,
     cronString: {
         type: String,
+        required: true,
         trim: true
     },
     created_at: Date,

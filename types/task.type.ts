@@ -1,7 +1,6 @@
 export type IFrequency = {
-    _id: string,
-    once:boolean,
-    type: string,
+    _id?: string,
+    type: string,//task or greeting
     minutes?: number,
     hours?: number,
     days?: number,
@@ -34,23 +33,24 @@ export interface ITask{
     person:string,
     phone:string,
 
-    whatsapp_status?: string,
-    whatsapp_timestamp?: Date,
+    message_id:string,
+    whatsapp_status: string,
+    whatsapp_timestamp: Date,
     task_status: string,
-    task_timestamp?: Date,
+    task_timestamp: Date,
 
-    autoRefresh?:boolean,
-    autostop?:boolean,
+    autoRefresh:boolean,
+    autostop:boolean,
    
     frequency:IFrequency,
-    run_trigger?:ITaskTrigger,
-    refresh_trigger?:ITaskRefreshTrigger,
+    running_trigger:ITaskTrigger,
+    refresh_trigger:ITaskRefreshTrigger,
     
     start_date: Date,
-    running_date:Date,
-    refresh_date?:Date,
-    created_at?: Date,
-    updated_at?: Date
+    next_run_date:Date,
+    next_refresh_date:Date,
+    created_at: Date,
+    updated_at: Date
 }
 
 

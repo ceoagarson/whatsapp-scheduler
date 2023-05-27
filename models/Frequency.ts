@@ -8,10 +8,6 @@ const FrequencySchema = new mongoose.Schema<IFrequency, mongoose.Model<IFrequenc
         trim: true,
         lowercase: true
     },
-    once:{
-        type:Boolean,
-        default:false
-    },
     minutes: Number,
     hours: Number,
     days: Number,

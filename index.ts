@@ -41,6 +41,7 @@ app.use("/api/v1", TaskRouter)
 
 if (!TaskManager.exists('check_status')) {
     TaskManager.add("check_status", "15 * * * *", () => console.log("checked status of all jobs "))
+    console.log("restarted all cron jobs")
     RestartJobs()
 }
 

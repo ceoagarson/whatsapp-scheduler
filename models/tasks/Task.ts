@@ -50,7 +50,7 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         ref: 'Frequency'
     }
     ,
-    run_trigger: {
+    running_trigger: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TaskTrigger'
     },
@@ -62,8 +62,8 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type:Date,
         required: true
     },
-    running_date: Date,
-    refresh_date: Date,
+    next_run_date: Date,
+    next_refresh_date: Date,
     created_at: Date,
     updated_at: Date
    

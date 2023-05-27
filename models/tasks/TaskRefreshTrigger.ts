@@ -17,6 +17,7 @@ const TaskRefreshTriggerSchema = new mongoose.Schema<ITaskRefreshTrigger, mongoo
     ,
     cronString: {
         type: String,
+        required: true,
         trim: true
     },
     created_at: {
