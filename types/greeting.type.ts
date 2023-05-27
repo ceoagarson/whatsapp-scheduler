@@ -28,7 +28,7 @@ export type IGreetingRefreshTrigger = {
 }
 export interface IGreeting{
     _id: string,
-    greeting_title:string,
+    greeting_image:string,
     greeting_detail:string,
     person:string,
     phone:string,

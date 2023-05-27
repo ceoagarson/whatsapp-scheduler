@@ -8,9 +8,9 @@ import { GetRefreshDateCronString } from "../utils/GetRefreshDateCronString";
 import TaskTrigger from "../models/tasks/TaskTrigger";
 import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
-import { SendTaskWhatsapp } from "../utils/SendTaskWhatsapp";
 import { RefreshTask } from "../utils/tasks/RefreshTask";
 import cronParser from "cron-parser";
+import { SendTaskWhatsapp } from "../utils/tasks/SendTaskWhatsapp";
 
 //home page
 export const Index = async (req: Request, res: Response, next: NextFunction) => {

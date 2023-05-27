@@ -23,7 +23,10 @@ export const SignUp =
             return res.status(403).json({ message: `${email} already exists` });
         if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
             return res.status(403).json({ message: `${mobile} already exists` });
-
+        let users = await User.find()
+        if (users.length > 0) {
+            return res.status(403).json({ message: "one signup is allowed only" });
+        }
         let owner = new User({
             username,
             password,
@@ -37,8 +40,10 @@ export const SignUp =
 
         sendUserToken(res, owner.getAccessToken())
         await owner.save()
-        owner = await User.findById(owner._id).populate("created_by").populate("updated_by")
-        res.status(201).json(owner)
+        let user = await User.findById(owner._id)
+        if (user)
+            res.status(201).json(user)
+        else return res.status(500).json({ message: "server error while signup" })
     }
 
 // create normal user 
@@ -107,8 +112,6 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 
-
-
 // update user only admin can do
 export const UpdateUser = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -174,6 +177,14 @@ export const Logout = async (req: Request, res: Response, next: NextFunction) =>
     res.status(200).json({ message: "logged out" })
 }
 
+// get profile
+export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
+    let user = await User.findById(req.user._id)
+    if (user)
+        return res.status(200).json(user)
+    else
+        return res.status(400).json({ message:"login again ! session expired"})
+}
 //update profile 
 export const UpdateProfile = async (req: Request, res: Response, next: NextFunction) => {
     let user = await User.findById(req.user?._id);

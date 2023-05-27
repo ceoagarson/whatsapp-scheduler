@@ -21,8 +21,8 @@ export const GetGreetings = async (req: Request, res: Response, next: NextFuncti
 
 //create new greeting
 export const CreateGreeting = async (req: Request, res: Response, next: NextFunction) => {
-    const { greeting_title, greeting_detail, person, phone, start_date, frequency } = req.body as GreetingBody
-    if (!greeting_title || !greeting_detail || !person || !phone || !start_date)
+    const { greeting_image, greeting_detail, person, phone, start_date, frequency } = req.body as GreetingBody
+    if (!greeting_image || !greeting_detail || !person || !phone || !start_date)
         return res.status(400).json({ message: "fill all the required fields" });
     if ((String(phone).trim().length != 12))
         return res.status(400).json({ message: "please provide valid mobile number" })
@@ -32,7 +32,7 @@ export const CreateGreeting = async (req: Request, res: Response, next: NextFunc
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
 
     let greeting = new Greeting({
-        greeting_title,
+        greeting_image,
         greeting_detail,
         person,
         phone,

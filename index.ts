@@ -8,8 +8,10 @@ import morgan from "morgan";
 import CronJobManager from "cron-job-manager";
 import { connectDatabase } from './config/db';
 import TaskRouter from "./routes/task.route";
-import { RestartTaskJobs } from './utils/RestartTaskJobs';
+import GreetingRouter from "./routes/greeting.route";
+import UserRouter from "./routes/user.route";
 import { RestartGreetingJobs } from './utils/greetings/RestartGreetingJobs';
+import { RestartTaskJobs } from './utils/tasks/RestartTaskJobs';
 
 //exress app
 const app = express()
@@ -39,7 +41,9 @@ export const TaskManager = new CronJobManager()
 export const GreetingManager = new CronJobManager() 
 
 //app routes
+app.use("/api/v1", UserRouter)
 app.use("/api/v1", TaskRouter)
+app.use("/api/v1", GreetingRouter)
 
 if (!TaskManager.exists('check_status')) {
     TaskManager.add("check_status", "15 * * * *", () => console.log("checked status of all jobs "))

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { IGreeting } from "../../types/greeting.type";
 
 const GreetingSchema = new mongoose.Schema<IGreeting, mongoose.Model<IGreeting>>({
-    greeting_title: {
+    greeting_image: {
         type: String,
         required: true,
         trim: true,
