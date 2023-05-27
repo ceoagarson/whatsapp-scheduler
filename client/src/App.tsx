@@ -1,8 +1,8 @@
-import React from 'react'
+import AppRoutes from "./Routes";
 
 function App() {
   return (
-    <div>Hello world</div>
+    <AppRoutes />
   )
 }
 
