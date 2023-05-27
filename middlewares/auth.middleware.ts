@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { catchAsyncError } from "./catchAsyncError.middleware.ts";
 import jwt from "jsonwebtoken";
-import { User } from "../models/users/user.model.js";
+import { User } from "../models/User";
 
 let UserTokens: string[] = []//for storing access tokens in memory
 
 //authenticate user
-export const isAuthenticatedUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const isAuthenticatedUser = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies.accessToken)
         return res.status(403).json({ message: "please login to access this resource" })
     if (!UserTokens.includes(req.cookies.accessToken))
@@ -24,14 +23,14 @@ export const isAuthenticatedUser = catchAsyncError(async (req: Request, res: Res
             }
         }
     );
-});
+};
 
 //check admin
-export const isAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user?.is_admin)
         return next();
     return res.status(403).json({ message: "!must be admin" });
-});
+};
 
 // login
 export const sendUserToken = (res: Response, accessToken: string) => {
