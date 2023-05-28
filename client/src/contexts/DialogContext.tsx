@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 
 // choices
-type AppChoices = "new_user" | "close" | "new_task" | "new_message" | null
+type AppChoices = "new_user" | "close" | "new_task" | "new_message" | null | "delete_user" | "update_user" | "block_user" |    "unblock_user" | "make_admin" | "remove_admin"
 
 // initial state
 type ChoiceState = AppChoices
@@ -12,6 +12,12 @@ export enum AppChoiceActions {
     new_user = "new_user",
     new_task = "new_task",
     new_message = "new_message",
+    delete_user = "delete_user",
+    update_user = "update_user",
+    block_user = "block_user",
+    unblock_user = "unblock_user",
+    make_admin = "make_admin",
+    remove_admin = "remove_admin",
     close = "close"
 }
 
@@ -27,6 +33,12 @@ function reducer(state: ChoiceState, action: Action) {
         case AppChoiceActions.new_user: return type
         case AppChoiceActions.new_task: return type
         case AppChoiceActions.new_message: return type
+        case AppChoiceActions.delete_user: return type
+        case AppChoiceActions.update_user: return type
+        case AppChoiceActions.remove_admin: return type
+        case AppChoiceActions.make_admin: return type
+        case AppChoiceActions.block_user: return type
+        case AppChoiceActions.unblock_user: return type
         case AppChoiceActions.close: return type
         default: return state
     }

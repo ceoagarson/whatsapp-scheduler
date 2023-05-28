@@ -124,7 +124,7 @@ function SignUpForm() {
                     >{isLoading ? "Working on it..." : "Register"}</Button>
                     <p className='text-dark  text-center d-block p-2 fw-light text-muted'>Already have an account
                         <Link className="text-decoration-none p-1" to={paths.login} ><b>Login</b></Link></p>
-                    <Link className="d-block text-decoration-none text-center pt-3" to={paths.reset_password} >forgot password ?</Link>
+                    <Link className="d-block text-decoration-none text-center " to={paths.reset_password} >forgot password ?</Link>
                 </Form>
             </Container>
             <p className="text-capitalize position-relative w-100 bottom-0 mt-4 p-2 bg-primary text-light text-center">Copyright @ Agarson shoes pvt. ltd.</p>

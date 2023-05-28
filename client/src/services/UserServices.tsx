@@ -26,7 +26,7 @@ export const NewUser = async (body: {
     return await apiClient.post("users", body);
 };
 // update user
-export const UpdateUser = async ({ id, body }: { id: string, body: FormData }) => {
+export const UpdateUser = async ({ id, body }: { id: string, body: { username: string, mobile: number, email: string } }) => {
     return await apiClient.put(`users/${id}`, body);
 };
 
@@ -47,6 +47,11 @@ export const GetUser = async (id: string) => {
 export const BlockUser = async (id: string) => {
     return await apiClient.patch(`block/user/${id}`)
 }
+// block user
+export const DeleteUser = async (id: string) => {
+    return await apiClient.patch(`block/user/${id}`)
+}
+
 // unblock user
 export const UnBlockUser = async (id: string) => {
     return await apiClient.patch(`unblock/user/${id}`)
