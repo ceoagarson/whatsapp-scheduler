@@ -1,16 +1,16 @@
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect } from 'react'
-import { IUser } from '../types/user.type'
-import { BackendError } from '../types'
-import { Login } from '../services/UserServices'
-import { useNavigate } from 'react-router-dom'
+import { IUser } from '../../types/user.type'
+import { BackendError } from '../../types'
+import { Login } from '../../services/UserServices'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from 'react-query'
-import { UserContext } from '../contexts/UserContext'
+import { UserContext } from '../../contexts/UserContext'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
 import { Container, Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { paths } from '../Routes'
+import { paths } from '../../Routes'
 import Alert from 'react-bootstrap/Alert';
 
 function LoginPage() {
@@ -48,16 +48,14 @@ function LoginPage() {
 
   useEffect(() => {
     if (isSuccess) {
-      setTimeout(() => {
         setUser(data.data)
         goto(paths.users)
-      }, 400)
     }
   }, [setUser, goto, isSuccess, data])
 
   return (
-    <Container className='d-flex justify-content-center w-100'>
-      <Form onSubmit={formik.handleSubmit} className='w-50 p-2'>
+    <Container className='d-flex  fluid justify-content-center min-vh-100 min-vw-100'>
+      <Form onSubmit={formik.handleSubmit} className='shadow  p-4 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
         {
           isError ? (
             <Alert variant="danger">
@@ -73,19 +71,25 @@ function LoginPage() {
             </Alert>
           ) : null
         }
-        <Form.Group className="mb-3" >
-          <Form.Control type="username" placeholder="username or email"
+        <Form.Group className="pt-3 mb-3" >
+          <Form.Control type="username" placeholder="Username or Email"
             {...formik.getFieldProps('username')}
           />
+          <Form.Text className='pl-2 text-danger'>{formik.touched.username && formik.errors.username ? formik.errors.username : ""}</Form.Text>
         </Form.Group>
         <Form.Group className="mb-3" >
-          <Form.Control type="password" placeholder="password"
+          <Form.Control type="password" placeholder="Password"
             {...formik.getFieldProps('password')}
           />
+          <Form.Text className='pl-2 text-danger'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
         </Form.Group>
-        <Button variant="outline-primary" size="lg" className='w-100' type="submit"
+        <Button variant="primary"  className='w-100' type="submit"
           disabled={isLoading}
         >{isLoading ? "Logging in..." : "Login"}</Button>
+       
+
+        <p className='text-dark text-center d-block p-2 fw-light text-muted text-lowercase'>Not Have a Account
+          <Link className="text-decoration-none p-1" to={paths.signup} ><b>Register</b></Link></p>
       </Form>
     </Container>
   )

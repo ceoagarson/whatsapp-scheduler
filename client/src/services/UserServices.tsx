@@ -2,18 +2,20 @@ import { apiClient } from "./utils/AxiosInterceptor";
 
 // login
 export const Login = async (
-    body: {
-        username: string,
+    body: {  username: string,
         password: string
-    }
-) => {
+    }) => {
     return await apiClient.post("login", body);
 };
 
 // signup new organization and owner
-export const Signup = async (body: FormData) => {
+export const Signup = async (body: {
+    username: string, mobile: number, email: string, password: string
+}) => {
     return await apiClient.post("signup", body);
 };
+
+
 // new user
 export const NewUser = async (body: FormData) => {
     return await apiClient.post("users", body);
