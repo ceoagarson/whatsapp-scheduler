@@ -31,7 +31,7 @@ const StyledTable = styled.table`
   color: white;
 }
 `
-export default function TasksPage() {
+export default function MessagesPage() {
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
     refetchOnMount: true
   })
@@ -47,13 +47,13 @@ export default function TasksPage() {
   return (
     <>
       {
-        isLoading ? <h1 className="fs-6">Loading tasks ...</h1>
+        isLoading ? <h1 className="fs-6">Loading messages ...</h1>
           :
           <>
             <Container className='d-flex justify-content-end p-2'>
               <Button variant="outline-primary" onClick={() => {
-                setChoice({ type: AppChoiceActions.new_task })
-              }}>Add Task</Button>
+                setChoice({ type: AppChoiceActions.new_message })
+              }}>New Message</Button>
               <AddUserModel />
             </Container>
             <div className="w-100 overflow-auto d-flex">

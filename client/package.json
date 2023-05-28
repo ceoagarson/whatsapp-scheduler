@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/fuzzy-search": "^2.1.2"
+    "@types/fuzzy-search": "^2.1.2",
+    "@types/styled-components": "^5.1.26"
   }
 }

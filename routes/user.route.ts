@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.post("/signup", SignUp)
 router.route("/users")
-    .get(isAuthenticatedUser, isAdmin, GetUsers)
+    .get(isAuthenticatedUser, GetUsers)
     .post(isAuthenticatedUser, isAdmin, NewUser)
 router.route("/users/:id")
     .put(isAuthenticatedUser, isAdmin, UpdateUser)

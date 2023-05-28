@@ -6,6 +6,7 @@ import { UserProvider } from './contexts/UserContext';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { QueryClientProvider, QueryClient } from "react-query";
+import { ChoiceProvider } from './contexts/DialogContext';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,9 +24,11 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
+        <ChoiceProvider>
         <React.StrictMode>
           <App />
         </React.StrictMode>
+        </ChoiceProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>

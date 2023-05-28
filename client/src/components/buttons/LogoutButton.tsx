@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import { useMutation } from 'react-query'
 import { Logout } from '../../services/UserServices'
-import { Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '../../Routes'
 import { UserContext } from '../../contexts/UserContext'
@@ -16,13 +15,18 @@ function LogoutButton() {
         }
     }, [goto, isSuccess])
     return (
-        <Button variant="d-block outline-danger" type="submit"
+        <img
             onClick={() => {
                 mutate()
                 setUser(undefined)
             }}
-        >Logout</Button>
+            height="20"
+            className='bg-danger p-1 rounded border border-light'
+            width="20"
+            style={{ "cursor": "pointer" }}
+            src="https://img.icons8.com/ios/50/exit--v1.png" />
     )
+
 }
 
 export default LogoutButton

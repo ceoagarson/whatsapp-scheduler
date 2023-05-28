@@ -17,7 +17,12 @@ export const Signup = async (body: {
 
 
 // new user
-export const NewUser = async (body: FormData) => {
+export const NewUser = async (body: {
+    username: string,
+    password: string,
+    mobile: number,
+    email: string
+}) => {
     return await apiClient.post("users", body);
 };
 // update user
