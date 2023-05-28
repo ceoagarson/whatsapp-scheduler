@@ -1,10 +1,10 @@
-import LogoutButton from '../components/LogoutButton'
+import { useNavigate } from 'react-router-dom'
 
 function UsersPage() {
+  const goto=useNavigate()
   return (
     <>
-      <div>UsersPage</div>
-      <LogoutButton/>
+    
       </>
   )
 }

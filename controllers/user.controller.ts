@@ -345,7 +345,7 @@ export const SendPasswordResetMail = async (req: Request, res: Response, next: N
     const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\n valid for 15 minutes only \n\n\n\nIf you have not requested this email then, please ignore it.`;
     const options = {
         to: user.email,
-        subject: `Crm Password Recovery`,
+        subject: `Password Recovery`,
         message: message,
     };
     let response = await sendEmail(options);

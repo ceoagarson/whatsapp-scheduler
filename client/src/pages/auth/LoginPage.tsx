@@ -48,50 +48,54 @@ function LoginPage() {
 
   useEffect(() => {
     if (isSuccess) {
-        setUser(data.data)
-        goto(paths.users)
+      setUser(data.data)
+      goto(paths.users)
     }
   }, [setUser, goto, isSuccess, data])
 
   return (
-    <Container className='d-flex  fluid justify-content-center min-vh-100 min-vw-100'>
-      <Form onSubmit={formik.handleSubmit} className='shadow  p-4 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-        {
-          isError ? (
-            <Alert variant="danger">
-              {error?.response.data.message}
-            </Alert>
+    <>
+      <Container className='d-flex  fluid justify-content-center h-100 min-vw-100'>
+        <Form onSubmit={formik.handleSubmit} className='shadow mt-5  p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
+          {
+            isError ? (
+              <Alert variant="danger">
+                {error?.response.data.message}
+              </Alert>
 
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <Alert color="success">
-              logged in
-            </Alert>
-          ) : null
-        }
-        <Form.Group className="pt-3 mb-3" >
-          <Form.Control type="username" placeholder="Username or Email"
-            {...formik.getFieldProps('username')}
-          />
-          <Form.Text className='pl-2 text-danger'>{formik.touched.username && formik.errors.username ? formik.errors.username : ""}</Form.Text>
-        </Form.Group>
-        <Form.Group className="mb-3" >
-          <Form.Control type="password" placeholder="Password"
-            {...formik.getFieldProps('password')}
-          />
-          <Form.Text className='pl-2 text-danger'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
-        </Form.Group>
-        <Button variant="primary"  className='w-100' type="submit"
-          disabled={isLoading}
-        >{isLoading ? "Logging in..." : "Login"}</Button>
-       
+            ) : null
+          }
+          {
+            isSuccess ? (
+              <Alert color="success">
+                logged in
+              </Alert>
+            ) : null
+          }
+          <Form.Group className="pt-3 mb-3" >
+            <Form.Control className="border border-primary" type="username" placeholder="Username or Email"
+              {...formik.getFieldProps('username')}
+            />
+            <Form.Text className='pl-2 text-muted '>{formik.touched.username && formik.errors.username ? formik.errors.username : ""}</Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" >
+            <Form.Control className="border border-primary" type="password" placeholder="Password"
+              {...formik.getFieldProps('password')}
+            />
+            <Form.Text className='pl-2 text-muted'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
+          </Form.Group>
+          <Button variant="primary" className='w-100' type="submit"
+            disabled={isLoading}
+          >{isLoading ? "Logging in..." : "Login"}</Button>
 
-        <p className='text-dark text-center d-block p-2 fw-light text-muted text-lowercase'>Not Have a Account
-          <Link className="text-decoration-none p-1" to={paths.signup} ><b>Register</b></Link></p>
-      </Form>
-    </Container>
+
+          <p className='text-dark text-center d-block p-2 fw-light text-muted '>Not have an account
+            <Link className="text-decoration-none p-1" to={paths.signup} ><b>Register</b></Link></p>
+          <Link className="d-block text-decoration-none text-center pt-3" to={paths.reset_password} >forgot password ?</Link>
+        </Form>
+      </Container>
+      <p className="text-capitalize position-absolute w-100 bottom-0 mt-2 p-2 bg-primary text-light text-center">Copyright @ Agarson shoes pvt. ltd.</p>
+    </>
   )
 }
 

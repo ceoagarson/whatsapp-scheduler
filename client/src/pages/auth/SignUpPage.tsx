@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IUser } from '../../types/user.type'
 import { BackendError } from '../../types'
 import { Signup } from '../../services/UserServices'
@@ -20,7 +20,7 @@ function SignUpPage() {
       BackendError,
       { username: string, mobile: number, email: string, password: string }
     >(Signup)
-
+  const [display, setDisplay] = useState<string | undefined>()
   const { setUser } = useContext(UserContext)
 
   const formik = useFormik({
@@ -67,58 +67,66 @@ function SignUpPage() {
   }, [setUser, goto, isSuccess, data])
 
   return (
-    <Container className='d-flex  fluid justify-content-center min-vh-100 min-vw-100'>
-      <Form onSubmit={formik.handleSubmit} className='shadow  p-4 bg-body-tertiary rounded bg-light align-self-center'>
-        {
-          isError ? (
-            <Alert variant="danger">
-              {error?.response.data.message}
-            </Alert>
+    <>
+      <Container className='d-flex  fluid justify-content-center h-100 min-vw-100'>
+        <Form onSubmit={formik.handleSubmit} className='shadow mt-5  p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
+          {
+            isError ? (
+              <Alert variant="danger">
+                {error?.response.data.message}
+              </Alert>
 
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <Alert color="success">
-              Successfully registered
-            </Alert>
-          ) : null
-        }
-        <Form.Group className="pt-3 mb-3" >
-          <Form.Control type="username" placeholder="Username or Email"
-            {...formik.getFieldProps('username')}
-          />
-          <Form.Text className='text-muted'>{formik.touched.username && formik.errors.username ? formik.errors.username : ""}</Form.Text>
-        </Form.Group>
+            ) : null
+          }
+          {
+            isSuccess ? (
+              <Alert color="success">
+                Successfully registered
+              </Alert>
+            ) : null
+          }
+          {display ? <Alert color="success">
+            {display}
+          </Alert> : null}
+          <Form.Group className="pt-3 mb-3" >
+            <Form.Control className="border border-primary" type="username" placeholder="Username or Email"
+              {...formik.getFieldProps('username')}
+            />
+            <Form.Text className='text-muted'>{formik.touched.username && formik.errors.username ? formik.errors.username : ""}</Form.Text>
+          </Form.Group>
 
-        <Form.Group className="mb-3" >
-          <Form.Control type="email" placeholder="Email"
-            {...formik.getFieldProps('email')}
-          />
-          <Form.Text className='text-muted'>{formik.touched.email && formik.errors.email ? formik.errors.email : ""}</Form.Text>
-        </Form.Group>
+          <Form.Group className="mb-3" >
+            <Form.Control className="border border-primary" type="email" placeholder="Email"
+              {...formik.getFieldProps('email')}
+              onClick={() => setDisplay("Provide corrcet email address otherwise not able to reset password in future if forgot ?")}
+            />
+            <Form.Text className='text-muted'>{formik.touched.email && formik.errors.email ? formik.errors.email : ""}</Form.Text>
+          </Form.Group>
 
-        <Form.Group className="mb-3" >
-          <Form.Control type="number" placeholder="Mobile "
-            {...formik.getFieldProps('mobile')}
-          />
-          <Form.Text className='text-muted'>{formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""}</Form.Text>
-        </Form.Group>
+          <Form.Group className="mb-3" >
+            <Form.Control className="border border-primary" type="number" placeholder="Mobile "
+              {...formik.getFieldProps('mobile')}
+            />
+            <Form.Text className='text-muted'>{formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""}</Form.Text>
+          </Form.Group>
 
-        <Form.Group className="mb-3" >
-          <Form.Control type="password" placeholder="Password"
-            {...formik.getFieldProps('password')}
-          />
-          <Form.Text className='text-muted'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
-        </Form.Group>
+          <Form.Group className="mb-3" >
+            <Form.Control className="border border-primary" type="password" placeholder="Password"
+              {...formik.getFieldProps('password')}
+            />
+            <Form.Text className='text-muted'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
+          </Form.Group>
 
-        <Button variant="primary" className='w-100' type="submit"
-          disabled={isLoading}
-        >{isLoading ? "Working on it..." : "Register"}</Button>
-        <p className='text-dark  text-center d-block p-2 fw-light text-muted text-lowercase'>Already Have a Account
-          <Link className="text-decoration-none p-1" to={paths.login} ><b>Login</b></Link></p>
-      </Form>
-    </Container>
+          <Button variant="primary" className='w-100' type="submit"
+            disabled={isLoading}
+          >{isLoading ? "Working on it..." : "Register"}</Button>
+          <p className='text-dark  text-center d-block p-2 fw-light text-muted'>Already have an account
+            <Link className="text-decoration-none p-1" to={paths.login} ><b>Login</b></Link></p>
+          <Link className="d-block text-decoration-none text-center pt-3" to={paths.reset_password} >forgot password ?</Link>
+        </Form>
+      </Container>
+      <p className="text-capitalize position-relative w-100 bottom-0 mt-4 p-2 bg-primary text-light text-center">Copyright @ Agarson shoes pvt. ltd.</p>
+    </>
   )
 }
 
