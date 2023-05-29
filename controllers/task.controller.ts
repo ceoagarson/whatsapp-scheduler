@@ -8,6 +8,7 @@ import TaskRefreshTrigger from "../models/tasks/TaskRefreshTrigger";
 import { TaskManager } from "..";
 import { CreateTaskTrigger } from "../utils/tasks/CreateTaskTrigger";
 import { UpdateTaskTrigger } from "../utils/tasks/UpdateTaskTrigger";
+import { SortUniqueNumbers } from "../utils/SortUniqueNumbers";
 
 
 
@@ -76,24 +77,24 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
             })
             if (errorStatus)
                 return res.status(400).json({ message: "Select week days in correct format" })
-            let numWeeks = weekdays.split(',').map((wd) => {
+            let numWeeks: number[] = []
+            weekdays.split(',').forEach((wd) => {
                 if (wd === "mon")
-                    return '1'
+                    numWeeks.push(1)
                 if (wd === "tue")
-                    return '2'
+                    numWeeks.push(2)
                 if (wd === "wed")
-                    return '3'
+                    numWeeks.push(3)
                 if (wd === "thu")
-                    return '4'
+                    numWeeks.push(4)
                 if (wd === "fri")
-                    return '5'
+                    numWeeks.push(5)
                 if (wd === "sat")
-                    return '6'
+                    numWeeks.push(6)
                 if (wd === "sun")
-                    return '7'
-
+                    numWeeks.push(7)
             })
-            weekdays = numWeeks.toString()
+            weekdays = SortUniqueNumbers(numWeeks).toString()
         }
         if (monthdays && monthdays.length > 0) {
             monthdays.split(",").forEach((item) => {
