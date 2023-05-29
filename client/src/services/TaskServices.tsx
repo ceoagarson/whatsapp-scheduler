@@ -22,6 +22,11 @@ export const NewTask= async (body: {
 export const StartTaskScheduler=async()=>{
     return await apiClient.post('tasks/start')
 }
+// stop scheduler
+export const StopTaskScheduler = async () => {
+    return await apiClient.post('tasks/stop')
+}
+
 
 export const DeleteTask = async (id: string) => {
     return await apiClient.delete(`tasks/${id}`)

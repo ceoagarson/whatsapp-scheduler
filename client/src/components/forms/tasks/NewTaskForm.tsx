@@ -10,6 +10,7 @@ import { BackendError } from '../../../types'
 import { useFormik } from 'formik'
 import moment from 'moment'
 import { queryClient } from '../../..'
+import AlertBar from '../../alert/AlertBar'
 
 function NewTaskForm() {
     const [frequency, setFrequency] = useState<string | undefined>()
@@ -43,11 +44,11 @@ function NewTaskForm() {
         validationSchema: Yup.object({
             task_title: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(30, 'Must be 30 characters or less')
+                .max(50, 'Must be 500 characters or less')
                 .required(),
             task_detail: Yup.string()
-                .min(4, 'Must be 4 characters or more')
-                .max(30, 'Must be 30 characters or less')
+                .min(10, 'Must be 10 characters or more')
+                .max(500, 'Must be 500 characters or less')
                 .required(),
             person: Yup.string()
                 .min(4, 'Must be 4 characters or more')
@@ -118,17 +119,15 @@ function NewTaskForm() {
             <h1 className="d-block fs-4 text-center">New task Form</h1>
             {
                 isError ? (
-                    <Alert variant="danger">
-                        {error?.response.data.message}
-                    </Alert>
+                     <AlertBar message={error?.response.data.message} variant="danger"
+                    />
 
                 ) : null
             }
             {
                 isSuccess ? (
-                    <Alert color="success">
-                        Successfull
-                    </Alert>
+                    <AlertBar message='Successfull' variant="success"
+                    />
                 ) : null
             }
             {/* task title */}

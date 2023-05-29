@@ -3,7 +3,7 @@ import React, { useReducer } from "react"
 // choices
 type AppChoices = "new_user" | "close" | "new_task" | "new_message" | null | "delete_user" | "update_user" | "block_user" |    "unblock_user" | "make_admin" | "remove_admin"
 
-type TaskChoices = "new_task" | "delete_task" | "close"
+type TaskChoices = "new_task" | "delete_task" | "close" |"edit_task"
 type MessageChoices = "new_message" | "delete_message" | "close"
 
 // initial state
@@ -25,6 +25,7 @@ export enum AppChoiceActions {
 export enum TaskChoiceActions {
     new_task = "new_task",
     delete_task = "delete_task",
+    edit_task ="edit_task",
     close = "close"
 }
 export enum MessageChoiceActions {
@@ -55,6 +56,7 @@ function reducer(state: ChoiceState, action: Action) {
         // task dialog choices
         case TaskChoiceActions.new_task: return type
         case TaskChoiceActions.delete_task: return type
+        case TaskChoiceActions.edit_task: return type
         case TaskChoiceActions.close: return type
 
         // message dialog choices

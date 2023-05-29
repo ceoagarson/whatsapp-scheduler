@@ -42,8 +42,8 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         start_date,
         created_at: new Date(),
         updated_at: new Date(),
-        created_by:req.user,
-        updated_by:req.user
+        created_by: req.user,
+        updated_by: req.user
     })
 
     let errorStatus = false
@@ -137,7 +137,7 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
 
 //start task scheduler
 export const StartTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
-    let tasks = await Task.find()
+    let tasks = await Task.find().populate('updated_by').populate('created_by').populate('frequency')
     tasks.forEach(async (task) => {
         if (task.frequency) {
             let frequency = await Frequency.findById(task.frequency._id)
@@ -198,10 +198,36 @@ export const StartTaskScheduler = async (req: Request, res: Response, next: Next
 }
 
 
+export const StopTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
+    let tasks = await Task.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
+    tasks.forEach(async (task) => {
+        if (task) {
+            if (task.refresh_trigger) {
+                await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
+                if (TaskManager.exists(task.refresh_trigger.key))
+                    TaskManager.deleteJob(task.refresh_trigger.key)
+            }
+            if (task.running_trigger) {
+                await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
+                if (TaskManager.exists(task.running_trigger.key))
+                    TaskManager.deleteJob(task.running_trigger.key)
+            }
+            await Task.findByIdAndUpdate(task._id,{
+                next_run_date:null,
+                next_refresh_date:null,
+                refresh_trigger: null,
+                running_trigger: null
+            })
+           
+        }
+        
+    })
+    return res.status(200).json({ message: "Scheduler Stopped Successfully" })
+}
+
 export const DeleteTask = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
-    let task = await Task.findById(id).populate('refresh_trigger').populate('running_trigger')
-
+    let task = await Task.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     if (task) {
         if (task.refresh_trigger) {
             await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
