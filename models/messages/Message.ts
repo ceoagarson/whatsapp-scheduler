@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { IGreeting } from "../../types/greeting.type";
+import { IMessage } from "../../types/messages.type";
 
-const GreetingSchema = new mongoose.Schema<IGreeting, mongoose.Model<IGreeting>>({
-    greeting_image: {
+const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
+    message_image: {
         type: String,
         required: true,
         trim: true,
         index: true
     },
-    greeting_detail: {
+    message_detail: {
         type: String,
         required: true,
         trim: true
@@ -31,12 +31,12 @@ const GreetingSchema = new mongoose.Schema<IGreeting, mongoose.Model<IGreeting>>
         trim: true,
         lowercase: true,
     },
-    whatsapp_timestamp: Date, greeting_status: {
+    whatsapp_timestamp: Date, message_status: {
         type: String,
         trim: true,
         lowercase: true,
     },
-    greeting_timestamp: Date,
+    message_timestamp: Date,
     autoRefresh: {
         type: Boolean,
         default: true
@@ -52,11 +52,11 @@ const GreetingSchema = new mongoose.Schema<IGreeting, mongoose.Model<IGreeting>>
     ,
     running_trigger: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'GreetingTrigger'
+        ref: 'MessageTrigger'
     },
     refresh_trigger:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'GreetingRefreshTrigger'
+        ref: 'MessageRefreshTrigger'
     },    
     start_date: {
         type:Date,
@@ -65,8 +65,18 @@ const GreetingSchema = new mongoose.Schema<IGreeting, mongoose.Model<IGreeting>>
     next_run_date: Date,
     next_refresh_date: Date,
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
    
 })
-const Greeting = mongoose.model<IGreeting, mongoose.Model<IGreeting>>("Greeting", GreetingSchema);
-export default Greeting;
+const Message = mongoose.model<IMessage, mongoose.Model<IMessage>>("Message", MessageSchema);
+export default Message;

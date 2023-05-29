@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import ResetPasswordForm from '../../components/forms/ResetPasswordForm'
-import ResetPasswordSendMailForm from '../../components/forms/ResetPasswordSendMailForm'
+import ResetPasswordForm from '../../components/forms/users/ResetPasswordForm'
+import ResetPasswordSendMailForm from '../../components/forms/users/ResetPasswordSendMailForm'
 import { useParams } from 'react-router-dom'
 
 function ResetPasswordPage() {

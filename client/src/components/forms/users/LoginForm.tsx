@@ -1,16 +1,16 @@
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect } from 'react'
-import { IUser } from '../../types/user.type'
-import { BackendError } from '../../types'
-import { Login } from '../../services/UserServices'
+import { IUser } from '../../../types/user.type'
+import { BackendError } from '../../../types'
+import { Login } from '../../../services/UserServices'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from 'react-query'
-import { UserContext } from '../../contexts/UserContext'
+import { UserContext } from '../../../contexts/UserContext'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
 import { Container, Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { paths } from '../../Routes'
+import { paths } from '../../../Routes'
 import Alert from 'react-bootstrap/Alert';
 
 function LoginForm() {

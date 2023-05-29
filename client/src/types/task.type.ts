@@ -1,3 +1,5 @@
+import { IUser } from "./user.type"
+
 export type IFrequency = {
     _id?: string,
     type: string,//task or greeting
@@ -50,7 +52,9 @@ export interface ITask{
     next_run_date:Date,
     next_refresh_date:Date,
     created_at: Date,
-    updated_at: Date
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
 }
 
 

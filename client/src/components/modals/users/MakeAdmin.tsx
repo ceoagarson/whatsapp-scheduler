@@ -1,18 +1,18 @@
-import React, { useContext, useEffect } from 'react'
-import { Alert, Button, Container, Modal } from 'react-bootstrap'
-import { AppChoiceActions, ChoiceContext } from '../../contexts/DialogContext'
-import { BackendError } from '../../types'
 import { AxiosResponse } from 'axios'
-import { DeleteUser } from '../../services/UserServices'
+import { useContext, useEffect } from 'react'
+import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
-import { queryClient } from '../..'
-import { IUser } from '../../types/user.type'
+import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
+import { IUser } from '../../../types/user.type'
+import { queryClient } from '../../..'
+import { MakeAdmin } from '../../../services/UserServices'
+import { Alert, Button, Container, Modal } from 'react-bootstrap'
 
-function DeleteUserModel({ user }: { user: IUser }) {
+function MakeAdminModal({ user }: { user: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteUser,
+        (MakeAdmin,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('users')
@@ -29,7 +29,7 @@ function DeleteUserModel({ user }: { user: IUser }) {
     }, [setChoice, isSuccess])
     return (
         <Modal
-            show={choice === AppChoiceActions.delete_user ? true : false}
+            show={choice === AppChoiceActions.make_admin ? true : false}
             onHide={() => setChoice({ type: AppChoiceActions.close })}
             centered
         >
@@ -44,29 +44,28 @@ function DeleteUserModel({ user }: { user: IUser }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        logged in
+                        Successful
                     </Alert>
                 ) : null
             }
-            <Container className='p-2'>
-                <p className="tetx-center d-block fs-4 fw-bold text-uppercase p-2">Confirm To Delete "{user.username}"</p>
+           <Container className='p-2'>
+                <p className="tetx-center d-block fs-6 fw-bold text-capitalize p-2">Confirm To Make Admin to "{user.username}"</p>
                 <Container className="d-flex w-100 jusify-content-center align-items-center gap-2">
 
-                    <Button variant="outline-danger" className="w-100"
+                    <Button variant="outline-danger"className="w-100" 
                         onClick={() => {
                             mutate(user._id)
-                            if (!error)
-                                setChoice({ type: AppChoiceActions.close })
+                            setChoice({ type: AppChoiceActions.close })
                         }
                         }
                     >Yes</Button>
-                    <Button variant="primary" className="w-100"
+                    <Button variant="primary" className="w-100" 
                         onClick={() => setChoice({ type: AppChoiceActions.close })}
                     >NO</Button>
                 </Container>
-            </Container>
+           </Container>
         </Modal>
     )
 }
 
-export default DeleteUserModel
+export default MakeAdminModal

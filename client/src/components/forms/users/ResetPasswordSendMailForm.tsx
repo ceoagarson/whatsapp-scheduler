@@ -1,14 +1,17 @@
-import { AxiosResponse } from 'axios';
-import { useFormik } from 'formik';
-import { useContext, useEffect } from 'react';
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { UserContext } from '../../contexts/UserContext';
-import { BackendError } from '../../types';
-import { ResetPasswordSendMail } from '../../services/UserServices';
-import { Alert, Button, Container, Form } from 'react-bootstrap';
-import { paths } from '../../Routes';
+import { AxiosResponse } from 'axios'
+import { useContext, useEffect } from 'react'
+import { useMutation } from 'react-query'
+import { useFormik } from 'formik'
+import * as Yup from "yup"
+import { Container, Form } from 'react-bootstrap'
+import Button from "react-bootstrap/Button"
+import Alert from 'react-bootstrap/Alert';
+import { useNavigate } from 'react-router-dom'
+import { BackendError } from '../../../types'
+import { paths } from '../../../Routes'
+import { UserContext } from '../../../contexts/UserContext'
+import { ResetPasswordSendMail } from '../../../services/UserServices'
+
 
 
 function ResetPasswordSendMailForm() {

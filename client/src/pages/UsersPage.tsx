@@ -5,11 +5,14 @@ import { GetUsers } from '../services/UserServices'
 import { BackendError } from '../types'
 import { IUser } from '../types/user.type'
 import { Button, Container, Modal } from 'react-bootstrap'
-import AddUserModel from '../components/modals/AddUserModel'
+import AddUserModel from '../components/modals/users/AddUserModel'
 import { AppChoiceActions, ChoiceContext } from '../contexts/DialogContext'
 import styled from "styled-components"
-import UpdateUserModel from '../components/modals/UpdateUserModal'
-import DeleteUserModel from '../components/modals/DeleteUserModel'
+import UpdateUserModel from '../components/modals/users/UpdateUserModal'
+import BlockUserModel from '../components/modals/users/BlockUserModal'
+import UnBlockUserModel from '../components/modals/users/UnBlockUserModal'
+import MakeAdminModal from '../components/modals/users/MakeAdmin'
+import RemoveAdminModal from '../components/modals/users/RemoveAdmin'
 
 const StyledTable = styled.table`
  {
@@ -61,11 +64,20 @@ export default function UsersPage() {
               <Button variant="outline-primary" onClick={() => {
                 setChoice({ type: AppChoiceActions.new_user })
               }}>Add User</Button>
+              {/* modals */}
               <AddUserModel />
               {user ?
                 <>
                   <UpdateUserModel user={user} />
-                  <DeleteUserModel user={user} />
+                  <BlockUserModel user={user} />
+                  <UnBlockUserModel user={user} />
+                  <MakeAdminModal user={user} />
+                  <RemoveAdminModal user={user} />
+                </> : null}
+
+              {user ?
+                <>
+                  <UpdateUserModel user={user} />
                 </> : null
               }
             </Container>
@@ -143,13 +155,6 @@ export default function UsersPage() {
 
                                 width="24" height="24" src="https://img.icons8.com/emoji/48/cross-mark-button-emoji.png" alt="administrator-male" />
                           }
-                          <img style={{ "cursor": "pointer" }} title="delete"
-                            onClick={() => {
-                              setSelectedUser(users, user._id)
-                              setChoice({ type: AppChoiceActions.delete_user })
-                            }
-                            }
-                            width="24" height="24" src="https://img.icons8.com/color/48/delete-forever.png" alt="delete--v1" />
                         </td>
                       </tr>
                     )

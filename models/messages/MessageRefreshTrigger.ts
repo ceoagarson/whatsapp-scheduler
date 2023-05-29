@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { IGreetingRefreshTrigger } from "../../types/greeting.type";
+import { IMessageRefreshTrigger } from "../../types/messages.type";
 
-const GreetingRefreshTriggerSchema = new mongoose.Schema<IGreetingRefreshTrigger, mongoose.Model<IGreetingRefreshTrigger>>({
+const MessageRefreshTriggerSchema = new mongoose.Schema<IMessageRefreshTrigger, mongoose.Model<IMessageRefreshTrigger>>({
     key: {
         type: String,
         required: true,
@@ -30,13 +30,13 @@ const GreetingRefreshTriggerSchema = new mongoose.Schema<IGreetingRefreshTrigger
         default: new Date(),
         required: true,
     },
-    greeting:
+    message:
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Greeting',
+        ref: 'Message',
         required: true
     }
 })
-const GreetingRefreshTrigger = mongoose.model<IGreetingRefreshTrigger, mongoose.Model<IGreetingRefreshTrigger>>("GreetingRefreshTrigger", GreetingRefreshTriggerSchema);
+const MessageRefreshTrigger = mongoose.model<IMessageRefreshTrigger, mongoose.Model<IMessageRefreshTrigger>>("MessageRefreshTrigger", MessageRefreshTriggerSchema);
 
-export default GreetingRefreshTrigger;
+export default MessageRefreshTrigger;

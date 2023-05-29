@@ -3,14 +3,16 @@ import React, { useReducer } from "react"
 // choices
 type AppChoices = "new_user" | "close" | "new_task" | "new_message" | null | "delete_user" | "update_user" | "block_user" |    "unblock_user" | "make_admin" | "remove_admin"
 
+type TaskChoices = "new_task" | "delete_task" | "close"
+type MessageChoices = "new_message" | "delete_message" | "close"
+
 // initial state
-type ChoiceState = AppChoices
+type ChoiceState = AppChoices | TaskChoices | MessageChoices
 
 const initialState: ChoiceState = null
 
 export enum AppChoiceActions {
     new_user = "new_user",
-    new_task = "new_task",
     new_message = "new_message",
     delete_user = "delete_user",
     update_user = "update_user",
@@ -20,18 +22,27 @@ export enum AppChoiceActions {
     remove_admin = "remove_admin",
     close = "close"
 }
+export enum TaskChoiceActions {
+    new_task = "new_task",
+    delete_task = "delete_task",
+    close = "close"
+}
+export enum MessageChoiceActions {
+    new_message = "new_message",
+    delete_message = "delete_message",
+    close = "close"
+}
 
 type Action = {
-    type: AppChoiceActions
+    type: AppChoiceActions | TaskChoiceActions | MessageChoiceActions
 }
 
 // reducer
 function reducer(state: ChoiceState, action: Action) {
     let type = action.type
     switch (type) {
-        //category dialog choices
+        //users dialog choices
         case AppChoiceActions.new_user: return type
-        case AppChoiceActions.new_task: return type
         case AppChoiceActions.new_message: return type
         case AppChoiceActions.delete_user: return type
         case AppChoiceActions.update_user: return type
@@ -40,6 +51,16 @@ function reducer(state: ChoiceState, action: Action) {
         case AppChoiceActions.block_user: return type
         case AppChoiceActions.unblock_user: return type
         case AppChoiceActions.close: return type
+
+        // task dialog choices
+        case TaskChoiceActions.new_task: return type
+        case TaskChoiceActions.delete_task: return type
+        case TaskChoiceActions.close: return type
+
+        // message dialog choices
+        case MessageChoiceActions.new_message: return type
+        case MessageChoiceActions.delete_message: return type
+        case MessageChoiceActions.close: return type
         default: return state
     }
 }

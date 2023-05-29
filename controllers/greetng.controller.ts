@@ -1,28 +1,28 @@
 import { Request, NextFunction, Response } from "express";
-import { GreetingBody } from "../types/greeting.type";
-import Greeting from "../models/greetings/Greeting";
+import { MessageBody } from "../types/messages.type";
+import Message from "../models/messages/Message";
 import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
 import { GetRunningDateCronString } from "../utils/GetRunningDateCronString";
 import { GetRefreshDateCronString } from "../utils/GetRefreshDateCronString";
-import GreetingTrigger from "../models/greetings/GreetingTrigger";
-import GreetingRefreshTrigger from "../models/greetings/GreetingRefreshTrigger";
-import { GreetingManager } from "..";
+import MessageTrigger from "../models/messages/MessageTrigger";
+import MessageRefreshTrigger from "../models/messages/MessageRefreshTrigger";
+import { MessageManager } from "..";
 import cronParser from "cron-parser";
-import { SendGreetingWhatsapp } from "../utils/greetings/SendGreetingWhatsapp";
-import { RefreshGreeting } from "../utils/greetings/RefreshGreeting";
+import { SendMessageWhatsapp } from "../utils/messages/SendMessageWhatsapp";
+import { RefreshMessage } from "../utils/messages/RefreshMessage";
 
 
-//get greetings
-export const GetGreetings = async (req: Request, res: Response, next: NextFunction) => {
-    let greetings = await Greeting.find()
-    res.status(200).json({ greetings: greetings })
+//get messages
+export const GetMessages = async (req: Request, res: Response, next: NextFunction) => {
+    let messages = await Message.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
+    res.status(200).json( messages)
 }
 
-//create new greeting
-export const CreateGreeting = async (req: Request, res: Response, next: NextFunction) => {
-    const { greeting_image, greeting_detail, person, phone, start_date, frequency } = req.body as GreetingBody
-    if (!greeting_image || !greeting_detail || !person || !phone || !start_date)
+//create new message
+export const CreateMessage = async (req: Request, res: Response, next: NextFunction) => {
+    const { message_image, message_detail, person, phone, start_date, frequency } = req.body as MessageBody
+    if (!message_image || !message_detail || !person || !phone || !start_date)
         return res.status(400).json({ message: "fill all the required fields" });
     if ((String(phone).trim().length != 12))
         return res.status(400).json({ message: "please provide valid mobile number" })
@@ -31,12 +31,16 @@ export const CreateGreeting = async (req: Request, res: Response, next: NextFunc
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
 
-    let greeting = new Greeting({
-        greeting_image,
-        greeting_detail,
+    let message = new Message({
+        message_image,
+        message_detail,
         person,
         phone,
-        start_date
+        start_date,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by: req.user,
+        updated_by: req.user
     })
 
     let errorStatus = false
@@ -121,64 +125,63 @@ export const CreateGreeting = async (req: Request, res: Response, next: NextFunc
         })
         if (fq)
             await fq.save()
-        greeting.frequency = fq
+        message.frequency = fq
     }
-
-    greeting = await greeting.save()
+    message = await message.save()
     if (!errorStatus)
-        return res.status(201).json({ greeting: greeting })
+        return res.status(201).json({ message: message })
 }
 
-//start greeting scheduler
-export const StartGreetingScheduler = async (req: Request, res: Response, next: NextFunction) => {
-    let greetings = await Greeting.find()
-    greetings.forEach(async (greeting) => {
-        if (greeting.frequency) {
-            let frequency = await Frequency.findById(greeting.frequency._id)
+//start message scheduler
+export const StartMessageScheduler = async (req: Request, res: Response, next: NextFunction) => {
+    let messages = await Message.find()
+    messages.forEach(async (message) => {
+        if (message.frequency) {
+            let frequency = await Frequency.findById(message.frequency._id)
             if (frequency) {
-                let runstring = GetRunningDateCronString(frequency, greeting.start_date)
-                let refstring = GetRefreshDateCronString(frequency, greeting.start_date)
+                let runstring = GetRunningDateCronString(frequency, message.start_date)
+                let refstring = GetRefreshDateCronString(frequency, message.start_date)
 
-                if (!greeting.running_trigger && !greeting.refresh_trigger && greeting.frequency) {
+                if (!message.running_trigger && !message.refresh_trigger && message.frequency) {
                     if (runstring) {
-                        let running_trigger = new GreetingTrigger({
-                            key: greeting._id + "," + "run",
+                        let running_trigger = new MessageTrigger({
+                            key: message._id + "," + "run",
                             status: "running",
                             cronString: runstring,
                             created_at: new Date(),
                             updated_at: new Date(),
-                            greeting: greeting
+                            message: message
                         })
                         await running_trigger.save()
-                        await Greeting.findByIdAndUpdate(greeting._id,
+                        await Message.findByIdAndUpdate(message._id,
                             {
                                 running_trigger: running_trigger, next_run_date: cronParser.parseExpression(running_trigger.cronString).next().toDate()
                             }
                         )
                         if (running_trigger) {
-                            GreetingManager.add(running_trigger.key, runstring, () => { SendGreetingWhatsapp(running_trigger.key) })
-                            GreetingManager.start(running_trigger.key)
+                            MessageManager.add(running_trigger.key, runstring, () => { SendMessageWhatsapp(running_trigger.key) })
+                            MessageManager.start(running_trigger.key)
                         }
                     }
                     if (refstring) {
-                        let refresh_trigger = new GreetingRefreshTrigger({
-                            key: greeting._id + "," + "refresh",
+                        let refresh_trigger = new MessageRefreshTrigger({
+                            key: message._id + "," + "refresh",
                             status: "running",
                             cronString: refstring,
                             created_at: new Date(),
                             updated_at: new Date(),
-                            greeting: greeting
+                            message: message
                         })
 
                         await refresh_trigger.save()
-                        await Greeting.findByIdAndUpdate(greeting._id,
+                        await Message.findByIdAndUpdate(message._id,
                             {
                                 refresh_trigger: refresh_trigger, next_refresh_date: cronParser.parseExpression(refresh_trigger.cronString).next().toDate()
                             })
 
                         if (refresh_trigger) {
-                            GreetingManager.add(refresh_trigger.key, refstring, () => { RefreshGreeting(refresh_trigger.key) })
-                            GreetingManager.start(refresh_trigger.key)
+                            MessageManager.add(refresh_trigger.key, refstring, () => { RefreshMessage(refresh_trigger.key) })
+                            MessageManager.start(refresh_trigger.key)
                         }
 
                     }
@@ -192,26 +195,26 @@ export const StartGreetingScheduler = async (req: Request, res: Response, next: 
 }
 
 
-export const DeleteGreeting = async (req: Request, res: Response, next: NextFunction) => {
+export const DeleteMessage = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
-    let greeting = await Greeting.findById(id).populate('refresh_trigger').populate('running_trigger')
+    let message = await Message.findById(id).populate('refresh_trigger').populate('running_trigger')
 
-    if (greeting) {
-        if (greeting.refresh_trigger) {
-            await GreetingRefreshTrigger.findByIdAndDelete(greeting.refresh_trigger._id)
-            if (GreetingManager.exists(greeting.refresh_trigger.key))
-                GreetingManager.deleteJob(greeting.refresh_trigger.key)
+    if (message) {
+        if (message.refresh_trigger) {
+            await MessageRefreshTrigger.findByIdAndDelete(message.refresh_trigger._id)
+            if (MessageManager.exists(message.refresh_trigger.key))
+                MessageManager.deleteJob(message.refresh_trigger.key)
         }
-        if (greeting.running_trigger) {
-            await GreetingTrigger.findByIdAndDelete(greeting.running_trigger._id)
-            if (GreetingManager.exists(greeting.running_trigger.key))
-                GreetingManager.deleteJob(greeting.running_trigger.key)
+        if (message.running_trigger) {
+            await MessageTrigger.findByIdAndDelete(message.running_trigger._id)
+            if (MessageManager.exists(message.running_trigger.key))
+                MessageManager.deleteJob(message.running_trigger.key)
         }
-        if (greeting.frequency)
-            await Frequency.findByIdAndDelete(greeting.frequency._id)
-        await Greeting.findByIdAndDelete(id)
-        return res.status(200).json({ message: "greeting deleted" })
+        if (message.frequency)
+            await Frequency.findByIdAndDelete(message.frequency._id)
+        await Message.findByIdAndDelete(id)
+        return res.status(200).json({ message: "message deleted" })
     }
-    return res.status(404).json({ message: "greeting not found" })
+    return res.status(404).json({ message: "message not found" })
 
 }

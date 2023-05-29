@@ -1,17 +1,18 @@
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
-import { IUser } from '../../types/user.type'
-import { BackendError } from '../../types'
-import { Signup } from '../../services/UserServices'
-import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from 'react-query'
-import { UserContext } from '../../contexts/UserContext'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
 import { Container, Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { paths } from '../../Routes'
 import Alert from 'react-bootstrap/Alert';
+import { Link, useNavigate } from 'react-router-dom'
+import { BackendError } from '../../../types'
+import { paths } from '../../../Routes'
+import { Signup } from '../../../services/UserServices'
+import { UserContext } from '../../../contexts/UserContext'
+import { IUser } from '../../../types/user.type'
+
 
 function SignUpForm() {
     const goto = useNavigate()

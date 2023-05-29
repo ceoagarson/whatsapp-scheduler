@@ -1,13 +1,14 @@
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { GetUsers } from '../services/UserServices'
 import { BackendError } from '../types'
-import { IUser } from '../types/user.type'
 import { Button, Container, Modal } from 'react-bootstrap'
-import AddUserModel from '../components/modals/AddUserModel'
-import { AppChoiceActions, ChoiceContext } from '../contexts/DialogContext'
-import styled from "styled-components"
+import { ChoiceContext, TaskChoiceActions, } from '../contexts/DialogContext'
+import AddTaskModel from '../components/modals/tasks/AddTaskModel'
+import { ITask } from '../types/task.type'
+import { GetTasks } from '../services/TaskServices'
+import styled from 'styled-components'
+import moment from "moment";
 
 const StyledTable = styled.table`
  {
@@ -18,7 +19,7 @@ const StyledTable = styled.table`
  td,  th {
   padding:5px;
   border: 1px solid #ddd;
-  min-width:200px;
+  min-width:230px;
 }
 
  tr:nth-child(even){background-color: #f2f2f2;}
@@ -32,16 +33,16 @@ const StyledTable = styled.table`
 }
 `
 export default function TasksPage() {
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ITask[]>, BackendError>("tasks", GetTasks, {
     refetchOnMount: true
   })
   const { setChoice } = useContext(ChoiceContext)
-  const [users, setUsers] = useState<IUser[]>([])
+  const [tasks, setTasks] = useState<ITask[]>([])
 
-  // setup users
+  // setup tasks
   useEffect(() => {
     if (isSuccess)
-      setUsers(data.data)
+      setTasks(data.data)
   }, [isSuccess, data])
 
   return (
@@ -50,40 +51,59 @@ export default function TasksPage() {
         isLoading ? <h1 className="fs-6">Loading tasks ...</h1>
           :
           <>
+            <AddTaskModel />
             <Container className='d-flex justify-content-end p-2'>
               <Button variant="outline-primary" onClick={() => {
-                setChoice({ type: AppChoiceActions.new_task })
+                setChoice({ type: TaskChoiceActions.new_task })
               }}>Add Task</Button>
-              <AddUserModel />
             </Container>
             <div className="w-100 overflow-auto d-flex">
               <StyledTable>
                 <thead>
                   <tr className="text-uppercase">
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Mobile</th>
-                    <th>Role</th>
-                    <th>Last Login</th>
+                    <th>Task Title</th>
+                    <th>Task Description</th>
+                    <th>Phone</th>
+                    <th>Start date</th>
+                    <th>Next Run Date</th>
+                    <th>Next Refresh Date</th>
+
+                    <th>Minutes</th>
+                    <th>Hours</th>
+                    <th>Days</th>
+                    <th>Months</th>
+                    <th>Week days</th>
+                    <th>Month days</th>
+
                     <th>Created At</th>
+                    <th>Updated At</th>
                     <th>Created By</th>
+                    <th>Updated By</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {users && users.map((user, index) => {
+                  {tasks && tasks.map((task, index) => {
                     return (
                       <tr key={index}>
-                        <td>{user.username}</td>
-                        <td>{user.email}</td>
-                        <td>{user.mobile}</td>
-                        <td>{user.is_admin ? "admin" : "user"}</td>
-                        <td>{new Date(user.last_login).toLocaleString()}</td>
-                        <td>{new Date(user.last_login).toLocaleString()}</td>
-                        <td>{user.created_by.username}</td>
+                        <td>{task.task_title}</td>
+                        <td>{task.task_detail}</td>
+                        <td>{task.phone}</td>
+                        <td>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{moment(new Date(task.next_run_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{moment(new Date(task.next_refresh_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{task.frequency && task.frequency.minutes ? task.frequency.minutes : 0}</td>
+                        <td>{task.frequency && task.frequency.hours ? task.frequency.hours : 0}</td>
+                        <td>{task.frequency && task.frequency.days ? task.frequency.days : 0}</td>
+                        <td>{task.frequency && task.frequency.months ? task.frequency.months : 0}</td>
+                        <td>{task.frequency && task.frequency.weekdays ? task.frequency.weekdays : 0}</td>
+                        <td>{task.frequency && task.frequency.monthdays ? task.frequency.monthdays : 0}</td>
+                        <td>{moment(new Date(task.created_at)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{moment(new Date(task.updated_at)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                        <td>{task.created_by.username}</td>
+                        <td>{task.updated_by.username}</td>
                       </tr>
                     )
                   })}
-
                 </tbody>
               </StyledTable>
             </div>

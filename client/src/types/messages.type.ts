@@ -1,52 +1,44 @@
+import { IFrequency } from "./task.type"
 import { IUser } from "./user.type"
 
-export type IFrequency = {
-    _id?: string,
-    type: string,//task or greeting
-    minutes?: number,
-    hours?: number,
-    days?: number,
-    months?: number,
-    weekdays?: string,
-    monthdays?: string,
-}
-export type ITaskTrigger = {
+
+export type IMessageTrigger = {
     _id: string,
     key: string,
     status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date
-    task: ITask,
+    message: IMessage,
 }
-export type ITaskRefreshTrigger = {
+export type IMessageRefreshTrigger = {
     _id: string,
     key: string,
     status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date
-    task: ITask
+    message: IMessage
 }
-export interface ITask{
+export interface IMessage{
     _id: string,
-    task_title:string,
-    task_detail:string,
+    message_image:string,
+    message_detail:string,
     person:string,
     phone:string,
 
     message_id:string,
     whatsapp_status: string,
     whatsapp_timestamp: Date,
-    task_status: string,
-    task_timestamp: Date,
+    message_status: string,
+    message_timestamp: Date,
 
     autoRefresh:boolean,
     autostop:boolean,
    
     frequency:IFrequency,
-    running_trigger:ITaskTrigger,
-    refresh_trigger:ITaskRefreshTrigger,
+    running_trigger:IMessageTrigger,
+    refresh_trigger:IMessageRefreshTrigger,
     
     start_date: Date,
     next_run_date:Date,
@@ -58,4 +50,4 @@ export interface ITask{
 }
 
 
-export type TaskBody = Request['body'] & ITask;
+export type MessageBody = Request['body'] & IMessage;

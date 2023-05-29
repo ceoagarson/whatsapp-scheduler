@@ -1,26 +1,26 @@
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
-import { BackendError } from '../../types'
-import { UpdateUser } from '../../services/UserServices'
-import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from 'react-query'
-import { UserContext } from '../../contexts/UserContext'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
-import { Container, Form } from 'react-bootstrap'
+import {  Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { paths } from '../../Routes'
 import Alert from 'react-bootstrap/Alert';
-import { IUser } from '../../types/user.type'
-import { queryClient } from '../..'
+import { useNavigate } from 'react-router-dom'
+import { BackendError } from '../../../types'
+import { IUser } from '../../../types/user.type'
+import { NewUser } from '../../../services/UserServices'
+import { UserContext } from '../../../contexts/UserContext'
+import { paths } from '../../../Routes'
+import { queryClient } from '../../..'
 
-function UpdateUserForm({ user }: { user: IUser }) {
+function NewUserForm() {
     const goto = useNavigate()
     const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<IUser>,
             BackendError,
-            { id: string, body: { username: string, mobile: number, email: string } }
-        >(UpdateUser, {
+            { username: string, mobile: number, email: string, password: string }
+        >(NewUser, {
             onSuccess: () => {
                 queryClient.invalidateQueries('users')
 
@@ -31,9 +31,10 @@ function UpdateUserForm({ user }: { user: IUser }) {
 
     const formik = useFormik({
         initialValues: {
-            username: user.username,
-            email: user.email,
-            mobile: Number(user.mobile)
+            username: '',
+            email: '',
+            mobile: 7056943283,
+            password: ''
         },
         validationSchema: Yup.object({
             username: Yup.string()
@@ -46,15 +47,20 @@ function UpdateUserForm({ user }: { user: IUser }) {
             mobile: Yup.string()
                 .min(10, 'Must be 10 digits')
                 .max(10, 'Must be 10 digits')
+                .required(),
+            password: Yup.string()
+                .min(6, 'Must be 6 characters or more')
+                .max(30, 'Must be 30 characters or less')
                 .required()
         }),
         onSubmit: (values: {
             username: string,
+            password: string,
             mobile: number,
             email: string
         }) => {
-            mutate({ id: user._id, body: values })
-        }
+            mutate(values)
+        },
     });
 
     useEffect(() => {
@@ -67,8 +73,8 @@ function UpdateUserForm({ user }: { user: IUser }) {
     }, [setUser, goto, isSuccess, data])
 
     return (
-        <Form onSubmit={formik.handleSubmit} className='shadow w-100 p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-            <h1 className="d-block fs-4 text-center">Update User Form</h1>
+        <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
+            <h1 className="d-block fs-4 text-center">New User Form</h1>
 
             {
                 isError ? (
@@ -81,7 +87,7 @@ function UpdateUserForm({ user }: { user: IUser }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        Successfull
+                        Successfully registered
                     </Alert>
                 ) : null
             }
@@ -110,11 +116,18 @@ function UpdateUserForm({ user }: { user: IUser }) {
                 <Form.Text className='text-muted'>{formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""}</Form.Text>
             </Form.Group>
 
-            <Button variant="primary" className='w-100' type="submit"
+            <Form.Group className="mb-3" >
+                <Form.Control className="border border-primary" type="password" placeholder="Password"
+                    {...formik.getFieldProps('password')}
+                />
+                <Form.Text className='text-muted'>{formik.touched.password && formik.errors.password ? formik.errors.password : ""}</Form.Text>
+            </Form.Group>
+
+            <Button variant="primary" size="lg" className='w-100' type="submit"
                 disabled={isLoading}
-            >{isLoading ? "Working on it..." : "Update"}</Button>
+            >{isLoading ? "Working on it..." : "Create User"}</Button>
         </Form>
     )
 }
 
-export default UpdateUserForm
+export default NewUserForm

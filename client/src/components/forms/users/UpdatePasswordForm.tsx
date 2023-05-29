@@ -1,13 +1,15 @@
-import { AxiosResponse } from 'axios';
-import React, { useEffect } from 'react';
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { Alert, Button, Container, Form } from 'react-bootstrap';
-import { BackendError } from '../../types';
-import { useFormik } from 'formik';
-import { paths } from '../../Routes';
-import { UpdatePassword } from '../../services/UserServices';
+import { AxiosResponse } from 'axios'
+import { useEffect } from 'react'
+import { useMutation } from 'react-query'
+import { useFormik } from 'formik'
+import * as Yup from "yup"
+import { Container, Form } from 'react-bootstrap'
+import Button from "react-bootstrap/Button"
+import Alert from 'react-bootstrap/Alert';
+import { useNavigate } from 'react-router-dom'
+import { BackendError } from '../../../types'
+import { paths } from '../../../Routes'
+import { UpdatePassword } from '../../../services/UserServices'
 
 
 function UpdatePasswordForm() {

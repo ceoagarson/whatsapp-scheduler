@@ -1,8 +1,8 @@
-import  { useContext } from 'react'
-import { Alert,  Modal } from 'react-bootstrap'
-import { AppChoiceActions, ChoiceContext } from '../../contexts/DialogContext'
-import UpdateUserForm from '../forms/UpdateUserForm'
-import { IUser } from '../../types/user.type'
+import { useContext } from 'react'
+import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
+import { IUser } from '../../../types/user.type'
+import { Modal } from 'react-bootstrap'
+import UpdateUserForm from '../../forms/users/UpdateUserForm'
 
 function UpdateUserModel({ user }: { user: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)

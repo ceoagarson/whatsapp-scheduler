@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { IGreetingTrigger } from "../../types/greeting.type";
+import { IMessageTrigger } from "../../types/messages.type";
 
-const GreetingTriggerSchema = new mongoose.Schema<IGreetingTrigger, mongoose.Model<IGreetingTrigger>>({
+const MessageTriggerSchema = new mongoose.Schema<IMessageTrigger, mongoose.Model<IMessageTrigger>>({
     key: {
         type: String,
         required: true,
@@ -22,13 +22,13 @@ const GreetingTriggerSchema = new mongoose.Schema<IGreetingTrigger, mongoose.Mod
     },
     created_at: Date,
     updated_at: Date,
-    greeting:
+    message:
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Greeting',
+        ref: 'Message',
         required: true
     }
 })
-const GreetingTrigger = mongoose.model<IGreetingTrigger, mongoose.Model<IGreetingTrigger>>("GreetingTrigger", GreetingTriggerSchema);
+const MessageTrigger = mongoose.model<IMessageTrigger, mongoose.Model<IMessageTrigger>>("MessageTrigger", MessageTriggerSchema);
 
-export default GreetingTrigger;
+export default MessageTrigger;

@@ -1,6 +1,8 @@
+import { IUser } from "./user.type"
+
 export type IFrequency = {
     _id?: string,
-    type: string,//greeting or greeting
+    type: string,//message or message
     minutes?: number,
     hours?: number,
     days?: number,
@@ -8,50 +10,52 @@ export type IFrequency = {
     weekdays?: string,
     monthdays?: string,
 }
-export type IGreetingTrigger = {
+export type IMessageTrigger = {
     _id: string,
     key: string,
     status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date
-    greeting: IGreeting,
+    message: IMessage,
 }
-export type IGreetingRefreshTrigger = {
+export type IMessageRefreshTrigger = {
     _id: string,
     key: string,
     status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date
-    greeting: IGreeting
+    message: IMessage
 }
-export interface IGreeting{
+export interface IMessage{
     _id: string,
-    greeting_image:string,
-    greeting_detail:string,
+    message_image:string,
+    message_detail:string,
     person:string,
     phone:string,
 
     message_id:string,
     whatsapp_status: string,
     whatsapp_timestamp: Date,
-    greeting_status: string,
-    greeting_timestamp: Date,
+    message_status: string,
+    message_timestamp: Date,
 
     autoRefresh:boolean,
     autostop:boolean,
    
     frequency:IFrequency,
-    running_trigger:IGreetingTrigger,
-    refresh_trigger:IGreetingRefreshTrigger,
+    running_trigger:IMessageTrigger,
+    refresh_trigger:IMessageRefreshTrigger,
     
     start_date: Date,
     next_run_date:Date,
     next_refresh_date:Date,
     created_at: Date,
-    updated_at: Date
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
 }
 
 
-export type GreetingBody = Request['body'] & IGreeting;
+export type MessageBody = Request['body'] & IMessage;

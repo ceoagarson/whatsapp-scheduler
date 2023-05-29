@@ -1,18 +1,19 @@
-import React, { useContext, useEffect } from 'react'
-import { Alert, Button, Container, Modal } from 'react-bootstrap'
-import { AppChoiceActions, ChoiceContext } from '../../contexts/DialogContext'
-import { BackendError } from '../../types'
 import { AxiosResponse } from 'axios'
-import { DeleteUser } from '../../services/UserServices'
+import  { useContext, useEffect } from 'react'
+import { Alert, Button, Container, Modal } from 'react-bootstrap'
+import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
-import { queryClient } from '../..'
-import { IUser } from '../../types/user.type'
+import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
+import { IUser } from '../../../types/user.type'
+import { queryClient } from '../../..'
+import { BlockUser } from '../../../services/UserServices'
 
-function DeleteUserModel({ user }: { user: IUser }) {
+
+function BlockUserModel({ user }: { user: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteUser,
+        (BlockUser,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('users')
@@ -29,7 +30,7 @@ function DeleteUserModel({ user }: { user: IUser }) {
     }, [setChoice, isSuccess])
     return (
         <Modal
-            show={choice === AppChoiceActions.delete_user ? true : false}
+            show={choice === AppChoiceActions.block_user ? true : false}
             onHide={() => setChoice({ type: AppChoiceActions.close })}
             centered
         >
@@ -44,12 +45,12 @@ function DeleteUserModel({ user }: { user: IUser }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        logged in
+                        Successful
                     </Alert>
                 ) : null
             }
            <Container className='p-2'>
-                <p className="tetx-center d-block fs-6 fw-bold text-capitalize p-2">Confirm To Delete This User</p>
+                <p className="tetx-center d-block fs-6 fw-bold text-capitalize p-2">Confirm To Block "{user.username}"</p>
                 <Container className="d-flex w-100 jusify-content-center align-items-center gap-2">
 
                     <Button variant="outline-danger"className="w-100" 
@@ -68,4 +69,4 @@ function DeleteUserModel({ user }: { user: IUser }) {
     )
 }
 
-export default DeleteUserModel
+export default BlockUserModel

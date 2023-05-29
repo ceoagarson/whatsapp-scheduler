@@ -47,10 +47,7 @@ export const GetUser = async (id: string) => {
 export const BlockUser = async (id: string) => {
     return await apiClient.patch(`block/user/${id}`)
 }
-// block user
-export const DeleteUser = async (id: string) => {
-    return await apiClient.patch(`block/user/${id}`)
-}
+
 
 // unblock user
 export const UnBlockUser = async (id: string) => {

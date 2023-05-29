@@ -65,7 +65,17 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
     next_run_date: Date,
     next_refresh_date: Date,
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
    
 })
 const Task = mongoose.model<ITask, mongoose.Model<ITask>>("Task", TaskSchema);

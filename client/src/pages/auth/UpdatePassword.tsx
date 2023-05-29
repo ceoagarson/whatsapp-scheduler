@@ -1,4 +1,4 @@
-import UpdatePasswordForm from '../../components/forms/UpdatePasswordForm'
+import UpdatePasswordForm from '../../components/forms/users/UpdatePasswordForm'
 
 function UpdatePassword() {
   return (

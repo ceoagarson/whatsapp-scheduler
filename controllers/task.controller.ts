@@ -19,8 +19,8 @@ export const Index = async (req: Request, res: Response, next: NextFunction) => 
 
 //get tasks
 export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
-    let tasks = await Task.find()
-    res.status(200).json({ tasks: tasks })
+    let tasks = await Task.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
+    res.status(200).json(tasks)
 }
 
 //create new task
@@ -34,13 +34,16 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-
     let task = new Task({
         task_title,
         task_detail,
         person,
         phone,
-        start_date
+        start_date,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by:req.user,
+        updated_by:req.user
     })
 
     let errorStatus = false
@@ -127,7 +130,6 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
             await fq.save()
         task.frequency = fq
     }
-
     task = await task.save()
     if (!errorStatus)
         return res.status(201).json({ task: task })
