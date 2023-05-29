@@ -8,11 +8,6 @@ const MessageRefreshTriggerSchema = new mongoose.Schema<IMessageRefreshTrigger, 
         trim: true,
         index: true,
         lowercase: true,
-    },
-    status: {
-        type: String,
-        trim: true,
-        lowercase: true,
     }
     ,
     cronString: {

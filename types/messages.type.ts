@@ -13,7 +13,6 @@ export type IFrequency = {
 export type IMessageTrigger = {
     _id: string,
     key: string,
-    status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date
@@ -22,7 +21,6 @@ export type IMessageTrigger = {
 export type IMessageRefreshTrigger = {
     _id: string,
     key: string,
-    status: string,
     cronString: string,
     created_at: Date,
     updated_at: Date

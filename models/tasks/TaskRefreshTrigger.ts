@@ -8,11 +8,6 @@ const TaskRefreshTriggerSchema = new mongoose.Schema<ITaskRefreshTrigger, mongoo
         trim: true,
         index: true,
         lowercase: true,
-    },
-    status: {
-        type: String,
-        trim: true,
-        lowercase: true,
     }
     ,
     cronString: {

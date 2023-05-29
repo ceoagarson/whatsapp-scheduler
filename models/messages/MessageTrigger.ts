@@ -8,11 +8,6 @@ const MessageTriggerSchema = new mongoose.Schema<IMessageTrigger, mongoose.Model
         trim: true,
         index: true,
         lowercase: true,
-    },
-    status: {
-        type: String,
-        trim: true,
-        lowercase: true,
     }
     ,
     cronString: {
