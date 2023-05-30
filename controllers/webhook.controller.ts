@@ -63,20 +63,20 @@ async function sendTextMessage(message: string, from: string, token: string) {
     let phone_id = process.env.phone_id
     let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
     let data = {
-        "messaging_product": "whatsapp",
-        "to": from,
-        "type": "text",
-        "text": {
-            "body": message
+        messaging_product: "whatsapp",
+        to: from,
+        type: "text",
+        text: {
+            body: message
         }
     }
     let options = {
-        "method": "post",
-        "headers": {
-            "Authorization": `Bearer ${token}`
+        method: "post",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
         },
-        "contentType": "application/json",
-        "payload": JSON.stringify(data)
+        body: JSON.stringify(data)
     };
     await fetch(url, options)
 }
