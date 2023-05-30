@@ -73,13 +73,13 @@ async function sendTextMessage(message: string, from: string, token: string) {
         }
     }
     let config = {
-        url:url,
+        url,
         method: "post",
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
+        data: JSON.stringify(data)
     };
     await axios(config).catch((err:any)=>console.log(err.response))
 }
