@@ -7,7 +7,7 @@ export const RefreshTask = async (job_id: string) => {
         if (task.autoRefresh) {
             task.task_status = "pending"
             task.whatsapp_status=""
-            task.autostop=true
+            task.autostop=false
             task.task_timestamp=null
             task.whatsapp_timestamp=null
             await task.save()

@@ -60,6 +60,7 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
 }
 
 async function sendTextMessage(message: string, from: string, token: string) {
+    
     let phone_id = process.env.phone_id
     let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
     let data = {
@@ -79,7 +80,7 @@ async function sendTextMessage(message: string, from: string, token: string) {
         },
         body: JSON.stringify(data)
     };
-    await axios(config)
+    await axios(config).catch((err)=>console.log(err))
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
