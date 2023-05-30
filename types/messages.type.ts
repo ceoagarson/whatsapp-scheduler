@@ -2,7 +2,7 @@ import { IUser } from "./user.type"
 
 export type IFrequency = {
     _id?: string,
-    type: string,//message or message
+    type: string,//message or greeting
     minutes?: number,
     hours?: number,
     days?: number,
@@ -26,29 +26,29 @@ export type IMessageRefreshTrigger = {
     updated_at: Date
     message: IMessage
 }
-export interface IMessage{
+export interface IMessage {
     _id: string,
-    message_image:string,
-    message_detail:string,
-    person:string,
-    phone:string,
+    message_image: string,
+    message_detail: string,
+    person: string,
+    phone: string,
 
-    message_id:string,
+    message_id: string,
     whatsapp_status: string,
-    whatsapp_timestamp: Date,
+    whatsapp_timestamp: Date | null,
     message_status: string,
-    message_timestamp: Date,
+    message_timestamp: Date | null,
 
-    autoRefresh:boolean,
-    autostop:boolean,
-   
-    frequency:IFrequency,
-    running_trigger:IMessageTrigger,
-    refresh_trigger:IMessageRefreshTrigger,
-    
+    autoRefresh: boolean,
+    autostop: boolean,
+
+    frequency: IFrequency,
+    running_trigger: IMessageTrigger,
+    refresh_trigger: IMessageRefreshTrigger,
+
     start_date: Date,
-    next_run_date:Date,
-    next_refresh_date:Date,
+    next_run_date: Date,
+    next_refresh_date: Date,
     created_at: Date,
     created_by: IUser,
     updated_at: Date,

@@ -6,9 +6,9 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         type: String,
         required: true,
         trim: true,
-        index: true
     },
     message_detail: {
+        index: true,
         type: String,
         required: true,
         trim: true
@@ -54,12 +54,12 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'MessageTrigger'
     },
-    refresh_trigger:{
+    refresh_trigger: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'MessageRefreshTrigger'
-    },    
+    },
     start_date: {
-        type:Date,
+        type: Date,
         required: true
     },
     next_run_date: Date,
@@ -76,7 +76,7 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         ref: 'User',
         required: true
     },
-   
+
 })
 const Message = mongoose.model<IMessage, mongoose.Model<IMessage>>("Message", MessageSchema);
 export default Message;
