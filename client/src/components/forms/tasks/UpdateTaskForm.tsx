@@ -13,7 +13,7 @@ import { queryClient } from '../../..'
 import AlertBar from '../../alert/AlertBar'
 
 function UpdateTaskForm({ task }: { task: ITask }) {
-    const [displayFreq, setDisplayFreq] = useState(true)
+    const [displayFreq, setDisplayFreq] = useState(false)
     const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
             BackendError,

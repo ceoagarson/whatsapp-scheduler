@@ -108,7 +108,7 @@ export default function TasksPage() {
             {tasks && tasks.map((task, index) => {
               return (
                 <tr key={index}>
-                  <td>{task.running_trigger ? "running" : "stopped"}</td>
+                  <td>{task.running_trigger||task.run_once ? "running" : "stopped"}</td>
                   <td>{task.whatsapp_status}</td>
                   <td>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.task_status}</td>
