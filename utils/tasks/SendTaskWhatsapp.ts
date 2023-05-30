@@ -49,7 +49,7 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
-                    data
+                    data:data
                 };
 
                 let response: any = await axios.post(url, options)
