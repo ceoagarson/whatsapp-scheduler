@@ -48,8 +48,8 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(data)
-                }
+                    data
+                };
 
                 let response: any = await fetch(url, options)
                 const { messages } = response

@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import Task from "../models/tasks/Task";
-
+import axios from "axios";
 
 export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
     let myToken = process.env.myToken
@@ -76,9 +76,9 @@ async function sendTextMessage(message: string, from: string, token: string) {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
+        data
     };
-    await fetch(url, options)
+    await axios.post(url,options)
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
