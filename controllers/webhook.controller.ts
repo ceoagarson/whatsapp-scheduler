@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import Task from "../models/tasks/Task";
-import axios from "axios";
+import axios from "axios"
 
 export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
     let myToken = process.env.myToken
@@ -63,11 +63,11 @@ async function sendTextMessage(message: string, from: string, token: string) {
     let phone_id = process.env.phone_id
     let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
     let data = {
-        messaging_product: "whatsapp",
-        to: from,
-        type: "text",
-        text: {
-            body: message
+        "messaging_product": "whatsapp",
+        "to": from,
+        "type": "text",
+        "text": {
+            "body": message
         }
     }
     let options = {
@@ -76,9 +76,9 @@ async function sendTextMessage(message: string, from: string, token: string) {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        data
+        body: JSON.stringify(data)
     };
-    await axios.post(url,options)
+    await axios.post(url, options)
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
