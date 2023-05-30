@@ -17,6 +17,4 @@ router.route("/tasks/stop")
 router.route("/tasks/stop/:id")
     .post(isAuthenticatedUser, isAdmin, StopSingleTaskScheduler)
 
-
-
 export default router

@@ -1,7 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import { MessageBody } from "../types/messages.type";
 import Message from "../models/messages/Message";
-import Frequency from "../models/Frequency";
 import { isvalidDate } from "../utils/CheckValidDate";
 import MessageTrigger from "../models/messages/MessageTrigger";
 import MessageRefreshTrigger from "../models/messages/MessageRefreshTrigger";
@@ -9,6 +8,7 @@ import { MessageManager } from "..";
 import { CreateMessageTrigger } from "../utils/messages/CreateMessageTrigger";
 import { UpdateMessageTrigger } from "../utils/messages/UpdateMessageTrigger";
 import { SortUniqueNumbers } from "../utils/SortUniqueNumbers";
+import Frequency from "../models/Frequency";
 
 
 
@@ -41,93 +41,60 @@ export const CreateMessage = async (req: Request, res: Response, next: NextFunct
         updated_by: req.user
     })
 
-    let errorStatus = false
-
     if (frequency) {
-        let mf = frequency.minutes
-        let hf = frequency.hours
-        let df = frequency.days
-        let monthf = frequency.months
-        let weekdays = frequency.weekdays
-        let monthdays = frequency.monthdays
-        if (!mf) mf = 0
-        if (!hf) hf = 0
-        if (!df) df = 0
-        if (!monthf) monthf = 0
-        let TmpArr = [mf, hf, df, monthf]
-        let count = 0
-        TmpArr.forEach((item) => {
-            if (item > 0) {
-                count++;
-            }
-        });
-        if (weekdays)
-            count++
-        if (monthdays)
-            count++
-        if (count > 1)
-            return res.status(400).json({ message: "Select one from minuts,hours,days,weeks,months,weekday and monthday" })
-        let tmpWeekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-        if (weekdays && weekdays.length > 0) {
-            weekdays.split(",").forEach((item) => {
-                if (!tmpWeekdays.includes(item.toLowerCase())) {
+        let ftype = frequency.frequencyType
+        let freq = frequency.frequency
+        if (ftype === "minutes" && freq && Number(freq) > 0) {
+            if (Number(freq) < 0 || Number(freq) > 59)
+                return res.status(400).json({ message: "choose minutes from 0-59" })
+        }
+        if (ftype === "hours" && freq && Number(freq) > 0) {
+            if (Number(freq) < 0 || Number(freq) > 23)
+                return res.status(400).json({ message: "choose hours from 0-23" })
+        }
+        if (ftype === "days" && freq && Number(freq) > 0) {
+            if (Number(freq) < 1 || Number(freq) > 31)
+                return res.status(400).json({ message: "choose days from 1-31" })
+        }
+        if (ftype === "months" && freq && Number(freq) > 0) {
+            if (Number(freq) < 1 || Number(freq) > 12)
+                return res.status(400).json({ message: "choose months from 1-12" })
+        }
+        if (ftype === "weekdays" && freq && freq.length > 0) {
+            let tmpWeekdays = [1, 2, 3, 4, 5, 6, 7]
+            let errorStatus = false
+            freq.split(",").forEach((item) => {
+                if (!tmpWeekdays.includes(Number(item)))
                     errorStatus = true
-
-                }
             })
             if (errorStatus)
-                return res.status(400).json({ message: "Select week days in correct format" })
-            let numWeeks: number[] = []
-            weekdays.split(',').forEach((wd) => {
-                if (wd === "mon")
-                    numWeeks.push(1)
-                if (wd === "tue")
-                    numWeeks.push(2)
-                if (wd === "wed")
-                    numWeeks.push(3)
-                if (wd === "thu")
-                    numWeeks.push(4)
-                if (wd === "fri")
-                    numWeeks.push(5)
-                if (wd === "sat")
-                    numWeeks.push(6)
-                if (wd === "sun")
-                    numWeeks.push(7)
-            })
-            weekdays = SortUniqueNumbers(numWeeks).toString()
-        }
-        if (monthdays && monthdays.length > 0) {
-            monthdays.split(",").forEach((item) => {
-                if (Number(item) < 10 && item.length > 1) {
-                    errorStatus = true
-
-                }
-
-                if (Number(item) === 0 || item.length > 2 || Number(item) > 31) {
-                    errorStatus = true
-                }
-            })
-            if (errorStatus) {
-                return res.status(400).json({ message: `Select month days in correct format` })
-            }
+                return res.status(400).json({ message: "Select week days in correct format like : 1,2,3,4 from range (1-7), 1-mon,2-tue,3-wed,4-thu,5-fri,6-sat,7-sun" })
+            tmpWeekdays = freq.split(",").map((item) => { return Number(item) })
+            freq = SortUniqueNumbers(tmpWeekdays).toString()
         }
 
-        let fq = new Frequency({
-            type: frequency?.type,
-            minutes: mf,
-            hours: hf,
-            days: df,
-            months: monthf,
-            weekdays: weekdays,
-            monthdays: monthdays
-        })
-        if (fq)
-            await fq.save()
-        message.frequency = fq
+        if (ftype === "monthdays" && freq && freq.length > 0) {
+            let errorStatus = false
+            freq.split(",").forEach((item) => {
+                if (Number(item) < 1 && item.length > 31)
+                    errorStatus = true
+            })
+            if (errorStatus)
+                return res.status(400).json({ message: "Select month days in correct format like :1,2,3,4 from range (1-31)" })
+        }
+        let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
+        freq = SortUniqueNumbers(tmpMonthdays).toString()
     }
+    let fq = new Frequency({
+        type: frequency?.type,
+        frequency: frequency.frequency,
+        frequencyType: frequency.frequencyType
+    })
+    if (fq)
+        await fq.save()
+    message.frequency = fq
     message = await message.save()
-    if (!errorStatus)
-        return res.status(201).json({ message: message })
+    return res.status(201).json({ message: message })
 }
 
 //start message scheduler
@@ -248,82 +215,51 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
     let errorStatus = false
 
     if (frequency) {
-        let mf = frequency.minutes
-        let hf = frequency.hours
-        let df = frequency.days
-        let monthf = frequency.months
-        let weekdays = frequency.weekdays
-        let monthdays = frequency.monthdays
-        if (!mf) mf = 0
-        if (!hf) hf = 0
-        if (!df) df = 0
-        if (!monthf) monthf = 0
-        let TmpArr = [mf, hf, df, monthf]
-        let count = 0
-        TmpArr.forEach((item) => {
-            if (item > 0) {
-                count++;
-            }
-        });
-        if (weekdays)
-            count++
-        if (monthdays)
-            count++
-        if (count > 1)
-            return res.status(400).json({ message: "Select one from minuts,hours,days,weeks,months,weekday and monthday" })
-        let tmpWeekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-        if (weekdays && weekdays.length > 0) {
-            weekdays.split(",").forEach((item) => {
-                if (!tmpWeekdays.includes(item.toLowerCase())) {
+        let ftype = frequency.frequencyType
+        let freq = frequency.frequency
+        if (ftype === "minutes" && freq && Number(freq) > 0) {
+            if (Number(freq) < 0 || Number(freq) > 59)
+                return res.status(400).json({ message: "choose minutes from 0-59" })
+        }
+        if (ftype === "hours" && freq && Number(freq) > 0) {
+            if (Number(freq) < 0 || Number(freq) > 23)
+                return res.status(400).json({ message: "choose hours from 0-23" })
+        }
+        if (ftype === "days" && freq && Number(freq) > 0) {
+            if (Number(freq) < 1 || Number(freq) > 31)
+                return res.status(400).json({ message: "choose days from 1-31" })
+        }
+        if (ftype === "months" && freq && Number(freq) > 0) {
+            if (Number(freq) < 1 || Number(freq) > 12)
+                return res.status(400).json({ message: "choose months from 1-12" })
+        }
+        if (ftype === "weekdays" && freq && freq.length > 0) {
+            let tmpWeekdays = [1, 2, 3, 4, 5, 6, 7]
+            let errorStatus = false
+            freq.split(",").forEach((item) => {
+                if (!tmpWeekdays.includes(Number(item)))
                     errorStatus = true
-
-                }
             })
             if (errorStatus)
-                return res.status(400).json({ message: "Select week days in correct format" })
-            let numWeeks = weekdays.split(',').map((wd) => {
-                if (wd === "mon")
-                    return '1'
-                if (wd === "tue")
-                    return '2'
-                if (wd === "wed")
-                    return '3'
-                if (wd === "thu")
-                    return '4'
-                if (wd === "fri")
-                    return '5'
-                if (wd === "sat")
-                    return '6'
-                if (wd === "sun")
-                    return '7'
-
-            })
-            weekdays = numWeeks.toString()
-        }
-        if (monthdays && monthdays.length > 0) {
-            monthdays.split(",").forEach((item) => {
-                if (Number(item) < 10 && item.length > 1) {
-                    errorStatus = true
-
-                }
-
-                if (Number(item) === 0 || item.length > 2 || Number(item) > 31) {
-                    errorStatus = true
-                }
-            })
-            if (errorStatus) {
-                return res.status(400).json({ message: `Select month days in correct format` })
-            }
+                return res.status(400).json({ message: "Select week days in correct format like : 1,2,3,4 from range (1-7), 1-mon,2-tue,3-wed,4-thu,5-fri,6-sat,7-sun" })
+            tmpWeekdays = freq.split(",").map((item) => { return Number(item) })
+            freq = SortUniqueNumbers(tmpWeekdays).toString()
         }
 
+        if (ftype === "monthdays" && freq && freq.length > 0) {
+            let errorStatus = false
+            freq.split(",").forEach((item) => {
+                if (Number(item) < 1 && item.length > 31)
+                    errorStatus = true
+            })
+            if (errorStatus)
+                return res.status(400).json({ message: "Select month days in correct format like :1,2,3,4 from range (1-31)" })
+            let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
+            freq = SortUniqueNumbers(tmpMonthdays).toString()
+        }
         await Frequency.findByIdAndUpdate(message.frequency._id, {
-            type: frequency?.type,
-            minutes: mf,
-            hours: hf,
-            days: df,
-            months: monthf,
-            weekdays: weekdays,
-            monthdays: monthdays
+            frequency: freq,
+            frequencyType: ftype
         })
     }
     let updatedMessage = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')

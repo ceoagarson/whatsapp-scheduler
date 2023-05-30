@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import { TaskChoiceActions, ChoiceContext } from '../../../contexts/DialogContext';
 import NewTaskForm from '../../forms/tasks/NewTaskForm';
 
-export default function AddTaskModel() {
+export default function AddTaskModal() {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Modal

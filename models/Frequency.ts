@@ -8,12 +8,13 @@ const FrequencySchema = new mongoose.Schema<IFrequency, mongoose.Model<IFrequenc
         trim: true,
         lowercase: true
     },
-    minutes: Number,
-    hours: Number,
-    days: Number,
-    months: Number,
-    weekdays: String,
-    monthdays: String
+    frequency: String,
+    frequencyType: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true
+    }
 })
 const Frequency = mongoose.model<IFrequency, mongoose.Model<IFrequency>>("Frequency", FrequencySchema);
 export default Frequency;

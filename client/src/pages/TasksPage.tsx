@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import { Button, Container } from 'react-bootstrap'
 import { ChoiceContext, TaskChoiceActions, } from '../contexts/DialogContext'
-import AddTaskModel from '../components/modals/tasks/AddTaskModel'
+import AddTaskModel from '../components/modals/tasks/AddTaskModal'
 import { ITask } from '../types/task.type'
 import { GetTasks } from '../services/TaskServices'
 import styled from 'styled-components'
@@ -12,6 +12,8 @@ import moment from "moment";
 import StartTaskSchedulerButton from '../components/buttons/StartTaskSchedulerButton'
 import StopSchedulerButton from '../components/buttons/StopSchedulerButton'
 import DeleteTaskModal from '../components/modals/tasks/DeleteTaskModal'
+import AddTaskModal from '../components/modals/tasks/AddTaskModal'
+import UpdateTaskModal from '../components/modals/tasks/UpdateTaskModal'
 
 const StyledTable = styled.table`
  {
@@ -64,9 +66,13 @@ export default function TasksPage() {
   }, [isSuccess, data, tasks])
   return (
     <>
-      <AddTaskModel />
+      <AddTaskModal />
       {task ?
-        <DeleteTaskModal task={task} /> : null}
+        <>
+          <UpdateTaskModal task={task} />
+          <DeleteTaskModal task={task} />
+        </>
+        : null}
       <Container className='d-flex justify-content-end p-2 gap-2'>
         <Button variant="primary" onClick={() => {
           setChoice({ type: TaskChoiceActions.new_task })

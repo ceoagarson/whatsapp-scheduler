@@ -1,33 +1,45 @@
 import { IFrequency } from "../types/task.type";
 import { apiClient } from "./utils/AxiosInterceptor";
 
-// get user
 export const GetTasks = async () => {
     return await apiClient.get(`tasks`)
 }
 
-// new task
-export const NewTask= async (body: {
+export const NewTask = async (body: {
     task_title: string,
     task_detail: string,
     person: string,
     phone: number,
     start_date: string,
-    frequency?:IFrequency
+    frequency?: IFrequency
 }) => {
     return await apiClient.post("tasks", body);
 };
 
-// start scheduler
-export const StartTaskScheduler=async()=>{
+export const StartTaskScheduler = async () => {
     return await apiClient.post('tasks/start')
 }
-// stop scheduler
+
 export const StopTaskScheduler = async () => {
     return await apiClient.post('tasks/stop')
 }
-
+export const StopSingleTaskScheduler = async () => {
+    return await apiClient.post('tasks/stop/:id')
+}
 
 export const DeleteTask = async (id: string) => {
     return await apiClient.delete(`tasks/${id}`)
+}
+
+export const UpdateTask = async ({ id, body }: {
+    id: string, body: {
+        task_title: string,
+        task_detail: string,
+        person: string,
+        phone: number,
+        start_date: string,
+        frequency?: IFrequency
+    }
+}) => {
+    return await apiClient.put(`tasks/${id}`,body)
 }

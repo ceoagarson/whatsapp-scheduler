@@ -3,12 +3,8 @@ import { IUser } from "./user.type"
 export type IFrequency = {
     _id?: string,
     type: string,//task or greeting
-    minutes?: number,
-    hours?: number,
-    days?: number,
-    months?: number,
-    weekdays?: string,
-    monthdays?: string,
+    frequencyType:string,
+    frequency:string
 }
 export type ITaskTrigger = {
     _id: string,

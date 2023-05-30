@@ -1,15 +1,6 @@
+import { IFrequency } from "./task.type"
 import { IUser } from "./user.type"
 
-export type IFrequency = {
-    _id?: string,
-    type: string,//message or greeting
-    minutes?: number,
-    hours?: number,
-    days?: number,
-    months?: number,
-    weekdays?: string,
-    monthdays?: string,
-}
 export type IMessageTrigger = {
     _id: string,
     key: string,
