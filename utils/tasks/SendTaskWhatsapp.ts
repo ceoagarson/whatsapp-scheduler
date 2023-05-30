@@ -53,13 +53,14 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                 };
 
                 let response: any = await axios(config)
-                const { messages } = response
+                console.log(response)
+                const { messages } = JSON.parse(response)
                 if (messages.length > 0) {
                     await Task.findByIdAndUpdate(task._id, { message_id: messages[0].id })
                 }
             }
-            catch (err) {
-                console.log(err)
+            catch (err:any) {
+                console.log(err.response)
             }
         }
         if (task && task.running_trigger) {
