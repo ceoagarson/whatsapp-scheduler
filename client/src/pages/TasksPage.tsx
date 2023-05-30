@@ -18,7 +18,6 @@ const StyledTable = styled.table`
  {
   border-collapse: collapse;
   width: 100%;
-  font-size:12px;
 }
 
  td,  th {

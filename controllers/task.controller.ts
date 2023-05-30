@@ -204,7 +204,7 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Task.findByIdAndUpdate({
+    await Task.findByIdAndUpdate(task._id, {
         task_title,
         task_detail,
         person,
@@ -260,10 +260,22 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
             let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
-        await Frequency.findByIdAndUpdate(task.frequency._id, {
-            frequency: freq,
-            frequencyType: ftype
-        })
+        if (task.frequency)
+            await Frequency.findByIdAndUpdate(task.frequency._id, {
+                frequency: freq,
+                frequencyType: ftype
+            })
+        else{
+            let fq = new Frequency({
+                type: frequency?.type,
+                frequency: frequency.frequency,
+                frequencyType: frequency.frequencyType
+            })
+            if (fq)
+                await fq.save()
+            task.frequency = fq
+            await task.save()
+        }
     }
     let updatedTask = await Task.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     if (updatedTask)

@@ -36,7 +36,7 @@ function NewTaskForm() {
             task_detail: "",
             person: "",
             phone: 0,
-            start_date: moment(new Date()).format("YYYY-MM-DDThh:mm"),
+            start_date: moment(new Date((new Date().getTime() + 60000))).format("YYYY-MM-DDThh:mm"),
             frequencyValue: "",
             frequencyType: ""
         },
@@ -57,21 +57,26 @@ function NewTaskForm() {
                 .min(12, 'Must be 10 digits with country code')
                 .max(12, 'Must be 10 digits with country code')
                 .required(),
-            start_date: Yup.date().required(),
             frequencyValue: Yup.string()
-                .test("required",() => {
-                    if (displayFreq)
+                .test("required", (data) => {
+                    if (!data)
                         return false
                     else
                         return true
                 }),
             frequencyType: Yup.string()
-                .test("required",() => {
-                    if (displayFreq)
+                .test("required", (data) => {
+                    if (!data)
                         return false
                     else
                         return true
-                })
+                }),
+            start_date: Yup.date().test("date could not be in the past", (data) => {
+                if (data && new Date(data) < new Date())
+                    return false
+                else
+                    return true
+            })
         }),
         onSubmit: (values: {
             task_title: string,
@@ -147,6 +152,7 @@ function NewTaskForm() {
                 <Form.Control className="border border-primary" type="datetime-local" placeholder="Start Date "
                     {...formik.getFieldProps('start_date')}
                 />
+                <Form.Text className='text-muted'>{formik.touched.start_date && formik.errors.start_date ? formik.errors.start_date : ""}</Form.Text>
             </Form.Group>
             {/* switch */}
             <Form.Group className="mb-3" >

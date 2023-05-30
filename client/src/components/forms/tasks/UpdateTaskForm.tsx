@@ -13,7 +13,7 @@ import { queryClient } from '../../..'
 import AlertBar from '../../alert/AlertBar'
 
 function UpdateTaskForm({ task }: { task: ITask }) {
-    const [displayFreq, setDisplayFreq] = useState(false)
+    const [displayFreq, setDisplayFreq] = useState(true)
     const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
             BackendError,
@@ -61,21 +61,26 @@ function UpdateTaskForm({ task }: { task: ITask }) {
                 .max(12, 'Must be 10 digits with country code')
                 .required(),
             frequencyValue: Yup.string()
-                .test("required", () => {
-                    if (displayFreq)
+                .test("required", (data) => {
+                    if (!data)
                         return false
                     else
                         return true
                 }),
             frequencyType: Yup.string()
-                .test("required", () => {
-                    if (displayFreq)
+                .test("required", (data) => {
+                    if (!data)
                         return false
                     else
                         return true
                 }),
-            start_date: Yup.date().required()
-        }),
+            start_date: Yup.date().test("date could not be in the past", (data) => {
+                if (data && new Date(data) < new Date())
+                    return false
+                else
+                    return true
+            })
+        }).required(),
         onSubmit: (values: {
             task_title: string,
             task_detail: string,
@@ -109,7 +114,7 @@ function UpdateTaskForm({ task }: { task: ITask }) {
 
     return (
         <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-            <h1 className="d-block fs-4 text-center">New task Form</h1>
+            <h1 className="d-block fs-4 text-center">Update task Form</h1>
             {
                 isError ? (
                     <AlertBar message={error?.response.data.message} variant="danger"
@@ -156,12 +161,14 @@ function UpdateTaskForm({ task }: { task: ITask }) {
                 <Form.Control className="border border-primary" type="datetime-local" placeholder="Start Date "
                     {...formik.getFieldProps('start_date')}
                 />
+                <Form.Text className='text-muted'>{formik.touched.start_date && formik.errors.start_date ? formik.errors.start_date : ""}</Form.Text>
             </Form.Group>
             {/* switch */}
             <Form.Group className="mb-3" >
                 <Form.Check
                     type="switch"
                     label="frequency"
+                    defaultChecked
                     onChange={() => setDisplayFreq(!displayFreq)}
                 />
             </Form.Group>

@@ -203,7 +203,7 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Message.findByIdAndUpdate({
+    await Message.findByIdAndUpdate(message._id{
         message_image,
         message_detail,
         person,
@@ -259,10 +259,25 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
             let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
-        await Frequency.findByIdAndUpdate(message.frequency._id, {
-            frequency: freq,
-            frequencyType: ftype
-        })
+        if (message.frequency)
+           {
+            await Frequency.findByIdAndUpdate(message.frequency._id, {
+                frequency: freq,
+                frequencyType: ftype
+            })
+           }
+        else{
+            let fq = new Frequency({
+                type: frequency?.type,
+                frequency: frequency.frequency,
+                frequencyType: frequency.frequencyType
+            })
+            if (fq)
+                await fq.save()
+            message.frequency = fq
+            await message.save()
+        }
+
     }
     let updatedMessage = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     if (updatedMessage)
