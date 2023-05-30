@@ -2,9 +2,12 @@ import cronParser from "cron-parser"
 import Message from "../../models/messages/Message"
 import axios from "axios"
 
-export const SendMessageWhatsapp = async (job_id: string) => {
-    let message = await Message.findById(job_id.split(",")[0]).populate('running_trigger')
+export const SendMessageWhatsapp = async (task_id: string) => {
+    let message = await Message.findById(task_id).populate('running_trigger')
+
     if (message) {
+        if (message.run_once)
+            await Message.findByIdAndUpdate(message._id, { run_once: false })
         if (!message?.autostop) {
             console.log(`sending whatsapp for ${message.message_detail}`)
             // try {
@@ -43,7 +46,7 @@ export const SendMessageWhatsapp = async (job_id: string) => {
             //             ]
             //         }
             //     }
-             
+
             //     let config = {
             //         url:url,
             //         method: "post",

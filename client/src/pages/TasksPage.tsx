@@ -4,7 +4,6 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import { Button, Container } from 'react-bootstrap'
 import { ChoiceContext, TaskChoiceActions, } from '../contexts/DialogContext'
-import AddTaskModel from '../components/modals/tasks/AddTaskModal'
 import { ITask } from '../types/task.type'
 import { GetTasks } from '../services/TaskServices'
 import styled from 'styled-components'
@@ -96,13 +95,8 @@ export default function TasksPage() {
               <th>Next Run Date</th>
               <th>Next Refresh Date</th>
 
-              <th>Minutes</th>
-              <th>Hours</th>
-              <th>Days</th>
-              <th>Months</th>
-              <th>Week days</th>
-              <th>Month days</th>
-
+              <th>Frequency Type</th>
+              <th>Frequency</th>
               <th>Created At</th>
               <th>Updated At</th>
               <th>Created By</th>
@@ -116,9 +110,9 @@ export default function TasksPage() {
                 <tr key={index}>
                   <td>{task.running_trigger ? "running" : "stopped"}</td>
                   <td>{task.whatsapp_status}</td>
-                  <td>{moment(new Date(task.whatsapp_timestamp)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  <td>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.task_status}</td>
-                  <td>{moment(new Date(task.task_timestamp)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  <td>{moment(new Date(String(task.task_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
 
                   <td>{task.task_title}</td>
                   <td>{task.task_detail}</td>
@@ -126,12 +120,8 @@ export default function TasksPage() {
                   <td>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(task.next_run_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(task.next_refresh_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                  <td>{task.frequency && task.frequency.minutes ? task.frequency.minutes : 0}</td>
-                  <td>{task.frequency && task.frequency.hours ? task.frequency.hours : 0}</td>
-                  <td>{task.frequency && task.frequency.days ? task.frequency.days : 0}</td>
-                  <td>{task.frequency && task.frequency.months ? task.frequency.months : 0}</td>
-                  <td>{task.frequency && task.frequency.weekdays ? task.frequency.weekdays : 0}</td>
-                  <td>{task.frequency && task.frequency.monthdays ? task.frequency.monthdays : 0}</td>
+                  <td>{task.frequency && task.frequency.frequencyType ? task.frequency.frequencyType : ""}</td>
+                  <td>{task.frequency && task.frequency.frequency ? task.frequency.frequency : 0}</td>
                   <td>{moment(new Date(task.created_at)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(task.updated_at)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.created_by.username}</td>

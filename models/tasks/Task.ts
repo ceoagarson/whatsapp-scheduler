@@ -31,17 +31,23 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         trim: true,
         lowercase: true,
     },
-    whatsapp_timestamp: Date, task_status: {
+    whatsapp_timestamp: Date,
+     task_status: {
         type: String,
         trim: true,
         lowercase: true,
     },
+    
     task_timestamp: Date,
     autoRefresh: {
         type: Boolean,
         default: true
     },
     autostop: {
+        type: Boolean,
+        default: false
+    },
+    run_once: {
         type: Boolean,
         default: false
     },
@@ -75,8 +81,7 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-   
+    }
 })
 const Task = mongoose.model<ITask, mongoose.Model<ITask>>("Task", TaskSchema);
 export default Task;

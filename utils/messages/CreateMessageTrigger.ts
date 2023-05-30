@@ -3,15 +3,16 @@ import Frequency from "../../models/Frequency";
 import Message from "../../models/messages/Message";
 import MessageRefreshTrigger from "../../models/messages/MessageRefreshTrigger";
 import MessageTrigger from "../../models/messages/MessageTrigger";
-import {  IMessage } from "../../types/messages.type";
+import { IMessage } from "../../types/messages.type";
 import { GetRefreshDateCronString } from "../GetRefreshDateCronString";
 import { GetRunningDateCronString } from "../GetRunningDateCronString";
 import { RefreshMessage } from "./RefreshMessage";
 import { SendMessageWhatsapp } from "./SendMessageWhatsapp";
 import cronParser from "cron-parser";
+import CronJobManager from "cron-job-manager";
 
 
-export  async function CreateMessageTrigger(message:IMessage) {
+export async function CreateMessageTrigger(message: IMessage) {
     if (message.frequency) {
         let frequency = await Frequency.findById(message.frequency._id)
         if (frequency) {
@@ -35,7 +36,7 @@ export  async function CreateMessageTrigger(message:IMessage) {
                         }
                     )
                     if (running_trigger) {
-                        MessageManager.add(running_trigger.key, runstring, () => { SendMessageWhatsapp(running_trigger.key) })
+                        MessageManager.add(running_trigger.key, runstring, () => { SendMessageWhatsapp(message._id) })
                         MessageManager.start(running_trigger.key)
                     }
                 }
@@ -56,12 +57,16 @@ export  async function CreateMessageTrigger(message:IMessage) {
                         })
 
                     if (refresh_trigger) {
-                        MessageManager.add(refresh_trigger.key, refstring, () => { RefreshMessage(refresh_trigger.key) })
+                        MessageManager.add(refresh_trigger.key, refstring, () => { RefreshMessage(message._id) })
                         MessageManager.start(refresh_trigger.key)
                     }
 
                 }
             }
         }
+    }
+    else {
+        new CronJobManager('a one-timer', new Date(message.start_date), () => { SendMessageWhatsapp(message._id) }).start('a one-timer')
+        await Message.findByIdAndUpdate(message._id, { run_once: true })
     }
 }

@@ -9,6 +9,7 @@ import { GetRunningDateCronString } from "../GetRunningDateCronString";
 import { RefreshTask } from "./RefreshTask";
 import { SendTaskWhatsapp } from "./SendTaskWhatsapp";
 import cronParser from "cron-parser";
+import CronJobManager from "cron-job-manager";
 
 
 export  async function CreateTaskTrigger(task:ITask) {
@@ -35,7 +36,7 @@ export  async function CreateTaskTrigger(task:ITask) {
                         }
                     )
                     if (running_trigger) {
-                        TaskManager.add(running_trigger.key, runstring, () => { SendTaskWhatsapp(running_trigger.key) })
+                        TaskManager.add(running_trigger.key, runstring, () => { SendTaskWhatsapp(task._id) })
                         TaskManager.start(running_trigger.key)
                     }
                 }
@@ -56,12 +57,17 @@ export  async function CreateTaskTrigger(task:ITask) {
                         })
 
                     if (refresh_trigger) {
-                        TaskManager.add(refresh_trigger.key, refstring, () => { RefreshTask(refresh_trigger.key) })
+                        TaskManager.add(refresh_trigger.key, refstring, () => { RefreshTask(task._id) })
                         TaskManager.start(refresh_trigger.key)
                     }
 
                 }
+                
             }
         }
+    }
+    else{
+        new CronJobManager('a one-timer', new Date(task.start_date), () => { SendTaskWhatsapp(task._id) }).start('a one-timer')
+        await Task.findByIdAndUpdate(task._id, { run_once: true })
     }
 }

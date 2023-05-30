@@ -34,7 +34,7 @@ export interface ITask {
     whatsapp_timestamp: Date | null,
     task_status: string,
     task_timestamp: Date | null,
-
+    run_once: boolean,
     autoRefresh: boolean,
     autostop: boolean,
 

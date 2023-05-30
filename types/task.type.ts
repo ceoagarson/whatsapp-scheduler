@@ -41,7 +41,7 @@ export interface ITask {
     frequency: IFrequency,
     running_trigger: ITaskTrigger,
     refresh_trigger: ITaskRefreshTrigger,
-
+    run_once:boolean,
     start_date: Date,
     next_run_date: Date,
     next_refresh_date: Date,

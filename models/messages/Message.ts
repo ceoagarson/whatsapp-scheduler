@@ -45,6 +45,10 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         type: Boolean,
         default: false
     },
+    run_once: {
+        type: Boolean,
+        default: false
+    },
     frequency: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Frequency'

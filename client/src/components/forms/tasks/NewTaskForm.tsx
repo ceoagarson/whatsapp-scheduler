@@ -13,8 +13,6 @@ import { queryClient } from '../../..'
 import AlertBar from '../../alert/AlertBar'
 
 function NewTaskForm() {
-    const [frequency, setFrequency] = useState<string | undefined>()
-    const [frequencyObject, setFrequencyObject] = useState<IFrequency | undefined>()
     const [displayFreq, setDisplayFreq] = useState(false)
     const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
@@ -39,7 +37,8 @@ function NewTaskForm() {
             person: "",
             phone: 0,
             start_date: moment(new Date()).format("YYYY-MM-DDThh:mm"),
-            frequency: frequencyObject
+            frequencyValue: "",
+            frequencyType: ""
         },
         validationSchema: Yup.object({
             task_title: Yup.string()
@@ -58,20 +57,39 @@ function NewTaskForm() {
                 .min(12, 'Must be 10 digits with country code')
                 .max(12, 'Must be 10 digits with country code')
                 .required(),
-            start_date: Yup.date().required()
+            start_date: Yup.date().required(),
+            frequencyValue: Yup.string()
+                .test("required",() => {
+                    if (displayFreq)
+                        return false
+                    else
+                        return true
+                }),
+            frequencyType: Yup.string()
+                .test("required",() => {
+                    if (displayFreq)
+                        return false
+                    else
+                        return true
+                })
         }),
         onSubmit: (values: {
             task_title: string,
             task_detail: string,
             person: string,
             phone: number,
-            start_date: string
-
+            start_date: string,
+            frequencyValue?: string,
+            frequencyType?: string
         }) => {
-            if (frequency) {
+            if (values.frequencyValue && values.frequencyType) {
                 mutate({
                     ...values,
-                    frequency: frequencyObject
+                    frequency: {
+                        type: "task",
+                        frequency: values.frequencyValue,
+                        frequencyType: values.frequencyType
+                    }
                 })
             }
             else
@@ -79,47 +97,13 @@ function NewTaskForm() {
 
         },
     });
-    {/* handle frequency */ }
-    function HandleFrequency(value: string | undefined) {
-        if (frequency && value) {
-            if (frequency === "minutes")
-                setFrequencyObject({
-                    type: "task",
-                    minutes: Number(value)
-                })
-            if (frequency === "hours")
-                setFrequencyObject({
-                    type: "task",
-                    hours: Number(value)
-                })
-            if (frequency === "days")
-                setFrequencyObject({
-                    type: "task",
-                    days: Number(value)
-                })
-            if (frequency === "months")
-                setFrequencyObject({
-                    type: "task",
-                    months: Number(value)
-                })
-            if (frequency === "weekdays")
-                setFrequencyObject({
-                    type: "task",
-                    weekdays: value
-                })
-            if (frequency === "monthdays")
-                setFrequencyObject({
-                    type: "task",
-                    monthdays: value
-                })
-        }
-    }
+
     return (
         <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
             <h1 className="d-block fs-4 text-center">New task Form</h1>
             {
                 isError ? (
-                     <AlertBar message={error?.response.data.message} variant="danger"
+                    <AlertBar message={error?.response.data.message} variant="danger"
                     />
 
                 ) : null
@@ -173,21 +157,11 @@ function NewTaskForm() {
                 />
             </Form.Group>
 
-            {/* frequency */}
             {displayFreq ?
                 <div className='w-100 d-flex justify-content-between align-items-center gap-2'>
                     <Form.Group className="mb-3">
                         <Form.Select
-                            onChange={(e) => {
-                                if (e.currentTarget.value) {
-                                    setFrequency(e.currentTarget.value)
-                                    HandleFrequency(undefined)
-                                }
-                                else {
-                                    HandleFrequency(undefined)
-                                    setFrequency(undefined)
-                                }
-                            }}
+                            {...formik.getFieldProps('frequencyType')}
                         >
                             <option value="">Select Frequency</option>
                             <option value="minutes">Minutes</option>
@@ -197,17 +171,18 @@ function NewTaskForm() {
                             <option value="weekdays">Weekdays</option>
                             <option value="monthdays">MonthDays</option>
                         </Form.Select>
+                        <Form.Text className='text-muted'>{formik.touched.frequencyType && formik.errors.frequencyType ? formik.errors.frequencyType : ""}</Form.Text>
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Control className="border border-primary"
-                            placeholder='frequency' onChange={(e) => {
-                                if (e.currentTarget.value) {
-                                    HandleFrequency(e.currentTarget.value)
-                                }
-                            }}
+                            {...formik.getFieldProps('frequencyValue')}
                         />
+                        <Form.Text className='text-muted'>{formik.touched.frequencyValue && formik.errors.frequencyValue ? formik.errors.frequencyValue : ""}</Form.Text>
                     </Form.Group>
+
                 </div>
+
                 : null
             }
             <Button variant="primary" className='w-100' type="submit"

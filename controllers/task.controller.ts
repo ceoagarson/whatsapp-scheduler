@@ -69,7 +69,7 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
             })
             if (errorStatus)
                 return res.status(400).json({ message: "Select week days in correct format like : 1,2,3,4 from range (1-7), 1-mon,2-tue,3-wed,4-thu,5-fri,6-sat,7-sun" })
-            tmpWeekdays = freq.split(",").map((item) =>{return Number(item)})
+            tmpWeekdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpWeekdays).toString()
         }
 
@@ -84,15 +84,17 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
         }
         let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
         freq = SortUniqueNumbers(tmpMonthdays).toString()
+        let fq = new Frequency({
+            type: frequency?.type,
+            frequency: frequency.frequency,
+            frequencyType: frequency.frequencyType
+        })
+        if (fq) {
+            await fq.save()
+            task.frequency = fq
+        }
     }
-    let fq = new Frequency({
-        type: frequency?.type,
-        frequency: frequency.frequency,
-        frequencyType: frequency.frequencyType
-    })
-    if (fq)
-        await fq.save()
-    task.frequency = fq
+
     task = await task.save()
     return res.status(201).json({ task: task })
 }
@@ -101,7 +103,9 @@ export const CreateTask = async (req: Request, res: Response, next: NextFunction
 export const StartTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
     let tasks = await Task.find().populate('updated_by').populate('created_by').populate('frequency')
     tasks.forEach(async (task) => {
-        CreateTaskTrigger(task)
+        let date = new Date(task.start_date)
+        if (date > new Date())
+            CreateTaskTrigger(task)
     })
     return res.status(200).json({ message: "started successfully" })
 }
@@ -127,7 +131,6 @@ export const StopTaskScheduler = async (req: Request, res: Response, next: NextF
                 refresh_trigger: null,
                 running_trigger: null
             })
-
         }
 
     })

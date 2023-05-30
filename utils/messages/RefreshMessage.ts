@@ -1,8 +1,8 @@
 import Message from "../../models/messages/Message"
 import cronParser from "cron-parser"
 
-export const RefreshMessage = async (job_id: string) => {
-    let message = await Message.findById(job_id.split(",")[0]).populate('refresh_trigger')
+export const RefreshMessage = async (task_id:string) => {
+    let message = await Message.findById(task_id).populate('refresh_trigger')
     if(message){
         if (message.autoRefresh) {
             message.message_status = "pending"

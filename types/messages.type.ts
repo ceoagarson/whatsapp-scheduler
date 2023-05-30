@@ -29,7 +29,7 @@ export interface IMessage {
     whatsapp_timestamp: Date | null,
     message_status: string,
     message_timestamp: Date | null,
-
+    run_once:boolean,
     autoRefresh: boolean,
     autostop: boolean,
 

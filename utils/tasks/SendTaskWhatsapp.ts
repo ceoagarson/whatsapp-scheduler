@@ -2,9 +2,12 @@ import cronParser from "cron-parser"
 import Task from "../../models/tasks/Task"
 import axios from "axios"
 
-export const SendTaskWhatsapp = async (job_id: string) => {
-    let task = await Task.findById(job_id.split(",")[0]).populate('running_trigger')
+export const SendTaskWhatsapp = async (task_id: string) => {
+    let task = await Task.findById(task_id).populate('running_trigger')
+   
     if (task) {
+        if (task.run_once)
+            await Task.findByIdAndUpdate(task._id, { run_once: false })
         if (!task?.autostop) {
             console.log(`sending whatsapp for ${task.task_title}`)
             // try {

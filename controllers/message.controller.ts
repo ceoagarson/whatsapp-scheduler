@@ -101,7 +101,9 @@ export const CreateMessage = async (req: Request, res: Response, next: NextFunct
 export const StartMessageScheduler = async (req: Request, res: Response, next: NextFunction) => {
     let messages = await Message.find().populate('updated_by').populate('created_by').populate('frequency')
     messages.forEach(async (message) => {
-        CreateMessageTrigger(message)
+        let date = new Date(message.start_date)
+        if (date > new Date())
+            CreateMessageTrigger(message)
     })
     return res.status(200).json({ message: "started successfully" })
 }
