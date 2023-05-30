@@ -12,31 +12,31 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                 let phone_id = process.env.phone_id
                 let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
                 let data = {
-                    "messaging_product": "whatsapp",
-                    "recipient_type": "individual",
-                    "to": task.phone,
-                    "type": "template",
-                    "template": {
-                        "name": "scheduler_with_response_",
-                        "language": {
-                            "code": "en_US"
+                    messaging_product: "whatsapp",
+                    recipient_type: "individual",
+                    to: task.phone,
+                    type: "template",
+                    template: {
+                        name: "scheduler_with_response_",
+                        language: {
+                            code: "en_US"
                         },
-                        "components": [
+                        components: [
                             {
-                                "type": "header",
-                                "parameters": [
+                                type: "header",
+                                parameters: [
                                     {
-                                        "type": "text",
-                                        "text": task.task_title
+                                        type: "text",
+                                        text: task.task_title
                                     }
                                 ]
                             },
                             {
-                                "type": "body",
-                                "parameters": [
+                                type: "body",
+                                parameters: [
                                     {
-                                        "type": "text",
-                                        "text": task.task_detail
+                                        type: "text",
+                                        text: task.task_detail
                                     }
                                 ]
                             }
