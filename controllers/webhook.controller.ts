@@ -70,7 +70,8 @@ async function sendTextMessage(message: string, from: string, token: string) {
             "body": message
         }
     }
-    let options = {
+    let config = {
+        url:url,
         method: "post",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -78,7 +79,7 @@ async function sendTextMessage(message: string, from: string, token: string) {
         },
         body: JSON.stringify(data)
     };
-    await axios.post(url, options)
+    await axios(config)
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {

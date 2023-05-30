@@ -6,7 +6,6 @@ export const SendTaskWhatsapp = async (job_id: string) => {
     let task = await Task.findById(job_id.split(",")[0]).populate('running_trigger')
     if (task) {
         if (!task?.autostop) {
-
             try {
                 let token = process.env.accessToken
                 let phone_id = process.env.phone_id
@@ -43,7 +42,8 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                         ]
                     }
                 }
-                let options = {
+                let config = {
+                    url:url,
                     method: "post",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -52,7 +52,7 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                     data:JSON.stringify(data)
                 };
 
-                let response: any = await axios.post(url, options)
+                let response: any = await axios(config)
                 const { messages } = response
                 if (messages.length > 0) {
                     await Task.findByIdAndUpdate(task._id, { message_id: messages[0].id })
