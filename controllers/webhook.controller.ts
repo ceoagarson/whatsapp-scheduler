@@ -53,7 +53,7 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
         }
     }
     catch (error: any) {
-        console.log(error)
+        console.log(error.response)
         return res.status(500).json({ message: error })
     }
     return res.status(200).json({ message: "success" })
@@ -80,7 +80,7 @@ async function sendTextMessage(message: string, from: string, token: string) {
         },
         body: JSON.stringify(data)
     };
-    await axios(config).catch((err)=>console.log(err))
+    await axios(config).catch((err:any)=>console.log(err.response))
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
