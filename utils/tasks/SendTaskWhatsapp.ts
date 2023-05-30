@@ -1,5 +1,6 @@
 import cronParser from "cron-parser"
 import Task from "../../models/tasks/Task"
+import axios from "axios"
 
 export const SendTaskWhatsapp = async (job_id: string) => {
     let task = await Task.findById(job_id.split(",")[0]).populate('running_trigger')
@@ -51,7 +52,7 @@ export const SendTaskWhatsapp = async (job_id: string) => {
                     data
                 };
 
-                let response: any = await fetch(url, options)
+                let response: any = await axios.post(url, options)
                 const { messages } = response
                 if (messages.length > 0) {
                     await Task.findByIdAndUpdate(task._id, { message_id: messages[0].id })
