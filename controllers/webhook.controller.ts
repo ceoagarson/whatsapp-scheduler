@@ -1,4 +1,5 @@
 import { Request, NextFunction, Response } from "express";
+import Task from "../models/tasks/Task";
 
 
 export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
@@ -69,7 +70,7 @@ async function sendTextMessage(message: string, from: string, token: string) {
             "body": message
         }
     }
-    let options={
+    let options = {
         "method": "post",
         "headers": {
             "Authorization": `Bearer ${token}`
@@ -80,10 +81,25 @@ async function sendTextMessage(message: string, from: string, token: string) {
     await fetch(url, options)
 }
 
-function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
+async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
+    let task = await Task.findOne({ message_id: wamid })
+    if (task) {
+        if (btnRes.toLowerCase() === "done") {
+            task.autostop = true
+        }
+        task.task_status = btnRes.toLowerCase()
+        task.task_timestamp = new Date(timestamp)
+        await task.save()
+    }
 
 }
 
-function UpdateTaskWhatsappStatus(wamid: string, status: string, timestamp: Date){
-    
+async function UpdateTaskWhatsappStatus(wamid: string, status: string, timestamp: Date) {
+    let task = await Task.findOne({ message_id: wamid })
+    if (task) {
+        task.whatsapp_status = status
+        task.whatsapp_timestamp = new Date(timestamp)
+        await task.save()
+    }
+
 }

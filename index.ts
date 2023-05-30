@@ -10,6 +10,7 @@ import { connectDatabase } from './config/db';
 import TaskRouter from "./routes/task.route";
 import MessageRouter from "./routes/message.route";
 import UserRouter from "./routes/user.route";
+import WebHookRouter from "./routes/webhook.route";
 import { RestartMessageJobs } from './utils/messages/RestartMessageJobs';
 import { RestartTaskJobs } from './utils/tasks/RestartTaskJobs';
 
@@ -38,9 +39,10 @@ connectDatabase();
 
 //cron job manager for tasks
 export const TaskManager = new CronJobManager()
-export const MessageManager = new CronJobManager() 
+export const MessageManager = new CronJobManager()
 
 //app routes
+app.use("/api/v1", WebHookRouter)
 app.use("/api/v1", UserRouter)
 app.use("/api/v1", TaskRouter)
 app.use("/api/v1", MessageRouter)
@@ -75,7 +77,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({
         message: err.message || "unknown  error occured"
     })
-    
+
 })
 
 //start server based on selected port

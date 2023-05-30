@@ -3,31 +3,17 @@ import Task from "../../models/tasks/Task"
 
 export const SendTaskWhatsapp = async (job_id: string) => {
     let task = await Task.findById(job_id.split(",")[0]).populate('running_trigger')
-    if (!task?.autostop)
-        console.log(`whatsapp sent for ${task?.task_title}`)
-    if (task && task.running_trigger) {
-        await Task.findByIdAndUpdate(task._id, { next_run_date: cronParser.parseExpression(task.running_trigger.cronString).next().toDate() })
-    }
-}
+    if (task) {
+        if (!task?.autostop) {
 
-function SendTaskMessage(e: GoogleAppsScript.Events.TimeDriven) {
-    let phone_id = PropertiesService.getScriptProperties().getProperty('phone_id')
-    let triggers = findAllTaskTriggers().filter((trigger) => {
-        if (trigger.trigger_id === e.triggerUid && trigger.trigger_type === "SendTaskMessage") {
-            return trigger
-        }
-    })
-
-    if (triggers.length > 0) {
-
-        if (!TaskAutoStop(triggers[0].id)) {
             try {
-                let token = PropertiesService.getScriptProperties().getProperty('accessToken')
+                let token = process.env.accessToken
+                let phone_id = process.env.phone_id
                 let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
                 let data = {
                     "messaging_product": "whatsapp",
                     "recipient_type": "individual",
-                    "to": triggers[0].phone,
+                    "to": task.phone,
                     "type": "template",
                     "template": {
                         "name": "scheduler_with_response_",
@@ -40,7 +26,7 @@ function SendTaskMessage(e: GoogleAppsScript.Events.TimeDriven) {
                                 "parameters": [
                                     {
                                         "type": "text",
-                                        "text": triggers[0].task_title
+                                        "text": task.task_title
                                     }
                                 ]
                             },
@@ -49,14 +35,14 @@ function SendTaskMessage(e: GoogleAppsScript.Events.TimeDriven) {
                                 "parameters": [
                                     {
                                         "type": "text",
-                                        "text": triggers[0].task_detail
+                                        "text": task.task_detail
                                     }
                                 ]
                             }
                         ]
                     }
                 }
-                let options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+                let options = {
                     "method": "post",
                     "headers": {
                         "Authorization": `Bearer ${token}`
@@ -65,19 +51,19 @@ function SendTaskMessage(e: GoogleAppsScript.Events.TimeDriven) {
                     "payload": JSON.stringify(data)
                 };
 
-                let response = UrlFetchApp.fetch(url, options)
-                const { messages } = JSON.parse(response.getContentText())
+                let response: any = await fetch(url, options)
+                const { messages } = response
                 if (messages.length > 0) {
-                    SetTaskMessageId(triggers[0].id, messages[0].id)
+                    await Task.findByIdAndUpdate(task._id, { message_id: messages[0].id })
                 }
             }
             catch (err) {
                 console.log(err)
             }
         }
-        let index = findIndexOfTaskById(triggers[0].id)
-        if (index) {
-            TaskLastDateUpdater(index)
+        if (task && task.running_trigger) {
+            await Task.findByIdAndUpdate(task._id, { next_run_date: cronParser.parseExpression(task.running_trigger.cronString).next().toDate() })
         }
     }
+
 }
