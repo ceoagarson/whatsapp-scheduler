@@ -88,7 +88,7 @@ async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) 
     let task = await Task.findOne({ message_id: wamid })
     if (task) {
         if (btnRes.toLowerCase() === "done") {
-            task.autostop = true
+            task.autoStop = true
         }
         task.task_status = btnRes.toLowerCase()
         task.task_timestamp = new Date(timestamp)

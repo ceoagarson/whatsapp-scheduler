@@ -79,7 +79,7 @@ export default function MessagesPage() {
         <Button variant="primary" onClick={() => {
           setChoice({ type: MessageChoiceActions.new_message })
         }}>
-          <img className="m-1" src="https://img.icons8.com/stickers/100/message-completed--v2.png" height="30" width="30" />
+          <img className="m-1" src="https://img.icons8.com/stickers/100/message-completed--v2.png"alt="icon" height="30" width="30" />
 
           Add Message</Button>
         {/* modals */}
@@ -121,7 +121,7 @@ export default function MessagesPage() {
                   <td>{moment(new Date(String(message.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{message.message_status}</td>
                   <td>{moment(new Date(String(message.message_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                  <td><img src={message.message_image} alt="msg image" height="30" width="30"/></td>
+                  <td><img src={message.message_image} alt="icon" height="30" width="30"/></td>
                   <td>{message.message_detail}</td>
                   <td>{message.phone}</td>
                   <td>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
