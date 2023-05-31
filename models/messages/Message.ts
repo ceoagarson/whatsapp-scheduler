@@ -39,11 +39,11 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
     message_timestamp: Date,
     autoRefresh: {
         type: Boolean,
-        default: true
+        default: false
     },
     autoStop: {
         type: Boolean,
-        default: false
+        default: true
     },
     run_once: {
         type: Boolean,

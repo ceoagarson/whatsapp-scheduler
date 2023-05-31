@@ -41,11 +41,11 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
     task_timestamp: Date,
     autoRefresh: {
         type: Boolean,
-        default: true
+        default: false
     },
     autoStop: {
         type: Boolean,
-        default: false
+        default: true
     },
     run_once: {
         type: Boolean,
