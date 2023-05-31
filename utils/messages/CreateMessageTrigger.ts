@@ -23,7 +23,6 @@ export async function CreateMessageTrigger(message: IMessage) {
                 if (runstring) {
                     let running_trigger = new MessageTrigger({
                         key: message._id + "," + "run",
-                        status: "running",
                         cronString: runstring,
                         created_at: new Date(),
                         updated_at: new Date(),
@@ -43,7 +42,6 @@ export async function CreateMessageTrigger(message: IMessage) {
                 if (refstring) {
                     let refresh_trigger = new MessageRefreshTrigger({
                         key: message._id + "," + "refresh",
-                        status: "running",
                         cronString: refstring,
                         created_at: new Date(),
                         updated_at: new Date(),

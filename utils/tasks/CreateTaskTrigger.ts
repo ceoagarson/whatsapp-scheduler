@@ -23,7 +23,6 @@ export  async function CreateTaskTrigger(task:ITask) {
                 if (runstring) {
                     let running_trigger = new TaskTrigger({
                         key: task._id + "," + "run",
-                        status: "running",
                         cronString: runstring,
                         created_at: new Date(),
                         updated_at: new Date(),
@@ -43,7 +42,6 @@ export  async function CreateTaskTrigger(task:ITask) {
                 if (refstring) {
                     let refresh_trigger = new TaskRefreshTrigger({
                         key: task._id + "," + "refresh",
-                        status: "running",
                         cronString: refstring,
                         created_at: new Date(),
                         updated_at: new Date(),
