@@ -9,7 +9,7 @@ import { GetTasks } from '../services/TaskServices'
 import styled from 'styled-components'
 import moment from "moment";
 import StartTaskSchedulerButton from '../components/buttons/StartTaskSchedulerButton'
-import StopSchedulerButton from '../components/buttons/StopSchedulerButton'
+import StopSchedulerButton from '../components/buttons/StopTaskSchedulerButton'
 import DeleteTaskModal from '../components/modals/tasks/DeleteTaskModal'
 import AddTaskModal from '../components/modals/tasks/AddTaskModal'
 import UpdateTaskModal from '../components/modals/tasks/UpdateTaskModal'

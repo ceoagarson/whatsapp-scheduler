@@ -19,12 +19,15 @@ export const NewMessage = async (body: {
 export const StartMessageScheduler = async () => {
     return await apiClient.post('messages/start')
 }
+export const StartSingleMessageScheduler = async (id: string) => {
+    return await apiClient.post(`messages/start/${id}`)
+}
 
 export const StopMessageScheduler = async () => {
     return await apiClient.post('messages/stop')
 }
-export const StopSingleMessageScheduler = async () => {
-    return await apiClient.post('messages/stop/:id')
+export const StopSingleMessageScheduler = async (id: string) => {
+    return await apiClient.post(`messages/stop/${id}`)
 }
 
 export const DeleteMessage = async (id: string) => {

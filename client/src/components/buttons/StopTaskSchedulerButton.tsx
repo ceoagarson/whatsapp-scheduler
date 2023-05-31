@@ -7,7 +7,7 @@ import { StopTaskScheduler } from '../../services/TaskServices'
 import { queryClient } from '../..'
 import AlertBar from '../alert/AlertBar'
 
-function StopSchedulerButton() {
+function StopTaskSchedulerButton() {
 
     const { mutate: Stop_Scheduler, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
@@ -41,4 +41,4 @@ function StopSchedulerButton() {
     )
 }
 
-export default StopSchedulerButton
+export default StopTaskSchedulerButton
