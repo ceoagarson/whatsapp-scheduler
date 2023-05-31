@@ -5,14 +5,14 @@ import { useMutation } from 'react-query'
 import { TaskChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
 import { queryClient } from '../../..'
 import { Alert, Button, Container, Modal } from 'react-bootstrap'
-import { DeleteTask } from '../../../services/TaskServices'
 import { ITask } from '../../../types/task.type'
+import { StopSingleTaskScheduler } from '../../../services/TaskServices'
 
-function DeleteTaskModal({ task }: { task: ITask }) {
+function StopTaskModal({ task }: { task: ITask }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteTask,
+        (StopSingleTaskScheduler,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('tasks')
@@ -28,7 +28,7 @@ function DeleteTaskModal({ task }: { task: ITask }) {
     }, [setChoice, isSuccess])
     return (
         <Modal
-            show={choice === TaskChoiceActions.delete_task ? true : false}
+            show={choice === TaskChoiceActions.stop_task ? true : false}
             onHide={() => setChoice({ type: TaskChoiceActions.close })}
             centered
         >
@@ -43,28 +43,28 @@ function DeleteTaskModal({ task }: { task: ITask }) {
             {
                 isSuccess ? (
                     <Alert color="danger">
-                        Successfully deleted
+                        Successfully stopped
                     </Alert>
                 ) : null
             }
-           <Container className='p-2'>
-                <p className="tetx-center d-block fs-6 fw-bold text-capitalize p-2">Confirm To delete task having title "{task.task_title}</p>
+            <Container className='p-2'>
+                <p className="tetx-center d-block fs-6 fw-bold text-capitalize p-2">Confirm To stop task having title "{task.task_title}</p>
                 <Container className="d-flex w-100 jusify-content-center align-items-center gap-2">
 
-                    <Button variant="outline-danger"className="w-100" 
+                    <Button variant="outline-danger" className="w-100"
                         onClick={() => {
                             mutate(task._id)
                             setChoice({ type: TaskChoiceActions.close })
                         }
                         }
                     >Yes</Button>
-                    <Button variant="primary" className="w-100" 
+                    <Button variant="primary" className="w-100"
                         onClick={() => setChoice({ type: TaskChoiceActions.close })}
                     >NO</Button>
                 </Container>
-           </Container>
+            </Container>
         </Modal>
     )
 }
 
-export default DeleteTaskModal
+export default StopTaskModal

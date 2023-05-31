@@ -25,7 +25,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                         updated_at: new Date()
                     })
                     if (MessageManager.exists(message.running_trigger.key)) {
-                        MessageManager.update(message.running_trigger.key, runstring, () => { SendMessageWhatsapp(message.running_trigger.key) })
+                        MessageManager.update(message.running_trigger.key, runstring, () => { SendMessageWhatsapp(message._id) })
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {
@@ -40,7 +40,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                         updated_at: new Date()
                     })
                     if (MessageManager.exists(message.refresh_trigger.key)) {
-                        MessageManager.update(message.refresh_trigger.key, refstring, () => { RefreshMessage(message.refresh_trigger.key) })
+                        MessageManager.update(message.refresh_trigger.key, refstring, () => { RefreshMessage(message._id) })
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {

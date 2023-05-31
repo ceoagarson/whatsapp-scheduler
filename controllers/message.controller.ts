@@ -161,8 +161,22 @@ export const StopSingleMessageScheduler = async (req: Request, res: Response, ne
         return res.status(200).json({ message: "message not found" })
 }
 
+export const StartSingleMessageScheduler = async (req: Request, res: Response, next: NextFunction) => {
+    let id = req.params.id
+    let message = await Message.findById(id)
+    if (message) {
+        await Message.findByIdAndUpdate(message._id, {
+            autoStop: false,
+            autoRefresh: true
+        })
+        return res.status(200).json({ message: "Scheduler Stopped Successfully" })
+    }
+    else
+        return res.status(200).json({ message: "message not found" })
+}
 
 // update message
+
 export const UpdateMessage = async (req: Request, res: Response, next: NextFunction) => {
     let id = req.params.id
     let message = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
@@ -178,7 +192,7 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Message.findByIdAndUpdate(message._id,{
+    await Message.findByIdAndUpdate(message._id, {
         message_image,
         message_detail,
         person,
@@ -189,7 +203,6 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
         created_by: message.created_by,
         updated_by: message.updated_by
     })
-    let errorStatus = false
 
     if (frequency) {
         let ftype = frequency.frequencyType
@@ -234,14 +247,18 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
             let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
-        if (message.frequency)
-           {
+        if (message.frequency) {
             await Frequency.findByIdAndUpdate(message.frequency._id, {
                 frequency: freq,
                 frequencyType: ftype
             })
-           }
-        else{
+            let updatedMessage = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
+            if (updatedMessage)
+                UpdateMessageTrigger(updatedMessage)
+            return res.status(200).json({ message: "message updated SuccessFully" })
+        }
+
+        else {
             let fq = new Frequency({
                 type: frequency?.type,
                 frequency: frequency.frequency,
@@ -250,13 +267,12 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
             if (fq)
                 await fq.save()
             message.frequency = fq
-            await message.save()
+            message = await message.save()
+            CreateMessageTrigger(message)
+            return res.status(200).json({ message: "message updated SuccessFully" })
         }
-
     }
-    let updatedMessage = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
-    if (updatedMessage)
-        UpdateMessageTrigger(updatedMessage)
-    if (!errorStatus)
-        return res.status(201).json({ message: "message updated SuccessFully" })
+    else {
+        return res.status(200).json({ message: "message updated SuccessFully" })
+    }
 }

@@ -62,14 +62,14 @@ function UpdateTaskForm({ task }: { task: ITask }) {
                 .required(),
             frequencyValue: Yup.string()
                 .test("required", (data) => {
-                    if (!data)
+                    if (displayFreq && !data)
                         return false
                     else
                         return true
                 }),
             frequencyType: Yup.string()
                 .test("required", (data) => {
-                    if (!data)
+                    if (displayFreq && !data)
                         return false
                     else
                         return true

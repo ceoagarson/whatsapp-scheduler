@@ -13,6 +13,8 @@ import StopSchedulerButton from '../components/buttons/StopSchedulerButton'
 import DeleteTaskModal from '../components/modals/tasks/DeleteTaskModal'
 import AddTaskModal from '../components/modals/tasks/AddTaskModal'
 import UpdateTaskModal from '../components/modals/tasks/UpdateTaskModal'
+import StartTaskModal from '../components/modals/tasks/StartTaskModal'
+import StopTaskModal from '../components/modals/tasks/StopTaskModal'
 
 const StyledTable = styled.table`
  {
@@ -69,14 +71,21 @@ export default function TasksPage() {
         <>
           <UpdateTaskModal task={task} />
           <DeleteTaskModal task={task} />
+          <StartTaskModal task={task} />
+          <StopTaskModal task={task} />
         </>
         : null}
       <Container className='d-flex justify-content-end p-2 gap-2'>
         <Button variant="primary" onClick={() => {
           setChoice({ type: TaskChoiceActions.new_task })
-        }}>Add Task</Button>
+        }}>
+          <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" />
+
+          Add Task</Button>
+        {/* modals */}
         <StartTaskSchedulerButton />
         <StopSchedulerButton />
+              
       </Container>
       <div className="w-100 overflow-auto d-flex">
         <StyledTable>
@@ -107,7 +116,7 @@ export default function TasksPage() {
             {tasks && tasks.map((task, index) => {
               return (
                 <tr key={index}>
-                  <td>{task.running_trigger || task.run_once ? "running" : "stopped"}</td>
+                  <td>{!task.autoStop || task.run_once ? "running" : "stopped"}</td>
                   <td>{task.whatsapp_status}</td>
                   <td>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.task_status}</td>
@@ -134,22 +143,24 @@ export default function TasksPage() {
                       }
                       }
                       width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
-                    {/* stop task scheduler */}
-                    <img style={{ "cursor": "pointer" }} title="stop Whatsapp"
-                      onClick={() => {
-                        setSelectedTask(tasks, task._id)
-                        setChoice({ type: TaskChoiceActions.delete_task })
-                      }
-                      }
-                      width="20" height="20" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="edit--v1" />
-                    {/* stop refresh scheduler */}
-                    <img style={{ "cursor": "pointer" }} title="stop Refreshing"
-                      onClick={() => {
-                        setSelectedTask(tasks, task._id)
-                        setChoice({ type: TaskChoiceActions.delete_task })
-                      }
-                      }
-                      width="20" height="20" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="edit--v1" />
+                    {/* start and stop task scheduler */}
+                    {
+                      task.autoStop ?
+                        <img style={{ "cursor": "pointer" }} title="Start"
+                          onClick={() => {
+                            setSelectedTask(tasks, task._id)
+                            setChoice({ type: TaskChoiceActions.start_task })
+                          }
+                          }
+                          width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
+                        <img style={{ "cursor": "pointer" }} title="Stop"
+                          onClick={() => {
+                            setSelectedTask(tasks, task._id)
+                            setChoice({ type: TaskChoiceActions.stop_task })
+                          }
+                          }
+                          width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                    }
                     {/* delete task */}
                     <img style={{ "cursor": "pointer" }} title="delete"
                       onClick={() => {
@@ -157,7 +168,7 @@ export default function TasksPage() {
                         setChoice({ type: TaskChoiceActions.delete_task })
                       }
                       }
-                      width="20" height="20" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
+                      width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
                   </td>
                 </tr>
               )

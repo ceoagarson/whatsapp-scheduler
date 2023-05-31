@@ -34,7 +34,9 @@ function StopSchedulerButton() {
             }
             <Button size="sm"  variant="outline-danger" onClick={() => {
                 Stop_Scheduler()
-            }}>Stop Scheduler</Button>
+            }}>
+                <img className="m-1" src="https://img.icons8.com/color/48/stop--v1.png" height="30" width="30" />
+                Stop Scheduler</Button>
         </>
     )
 }

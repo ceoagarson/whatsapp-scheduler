@@ -43,7 +43,7 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type: Boolean,
         default: true
     },
-    autostop: {
+    autoStop: {
         type: Boolean,
         default: false
     },

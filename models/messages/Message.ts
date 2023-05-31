@@ -41,7 +41,7 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         type: Boolean,
         default: true
     },
-    autostop: {
+    autoStop: {
         type: Boolean,
         default: false
     },
