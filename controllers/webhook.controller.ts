@@ -19,6 +19,9 @@ export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFun
 
 export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
     let token = process.env.accessToken
+    if (!token) {
+        return res.status(400).json({ message: "Please provide valid access token" })
+    }
     const { entry } = req.body
     try {
         if (entry.length > 0 && token) {
@@ -51,7 +54,9 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
     }
     catch (error: any) {
         console.log(error)
+        return res.status(500).json({ message: error })
     }
+    return res.status(200).json({ message: "success" })
 }
 
 async function sendTextMessage(message: string, from: string, token: string) {
