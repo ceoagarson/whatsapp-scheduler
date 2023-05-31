@@ -23,7 +23,6 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
         return res.status(400).json({ message: "Please provide valid access token" })
     }
     const { entry } = req.body
-    console.log(req.body)
     try {
         if (entry.length > 0 && token) {
             if (entry[0].changes[0].value.messages) {
