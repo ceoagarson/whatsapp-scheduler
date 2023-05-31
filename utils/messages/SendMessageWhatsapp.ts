@@ -8,7 +8,6 @@ export const SendMessageWhatsapp = async (task_id: string) => {
         if (message.run_once)
             await Message.findByIdAndUpdate(message._id, { run_once: false })
         if (!message?.autoStop) {
-           
             try {
                 let token = process.env.accessToken
                 let phone_id = process.env.phone_id

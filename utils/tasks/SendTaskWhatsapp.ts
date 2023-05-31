@@ -8,7 +8,6 @@ export const SendTaskWhatsapp = async (task_id: string) => {
         if (task.run_once)
             await Task.findByIdAndUpdate(task._id, { run_once: false })
         if (!task?.autoStop) {
-            console.log(`sending whatsapp for ${task.task_title}`)
             try {
                 let token = process.env.accessToken
                 let phone_id = process.env.phone_id

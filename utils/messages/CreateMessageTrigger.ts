@@ -69,6 +69,6 @@ export async function CreateMessageTrigger(message: IMessage) {
     }
     else {
         new CronJobManager('a one-timer', new Date(message.start_date), () => { SendMessageWhatsapp(message._id) }).start('a one-timer')
-        await Message.findByIdAndUpdate(message._id, { run_once: true })
+        await Message.findByIdAndUpdate(message._id, { run_once: true,autoStop:false })
     }
 }
