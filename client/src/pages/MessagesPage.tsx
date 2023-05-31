@@ -175,7 +175,7 @@ export default function MessagesPage() {
                     {/* start and stop message scheduler */}
                     {
                       message.autoStop ?
-                        <img style={{ "cursor": "pointer" }} title="Start"
+                        <img style={{ "cursor": "pointer" }} title="Restart"
                           onClick={() => {
                             setSelectedMessage(messages, message._id)
                             setChoice({ type: MessageChoiceActions.start_message })

@@ -176,7 +176,7 @@ export default function TasksPage() {
                     {/* start and stop task scheduler */}
                     {
                       task.autoStop ?
-                        <img style={{ "cursor": "pointer" }} title="Start"
+                        <img style={{ "cursor": "pointer" }} title="Restart"
                           onClick={() => {
                             setSelectedTask(tasks, task._id)
                             setChoice({ type: TaskChoiceActions.start_task })
