@@ -73,7 +73,7 @@ export default function TasksPage() {
   //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(tasks, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "task_image", "task_status", "task_timestamp", "next_refresh_date", "next_run_date", "person", "lead_type", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
+      const searcher = new FuzzySearch(tasks, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "task_title","task_detail", "task_status", "task_timestamp", "next_refresh_date", "next_run_date", "person", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
         caseSensitive: false,
       });
       const result = searcher.search(filter);
@@ -156,7 +156,7 @@ export default function TasksPage() {
                   <td>{task.task_title}</td>
                   <td>{task.task_detail}</td>
                   <td>{task.phone}</td>
-                  {new Date(task.start_date) < new Date ?
+                  {new Date(task.start_date) <= new Date() ?
 
                     <td style={{ "color": "red" }}>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                     :

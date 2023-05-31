@@ -72,7 +72,7 @@ export default function MessagesPage() {
   //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(messages, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "message_image", "message_status", "message_timestamp", "next_refresh_date", "next_run_date", "person", "lead_type", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
+      const searcher = new FuzzySearch(messages, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "message_image","messsage", "message_status", "message_timestamp", "next_refresh_date", "next_run_date", "person",  "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
         caseSensitive: false,
       });
       const result = searcher.search(filter);
@@ -155,7 +155,7 @@ export default function MessagesPage() {
                   <td><img src={message.message_image} alt="icon" height="30" width="30" /></td>
                   <td>{message.message_detail}</td>
                   <td>{message.phone}</td>
-                  {new Date(message.start_date) < new Date ?
+                  {new Date(message.start_date) <= new Date() ?
 
                     <td style={{ "color": "red" }}>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                     :
