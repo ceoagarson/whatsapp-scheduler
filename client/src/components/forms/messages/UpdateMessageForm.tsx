@@ -47,7 +47,7 @@ function UpdateMessageForm({ message }: { message: IMessage }) {
         validationSchema: Yup.object({
             message_image: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(50, 'Must be 500 characters or less')
+                .max(500, 'Must be 500 characters or less')
                 .required(),
             message_detail: Yup.string()
                 .min(10, 'Must be 10 characters or more')
@@ -131,7 +131,7 @@ function UpdateMessageForm({ message }: { message: IMessage }) {
             }
             {/* message title */}
             <Form.Group className="pt-3 mb-3" >
-                <Form.Control className="border border-primary" placeholder="Message Title"
+                <Form.Control className="border border-primary" placeholder="Message image"
                     {...formik.getFieldProps('message_image')}
                 />
                 <Form.Text className='text-muted'>{formik.touched.message_image && formik.errors.message_image ? formik.errors.message_image : ""}</Form.Text>
