@@ -115,21 +115,9 @@ export const StopTaskScheduler = async (req: Request, res: Response, next: NextF
     let tasks = await Task.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     tasks.forEach(async (task) => {
         if (task) {
-            if (task.refresh_trigger) {
-                await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
-                if (TaskManager.exists(task.refresh_trigger.key))
-                    TaskManager.deleteJob(task.refresh_trigger.key)
-            }
-            if (task.running_trigger) {
-                await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
-                if (TaskManager.exists(task.running_trigger.key))
-                    TaskManager.deleteJob(task.running_trigger.key)
-            }
             await Task.findByIdAndUpdate(task._id, {
-                next_run_date: null,
-                next_refresh_date: null,
-                refresh_trigger: null,
-                running_trigger: null
+                autoStop: true,
+                autoRefresh: false
             })
         }
 
@@ -165,21 +153,9 @@ export const StopSingleTaskScheduler = async (req: Request, res: Response, next:
     let id = req.params.id
     let task = await Task.findById(id)
     if (task) {
-        if (task.refresh_trigger) {
-            await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
-            if (TaskManager.exists(task.refresh_trigger.key))
-                TaskManager.deleteJob(task.refresh_trigger.key)
-        }
-        if (task.running_trigger) {
-            await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
-            if (TaskManager.exists(task.running_trigger.key))
-                TaskManager.deleteJob(task.running_trigger.key)
-        }
         await Task.findByIdAndUpdate(task._id, {
-            next_run_date: null,
-            next_refresh_date: null,
-            refresh_trigger: null,
-            running_trigger: null
+            autoStop: true,
+            autoRefresh: false
         })
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }

@@ -113,23 +113,10 @@ export const StopMessageScheduler = async (req: Request, res: Response, next: Ne
     let messages = await Message.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     messages.forEach(async (message) => {
         if (message) {
-            if (message.refresh_trigger) {
-                await MessageRefreshTrigger.findByIdAndDelete(message.refresh_trigger._id)
-                if (MessageManager.exists(message.refresh_trigger.key))
-                    MessageManager.deleteJob(message.refresh_trigger.key)
-            }
-            if (message.running_trigger) {
-                await MessageTrigger.findByIdAndDelete(message.running_trigger._id)
-                if (MessageManager.exists(message.running_trigger.key))
-                    MessageManager.deleteJob(message.running_trigger.key)
-            }
             await Message.findByIdAndUpdate(message._id, {
-                next_run_date: null,
-                next_refresh_date: null,
-                refresh_trigger: null,
-                running_trigger: null
+                autoStop: true,
+                autoRefresh: false
             })
-
         }
 
     })
@@ -164,21 +151,9 @@ export const StopSingleMessageScheduler = async (req: Request, res: Response, ne
     let id = req.params.id
     let message = await Message.findById(id)
     if (message) {
-        if (message.refresh_trigger) {
-            await MessageRefreshTrigger.findByIdAndDelete(message.refresh_trigger._id)
-            if (MessageManager.exists(message.refresh_trigger.key))
-                MessageManager.deleteJob(message.refresh_trigger.key)
-        }
-        if (message.running_trigger) {
-            await MessageTrigger.findByIdAndDelete(message.running_trigger._id)
-            if (MessageManager.exists(message.running_trigger.key))
-                MessageManager.deleteJob(message.running_trigger.key)
-        }
         await Message.findByIdAndUpdate(message._id, {
-            next_run_date: null,
-            next_refresh_date: null,
-            refresh_trigger: null,
-            running_trigger: null
+            autoStop: true,
+            autoRefresh:false
         })
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
@@ -203,7 +178,7 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Message.findByIdAndUpdate(message._id{
+    await Message.findByIdAndUpdate(message._id,{
         message_image,
         message_detail,
         person,

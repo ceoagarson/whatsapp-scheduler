@@ -107,7 +107,7 @@ export default function TasksPage() {
             {tasks && tasks.map((task, index) => {
               return (
                 <tr key={index}>
-                  <td>{task.running_trigger||task.run_once ? "running" : "stopped"}</td>
+                  <td>{task.running_trigger || task.run_once ? "running" : "stopped"}</td>
                   <td>{task.whatsapp_status}</td>
                   <td>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.task_status}</td>
@@ -134,6 +134,22 @@ export default function TasksPage() {
                       }
                       }
                       width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
+                    {/* stop task scheduler */}
+                    <img style={{ "cursor": "pointer" }} title="stop Whatsapp"
+                      onClick={() => {
+                        setSelectedTask(tasks, task._id)
+                        setChoice({ type: TaskChoiceActions.delete_task })
+                      }
+                      }
+                      width="20" height="20" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="edit--v1" />
+                    {/* stop refresh scheduler */}
+                    <img style={{ "cursor": "pointer" }} title="stop Refreshing"
+                      onClick={() => {
+                        setSelectedTask(tasks, task._id)
+                        setChoice({ type: TaskChoiceActions.delete_task })
+                      }
+                      }
+                      width="20" height="20" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="edit--v1" />
                     {/* delete task */}
                     <img style={{ "cursor": "pointer" }} title="delete"
                       onClick={() => {
