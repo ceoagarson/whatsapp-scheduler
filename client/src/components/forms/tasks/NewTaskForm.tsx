@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
 import * as Yup from "yup"
-import { Alert, Form } from 'react-bootstrap'
+import {  Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import { IFrequency, ITask } from '../../../types/task.type'
 import { NewTask } from '../../../services/TaskServices'
@@ -14,7 +14,7 @@ import AlertBar from '../../alert/AlertBar'
 
 function NewTaskForm() {
     const [displayFreq, setDisplayFreq] = useState(false)
-    const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+    const { mutate,  isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
             BackendError,
             {

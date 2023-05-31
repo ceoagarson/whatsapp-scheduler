@@ -5,7 +5,7 @@ import * as Yup from "yup"
 import { Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import { IMessage } from '../../../types/messages.type'
-import { NewMessage, UpdateMessage } from '../../../services/MessageServices'
+import {  UpdateMessage } from '../../../services/MessageServices'
 import { BackendError } from '../../../types'
 import { useFormik } from 'formik'
 import moment from 'moment'
@@ -15,7 +15,7 @@ import { IFrequency } from '../../../types/task.type'
 
 function UpdateMessageForm({ message }: { message: IMessage }) {
     const [displayFreq, setDisplayFreq] = useState(true)
-    const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+    const { mutate,  isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<IMessage>,
             BackendError,
             {

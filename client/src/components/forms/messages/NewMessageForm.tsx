@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
 import * as Yup from "yup"
-import { Alert, Form } from 'react-bootstrap'
+import {  Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import {  IMessage } from '../../../types/messages.type'
 import { NewMessage } from '../../../services/MessageServices'
@@ -15,7 +15,7 @@ import { IFrequency } from '../../../types/task.type'
 
 function NewMessageForm() {
     const [displayFreq, setDisplayFreq] = useState(false)
-    const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+    const { mutate,  isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<IMessage>,
             BackendError,
             {

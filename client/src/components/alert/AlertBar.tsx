@@ -9,8 +9,8 @@ function AlertBar({ message, variant }: { message: string, variant: "success" | 
     width:300px;
     padding:10px;
     position:absolute;
-    top:50px;
-    left:50px;
+    bottom:100px;
+    right:50px;
     color:white;
     background:${variant === "success" ? "green" : null || variant === "danger" ? "red" : null || "black"}
 `

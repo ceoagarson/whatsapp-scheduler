@@ -4,13 +4,14 @@ import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
 import { MessageChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
 import { queryClient } from '../../..'
-import { Alert, Button, Container, Modal } from 'react-bootstrap'
+import {  Button, Container, Modal } from 'react-bootstrap'
 import { DeleteMessage } from '../../../services/MessageServices'
 import { IMessage } from '../../../types/messages.type'
+import AlertBar from '../../alert/AlertBar'
 
 function DeleteMessageModal({ message }: { message: IMessage }) {
     const { choice, setChoice } = useContext(ChoiceContext)
-    const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { mutate,  isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeleteMessage,
             {
@@ -34,17 +35,15 @@ function DeleteMessageModal({ message }: { message: IMessage }) {
         >
             {
                 isError ? (
-                    <Alert variant="danger">
-                        {error?.response.data.message}
-                    </Alert>
+                    <AlertBar message={error?.response.data.message} variant="danger"
+                    />
 
                 ) : null
             }
             {
                 isSuccess ? (
-                    <Alert color="danger">
-                        Successfully deleted
-                    </Alert>
+                    <AlertBar message="Successfully deleted" variant="success"
+                    />
                 ) : null
             }
            <Container className='p-2'>

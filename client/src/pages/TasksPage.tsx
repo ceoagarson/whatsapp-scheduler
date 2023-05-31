@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../types'
-import { Button, Container } from 'react-bootstrap'
+import { Button,  Form } from 'react-bootstrap'
 import { ChoiceContext, TaskChoiceActions, } from '../contexts/DialogContext'
 import { ITask } from '../types/task.type'
 import { GetTasks } from '../services/TaskServices'
@@ -15,6 +15,7 @@ import AddTaskModal from '../components/modals/tasks/AddTaskModal'
 import UpdateTaskModal from '../components/modals/tasks/UpdateTaskModal'
 import StartTaskModal from '../components/modals/tasks/StartTaskModal'
 import StopTaskModal from '../components/modals/tasks/StopTaskModal'
+import FuzzySearch from "fuzzy-search"
 
 const StyledTable = styled.table`
  {
@@ -50,7 +51,8 @@ export default function TasksPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [tasks, setTasks] = useState<ITask[]>([])
   const [task, setTask] = useState<ITask>()
-
+  const [filter, setFilter] = useState<string | undefined>()
+  const [preFilteredData, setPreFilteredData] = useState<ITask[]>([])
   const { data, isSuccess } = useQuery<AxiosResponse<ITask[]>, BackendError>("tasks", GetTasks, {
     refetchOnMount: true
   })
@@ -59,11 +61,26 @@ export default function TasksPage() {
     if (task) setTask(task)
   }
 
-  // setup tasks
+  //setup tasks
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess) {
       setTasks(data.data)
-  }, [isSuccess, data, tasks])
+      setPreFilteredData(data.data)
+    }
+  }, [isSuccess, data])
+
+  //set filter
+  useEffect(() => {
+    if (filter) {
+      const searcher = new FuzzySearch(tasks, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "task_image", "task_status", "task_timestamp", "next_refresh_date", "next_run_date", "person", "lead_type", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
+        caseSensitive: false,
+      });
+      const result = searcher.search(filter);
+      setTasks(result)
+    }
+    if (!filter)
+      setTasks(preFilteredData)
+  }, [filter, preFilteredData, tasks])
   return (
     <>
       <AddTaskModal />
@@ -75,19 +92,32 @@ export default function TasksPage() {
           <StopTaskModal task={task} />
         </>
         : null}
-      <Container className='d-flex justify-content-end p-2 gap-2'>
-        <Button variant="primary" onClick={() => {
-          setChoice({ type: TaskChoiceActions.new_task })
-        }}>
-          <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" />
+      <div className='d-flex flex-column flex-md-row justify-content-between  align-items-center  p-2 gap-2'>
+        <div>
+          <Form.Control
+            className="border border-primary"
+            placeholder={`${tasks && tasks.length} records`}
+            type="search"
+            onChange={(e) => setFilter(e.currentTarget
+              .value)}
+          />
+        </div>
 
-          Add Task</Button>
-        {/* modals */}
-        <StartTaskSchedulerButton />
-        <StopSchedulerButton />
-              
-      </Container>
-      <div className="w-100 overflow-auto d-flex">
+        <div className="d-flex justify-content-center  align-items-center  p-2 gap-2 ">
+          <Button variant="primary" onClick={() => {
+            setChoice({ type: TaskChoiceActions.new_task })
+          }}>
+            <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" alt="icon" />
+
+            Add Task</Button>
+          {/* modals */}
+          <StartTaskSchedulerButton />
+          <StopSchedulerButton />
+        </div>
+
+
+      </div>
+      <div className="w-100  overflow-auto d-flex">
         <StyledTable>
           <thead>
             <tr className="text-uppercase">

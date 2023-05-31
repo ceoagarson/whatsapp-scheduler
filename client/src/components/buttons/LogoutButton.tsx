@@ -20,7 +20,7 @@ function LogoutButton() {
             mutate()
             setUser(undefined)
         }}>
-            <img title="logout" className="m-1" src="https://img.icons8.com/plasticine/100/logout-rounded.png" height="24" width="24" />
+            <img title="logout" className="m-1" alt="icon" src="https://img.icons8.com/plasticine/100/logout-rounded.png" height="24" width="24" />
         </Button>
     )
 

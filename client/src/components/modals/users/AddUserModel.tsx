@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import  { useContext } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext';
 import NewUserForm from '../../forms/users/NewUserForm';

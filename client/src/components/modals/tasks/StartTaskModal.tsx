@@ -4,13 +4,14 @@ import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
 import { TaskChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
 import { queryClient } from '../../..'
-import { Alert, Button, Container, Modal } from 'react-bootstrap'
+import {  Button, Container, Modal } from 'react-bootstrap'
 import { ITask } from '../../../types/task.type'
 import { StartSingleTaskScheduler } from '../../../services/TaskServices'
+import AlertBar from '../../alert/AlertBar'
 
 function StartTaskModal({ task }: { task: ITask }) {
     const { choice, setChoice } = useContext(ChoiceContext)
-    const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { mutate,  isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (StartSingleTaskScheduler,
             {
@@ -34,17 +35,16 @@ function StartTaskModal({ task }: { task: ITask }) {
         >
             {
                 isError ? (
-                    <Alert variant="danger">
-                        {error?.response.data.message}
-                    </Alert>
+                    <AlertBar message={error?.response.data.message} variant="danger"
+                    />
 
                 ) : null
             }
             {
                 isSuccess ? (
-                    <Alert color="success">
-                        Successfully started
-                    </Alert>
+                      <AlertBar message="Successfully started" variant="success"
+                    />
+                 
                 ) : null
             }
             <Container className='p-2'>

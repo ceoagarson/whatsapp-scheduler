@@ -6,7 +6,7 @@ export const RefreshMessage = async (task_id: string) => {
     if (message) {
         if (message.autoRefresh) {
             await Message.findByIdAndUpdate(message._id, {
-                message_status: "pending",
+                message_status: "NA",
                 whatsapp_status: "",
                 autoStop: false,
                 message_timestamp: new Date(),

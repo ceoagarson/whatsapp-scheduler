@@ -2,19 +2,20 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../types'
-import { Button, Container } from 'react-bootstrap'
+import { Button,  Form } from 'react-bootstrap'
 import { ChoiceContext, MessageChoiceActions, } from '../contexts/DialogContext'
 import { IMessage } from '../types/messages.type'
 import { GetMessages } from '../services/MessageServices'
 import styled from 'styled-components'
 import moment from "moment";
 import StartMessageSchedulerButton from '../components/buttons/StartMessageSchedulerButton'
-import StopSchedulerButton from '../components/buttons/StopTaskSchedulerButton'
+import StopSchedulerButton from '../components/buttons/StopMessageSchedulerButton'
 import DeleteMessageModal from '../components/modals/messages/DeleteMessageModal'
 import AddMessageModal from '../components/modals/messages/AddMessageModal'
 import UpdateMessageModal from '../components/modals/messages/UpdateMessageModal'
 import StartMessageModal from '../components/modals/messages/StartMessageModal'
 import StopMessageModal from '../components/modals/messages/StopMessageModal'
+import FuzzySearch from "fuzzy-search"
 
 const StyledTable = styled.table`
  {
@@ -50,7 +51,8 @@ export default function MessagesPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [messages, setMessages] = useState<IMessage[]>([])
   const [message, setMessage] = useState<IMessage>()
-
+  const [filter, setFilter] = useState<string | undefined>()
+  const [preFilteredData, setPreFilteredData] = useState<IMessage[]>([])
   const { data, isSuccess } = useQuery<AxiosResponse<IMessage[]>, BackendError>("messages", GetMessages, {
     refetchOnMount: true
   })
@@ -59,11 +61,26 @@ export default function MessagesPage() {
     if (message) setMessage(message)
   }
 
-  // setup messages
   useEffect(() => {
-    if (isSuccess)
+    if (isSuccess) {
       setMessages(data.data)
-  }, [isSuccess, data, messages])
+      setPreFilteredData(data.data)
+    }
+  }, [isSuccess, data])
+
+  //set filter
+  useEffect(() => {
+    if (filter) {
+      const searcher = new FuzzySearch(messages, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "message_image", "message_status", "message_timestamp", "next_refresh_date", "next_run_date", "person", "lead_type", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
+        caseSensitive: false,
+      });
+      const result = searcher.search(filter);
+      setMessages(result)
+    }
+    if (!filter)
+      setMessages(preFilteredData)
+  }, [filter, preFilteredData, messages])
+
   return (
     <>
       <AddMessageModal />
@@ -75,18 +92,31 @@ export default function MessagesPage() {
           <StopMessageModal message={message} />
         </>
         : null}
-      <Container className='d-flex justify-content-end p-2 gap-2'>
-        <Button variant="primary" onClick={() => {
-          setChoice({ type: MessageChoiceActions.new_message })
-        }}>
-          <img className="m-1" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="icon" height="30" width="30" />
+      <div className='d-flex flex-column flex-md-row justify-content-between  align-items-center  p-2 gap-2'>
+        <div>
+          <Form.Control
+            className="border border-primary"
+            placeholder={`${messages && messages.length} records`}
+            type="search"
+            onChange={(e) => setFilter(e.currentTarget
+              .value)}
+          />
+        </div>
 
-          Add Message</Button>
-        {/* modals */}
-        <StartMessageSchedulerButton />
-        <StopSchedulerButton />
+        <div className="d-flex justify-content-center  align-items-center  p-2 gap-2 ">
+          <Button variant="primary" onClick={() => {
+            setChoice({ type: MessageChoiceActions.new_message })
+          }}>
+            <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" alt="icon" />
 
-      </Container>
+            Add Task</Button>
+          {/* modals */}
+          <StartMessageSchedulerButton />
+          <StopSchedulerButton />
+        </div>
+
+
+      </div>
       <div className="w-100 overflow-auto d-flex">
         <StyledTable>
           <thead>
@@ -121,7 +151,7 @@ export default function MessagesPage() {
                   <td>{moment(new Date(String(message.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{message.message_status}</td>
                   <td>{moment(new Date(String(message.message_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                  <td><img src={message.message_image} alt="icon" height="30" width="30"/></td>
+                  <td><img src={message.message_image} alt="icon" height="30" width="30" /></td>
                   <td>{message.message_detail}</td>
                   <td>{message.phone}</td>
                   <td>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
