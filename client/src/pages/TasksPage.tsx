@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../types'
-import { Button,  Form } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import { ChoiceContext, TaskChoiceActions, } from '../contexts/DialogContext'
 import { ITask } from '../types/task.type'
 import { GetTasks } from '../services/TaskServices'
@@ -30,6 +30,7 @@ const StyledTable = styled.table`
   border: 1px solid #ddd;
   min-width:180px;
   max-height:20px;
+  font-size:12px;
   
 }
 td:hover{
@@ -155,6 +156,13 @@ export default function TasksPage() {
                   <td>{task.task_title}</td>
                   <td>{task.task_detail}</td>
                   <td>{task.phone}</td>
+                  {new Date(task.start_date) < new Date ?
+
+                    <td style={{ "color": "red" }}>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                    :
+                    <td>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  }
+
                   <td>{moment(new Date(task.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(task.next_run_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(task.next_refresh_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>

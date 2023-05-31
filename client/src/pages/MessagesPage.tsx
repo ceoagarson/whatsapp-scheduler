@@ -30,6 +30,7 @@ const StyledTable = styled.table`
   border: 1px solid #ddd;
   min-width:180px;
   max-height:20px;
+  font-size:12px;
   
 }
 td:hover{
@@ -154,7 +155,12 @@ export default function MessagesPage() {
                   <td><img src={message.message_image} alt="icon" height="30" width="30" /></td>
                   <td>{message.message_detail}</td>
                   <td>{message.phone}</td>
-                  <td>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  {new Date(message.start_date) < new Date ?
+
+                    <td style={{ "color": "red" }}>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                    :
+                    <td>{moment(new Date(message.start_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                  }
                   <td>{moment(new Date(message.next_run_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{moment(new Date(message.next_refresh_date)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{message.frequency && message.frequency.frequencyType ? message.frequency.frequencyType : ""}</td>
