@@ -56,7 +56,7 @@ export const SendMessageWhatsapp = async (task_id: string) => {
                 };
 
                 let response: any = await axios.request(config)
-                const { messages } = JSON.parse(response)
+                const { messages } = response.data
                 if (messages.length > 0) {
                     await Message.findByIdAndUpdate(message._id, { message_id: messages[0].id })
                 }
