@@ -49,6 +49,9 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         type: Boolean,
         default: false
     },
+    message_id: {
+        type: String,
+    },
     frequency: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Frequency'

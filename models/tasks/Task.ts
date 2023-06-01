@@ -43,6 +43,9 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         type: Boolean,
         default: false
     },
+    message_id:{
+        type: String,
+    },
     autoStop: {
         type: Boolean,
         default: true
