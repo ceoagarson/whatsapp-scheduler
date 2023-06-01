@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { GetUsers } from '../services/UserServices'
 import { BackendError } from '../types'
 import { IUser } from '../types/user.type'
-import { Button, Container, Modal } from 'react-bootstrap'
+import { Button, Container } from 'react-bootstrap'
 import AddUserModel from '../components/modals/users/AddUserModel'
 import { AppChoiceActions, ChoiceContext } from '../contexts/DialogContext'
 import styled from "styled-components"
@@ -64,7 +64,7 @@ export default function UsersPage() {
               <Button variant="outline-primary" onClick={() => {
                 setChoice({ type: AppChoiceActions.new_user })
               }}>
-                <img className="m-1" src=" https://img.icons8.com/3d-fluency/94/person-male--v4.png" height="30" width="30" />
+                <img className="m-1" src=" https://img.icons8.com/3d-fluency/94/person-male--v4.png" height="30" alt="icon" width="30" />
                 Add User</Button>
               {/* modals */}
               <AddUserModel />

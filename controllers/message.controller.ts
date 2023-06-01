@@ -165,10 +165,9 @@ export const StartSingleMessageScheduler = async (req: Request, res: Response, n
     let id = req.params.id
     let message = await Message.findById(id)
     if (message) {
-        await Message.findByIdAndUpdate(message._id, {
-            autoStop: false,
-            autoRefresh: true
-        })
+        let date = new Date(message.start_date)
+        if (date > new Date())
+            CreateMessageTrigger(message)
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
     else

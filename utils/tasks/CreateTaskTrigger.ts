@@ -66,6 +66,14 @@ export  async function CreateTaskTrigger(task:ITask) {
                 }
                 
             }
+            if (task.running_trigger && task.refresh_trigger && task.frequency){
+                await Task.findByIdAndUpdate(task._id,
+                    {
+                        autoStop: false,
+                        autoRefresh: true
+                    }
+                )
+            }
         }
     }
     else{

@@ -166,10 +166,9 @@ export const StartSingleTaskScheduler = async (req: Request, res: Response, next
     let id = req.params.id
     let task = await Task.findById(id)
     if (task) {
-        await Task.findByIdAndUpdate(task._id, {
-            autoStop: false,
-            autoRefresh: true
-        })
+        let date = new Date(task.start_date)
+        if (date > new Date())
+            CreateTaskTrigger(task)
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
     else

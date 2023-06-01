@@ -65,6 +65,14 @@ export async function CreateMessageTrigger(message: IMessage) {
 
                 }
             }
+            if (message.running_trigger && message.refresh_trigger && message.frequency) {
+                await Message.findByIdAndUpdate(message._id,
+                    {
+                        autoStop: false,
+                        autoRefresh: true
+                    }
+                )
+            }
         }
     }
     else {
