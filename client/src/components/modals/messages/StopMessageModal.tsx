@@ -25,7 +25,7 @@ function StopMessageModal({ message }: { message: IMessage }) {
         if (isSuccess)
             setTimeout(() => {
                 setChoice({ type: MessageChoiceActions.close })
-            }, 1000)
+            }, 3000)
     }, [setChoice, isSuccess])
     return (
         <Modal

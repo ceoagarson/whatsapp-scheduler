@@ -63,7 +63,7 @@ function SignUpForm() {
             setTimeout(() => {
                 setUser(data.data)
                 goto(paths.users)
-            }, 2000)
+            }, 500)
         }
     }, [setUser, goto, isSuccess, data])
 

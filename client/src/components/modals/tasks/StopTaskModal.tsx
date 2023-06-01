@@ -25,7 +25,7 @@ function StopTaskModal({ task }: { task: ITask }) {
         if (isSuccess)
             setTimeout(() => {
                 setChoice({ type: TaskChoiceActions.close })
-            }, 1000)
+            }, 3000)
     }, [setChoice, isSuccess])
     return (
         <Modal
