@@ -16,7 +16,7 @@ export const GetRunningDateCronString = (frequency: IFrequency, start_date: Date
     }
 
     if (ftype === "months" && freq && Number(freq) > 0) {
-        cronString = "30 " + `${date.getMinutes()} ` + `${date.getHours()} ` + `${date.getDate()}` + " 1/" + `${freq}` + " *"
+        cronString = "30 " + `${date.getMinutes()} ` + `${date.getHours()} ` + `${date.getDate()}` + ` ${Number(freq)===12?freq:1}/` + `${freq}` + " *"
     }
 
     if (ftype === "weekdays" && freq && freq.length > 0) {
