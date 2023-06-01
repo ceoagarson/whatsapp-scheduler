@@ -1,6 +1,7 @@
 import { Request, NextFunction, Response } from "express";
 import Task from "../models/tasks/Task";
 import axios from "axios"
+import Message from "../models/messages/Message";
 
 export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
     let myToken = process.env.myToken
@@ -49,6 +50,7 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
                 let wamid = String(entry[0].changes[0].value.statuses[0].id)
                 let timestamp = new Date(entry[0].changes[0].value.statuses[0].timestamp * 1000)
                 UpdateTaskWhatsappStatus(wamid, status, timestamp)
+                UpdateMessageWhatsappStatus(wamid, status, timestamp)
             }
         }
     }
@@ -101,6 +103,15 @@ async function UpdateTaskWhatsappStatus(wamid: string, status: string, timestamp
         task.whatsapp_status = status
         task.whatsapp_timestamp = new Date(timestamp)
         await task.save()
+    }
+
+}
+async function UpdateMessageWhatsappStatus(wamid: string, status: string, timestamp: Date) {
+    let message = await Message.findOne({ message_id: wamid })
+    if (message) {
+        message.whatsapp_status = status
+        message.whatsapp_timestamp = new Date(timestamp)
+        await message.save()
     }
 
 }
