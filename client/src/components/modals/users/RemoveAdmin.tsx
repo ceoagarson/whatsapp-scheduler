@@ -6,11 +6,12 @@ import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext
 import { IUser } from '../../../types/user.type'
 import { queryClient } from '../../..'
 import { RemoveAdmin } from '../../../services/UserServices'
-import { Alert, Button, Container, Modal } from 'react-bootstrap'
+import {  Button, Container, Modal } from 'react-bootstrap'
+import AlertBar from '../../alert/AlertBar'
 
 function RemoveAdminModal({ user }: { user: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
-    const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { mutate,  isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (RemoveAdmin,
             {
@@ -35,17 +36,15 @@ function RemoveAdminModal({ user }: { user: IUser }) {
         >
             {
                 isError ? (
-                    <Alert variant="danger">
-                        {error?.response.data.message}
-                    </Alert>
+                    <AlertBar message={error?.response.data.message} variant="danger"
+                    />
 
                 ) : null
             }
             {
                 isSuccess ? (
-                    <Alert color="success">
-                        Successful
-                    </Alert>
+                    <AlertBar message="Successful" variant="success"
+                    />
                 ) : null
             }
            <Container className='p-2'>

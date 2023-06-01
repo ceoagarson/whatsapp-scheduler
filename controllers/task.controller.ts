@@ -162,6 +162,19 @@ export const StopSingleTaskScheduler = async (req: Request, res: Response, next:
     else
         return res.status(200).json({ message: "task not found" })
 }
+export const StartSingleTaskScheduler = async (req: Request, res: Response, next: NextFunction) => {
+    let id = req.params.id
+    let task = await Task.findById(id)
+    if (task) {
+        await Task.findByIdAndUpdate(task._id, {
+            autoStop: false,
+            autoRefresh: true
+        })
+        return res.status(200).json({ message: "Scheduler Stopped Successfully" })
+    }
+    else
+        return res.status(200).json({ message: "task not found" })
+}
 
 
 // update task
@@ -191,8 +204,7 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
         created_by: task.created_by,
         updated_by: task.updated_by
     })
-    let errorStatus = false
-
+    
     if (frequency) {
         let ftype = frequency.frequencyType
         let freq = frequency.frequency
@@ -236,12 +248,18 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
             let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
-        if (task.frequency)
+        if (task.frequency) {
             await Frequency.findByIdAndUpdate(task.frequency._id, {
                 frequency: freq,
                 frequencyType: ftype
             })
-        else{
+            let updatedTask = await Task.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
+            if (updatedTask)
+                UpdateTaskTrigger(updatedTask)
+            return res.status(200).json({ message: "task updated SuccessFully" })
+        }
+
+        else {
             let fq = new Frequency({
                 type: frequency?.type,
                 frequency: frequency.frequency,
@@ -250,12 +268,12 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
             if (fq)
                 await fq.save()
             task.frequency = fq
-            await task.save()
+            task=await task.save()
+            CreateTaskTrigger(task)
+            return res.status(200).json({ message: "task updated SuccessFully" })
         }
+    }      
+    else{
+        return res.status(200).json({ message: "task updated SuccessFully" })
     }
-    let updatedTask = await Task.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
-    if (updatedTask)
-        UpdateTaskTrigger(updatedTask)
-    if (!errorStatus)
-        return res.status(201).json({ message: "task updated SuccessFully" })
 }

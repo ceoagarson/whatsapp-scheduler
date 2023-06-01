@@ -23,7 +23,6 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
         return res.status(400).json({ message: "Please provide valid access token" })
     }
     const { entry } = req.body
-    console.log(req.body)
     try {
         if (entry.length > 0 && token) {
             if (entry[0].changes[0].value.messages) {
@@ -54,14 +53,13 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
         }
     }
     catch (error: any) {
-        console.log(error.response)
+        console.log(error)
         return res.status(500).json({ message: error })
     }
     return res.status(200).json({ message: "success" })
 }
 
 async function sendTextMessage(message: string, from: string, token: string) {
-    
     let phone_id = process.env.phone_id
     let url = `https://graph.facebook.com/v16.0/${phone_id}/messages`;
     let data = {
@@ -81,14 +79,14 @@ async function sendTextMessage(message: string, from: string, token: string) {
         },
         data: JSON.stringify(data)
     };
-    await axios(config).catch((err:any)=>console.log(err.response))
+    await axios(config).catch((err:any)=>console.log(err))
 }
 
 async function UpdateTaskStatus(wamid: string, btnRes: string, timestamp: Date) {
     let task = await Task.findOne({ message_id: wamid })
     if (task) {
         if (btnRes.toLowerCase() === "done") {
-            task.autostop = true
+            task.autoStop = true
         }
         task.task_status = btnRes.toLowerCase()
         task.task_timestamp = new Date(timestamp)

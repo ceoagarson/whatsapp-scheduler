@@ -2,50 +2,54 @@ import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { useMutation } from 'react-query'
 import * as Yup from "yup"
-import {  Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { IFrequency, ITask } from '../../../types/task.type'
-import { NewTask } from '../../../services/TaskServices'
+import { IMessage } from '../../../types/messages.type'
+import {  UpdateMessage } from '../../../services/MessageServices'
 import { BackendError } from '../../../types'
 import { useFormik } from 'formik'
 import moment from 'moment'
 import { queryClient } from '../../..'
 import AlertBar from '../../alert/AlertBar'
+import { IFrequency } from '../../../types/task.type'
 
-function NewTaskForm() {
-    const [displayFreq, setDisplayFreq] = useState(false)
+function UpdateMessageForm({ message }: { message: IMessage }) {
+    const [displayFreq, setDisplayFreq] = useState(true)
     const { mutate,  isSuccess, isLoading, isError, error } = useMutation
-        <AxiosResponse<ITask>,
+        <AxiosResponse<IMessage>,
             BackendError,
             {
-                task_title: string,
-                task_detail: string,
-                person: string,
-                phone: number,
-                start_date: string,
-                frequency?: IFrequency
+                id: string,
+                body: {
+                    message_image: string,
+                    message_detail: string,
+                    person: string,
+                    phone: number,
+                    start_date: string,
+                    frequency?: IFrequency
+                }
             }
-        >(NewTask, {
+        >(UpdateMessage, {
             onSuccess: () => {
-                queryClient.invalidateQueries('tasks')
+                queryClient.invalidateQueries('messages')
             }
         })
     const formik = useFormik({
         initialValues: {
-            task_title: "",
-            task_detail: "",
-            person: "",
-            phone: 0,
-            start_date: moment(new Date((new Date().getTime() + 60000))).format("YYYY-MM-DDThh:mm"),
-            frequencyValue: "",
-            frequencyType: ""
+            message_image: message.message_image,
+            message_detail: message.message_detail,
+            person: message.person,
+            phone: Number(message.phone),
+            start_date: moment(message.start_date).format("YYYY-MM-DDThh:mm"),
+            frequencyValue: message.frequency && message.frequency.frequency,
+            frequencyType: message.frequency && message.frequency.frequencyType
         },
         validationSchema: Yup.object({
-            task_title: Yup.string()
+            message_image: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(50, 'Must be 500 characters or less')
+                .max(500, 'Must be 500 characters or less')
                 .required(),
-            task_detail: Yup.string()
+            message_detail: Yup.string()
                 .min(10, 'Must be 10 characters or more')
                 .max(500, 'Must be 500 characters or less')
                 .required(),
@@ -77,35 +81,41 @@ function NewTaskForm() {
                 else
                     return true
             })
-        }),
+        }).required(),
         onSubmit: (values: {
-            task_title: string,
-            task_detail: string,
+            message_image: string,
+            message_detail: string,
             person: string,
             phone: number,
-            start_date: string,
+            start_date: string
             frequencyValue?: string,
             frequencyType?: string
         }) => {
+
             if (values.frequencyValue && values.frequencyType) {
                 mutate({
-                    ...values,
-                    frequency: {
-                        type: "task",
-                        frequency: values.frequencyValue,
-                        frequencyType: values.frequencyType
+                    id: message._id,
+                    body: {
+                        ...values,
+                        frequency: {
+                            type: "message",
+                            frequency: values.frequencyValue,
+                            frequencyType: values.frequencyType
+                        }
                     }
                 })
             }
             else
-                mutate(values)
-
+                mutate({
+                    id: message._id,
+                    body: values
+                })
         },
     });
 
     return (
         <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-            <h1 className="d-block fs-4 text-center">New task Form</h1>
+            <h1 className="d-block fs-4 text-center">Update message Form</h1>
             {
                 isError ? (
                     <AlertBar message={error?.response.data.message} variant="danger"
@@ -119,19 +129,19 @@ function NewTaskForm() {
                     />
                 ) : null
             }
-            {/* task title */}
+            {/* message title */}
             <Form.Group className="pt-3 mb-3" >
-                <Form.Control className="border border-primary" placeholder="Task Title"
-                    {...formik.getFieldProps('task_title')}
+                <Form.Control className="border border-primary" placeholder="Message image"
+                    {...formik.getFieldProps('message_image')}
                 />
-                <Form.Text className='text-muted'>{formik.touched.task_title && formik.errors.task_title ? formik.errors.task_title : ""}</Form.Text>
+                <Form.Text className='text-muted'>{formik.touched.message_image && formik.errors.message_image ? formik.errors.message_image : ""}</Form.Text>
             </Form.Group>
-            {/* task detail */}
+            {/* message detail */}
             <Form.Group className="mb-3" >
-                <Form.Control className="border border-primary" placeholder="Task"
-                    {...formik.getFieldProps('task_detail')}
+                <Form.Control className="border border-primary" placeholder="Message"
+                    {...formik.getFieldProps('message_detail')}
                 />
-                <Form.Text className='text-muted'>{formik.touched.task_detail && formik.errors.task_detail ? formik.errors.task_detail : ""}</Form.Text>
+                <Form.Text className='text-muted'>{formik.touched.message_detail && formik.errors.message_detail ? formik.errors.message_detail : ""}</Form.Text>
             </Form.Group>
             {/* person */}
             <Form.Group className="mb-3" >
@@ -159,10 +169,12 @@ function NewTaskForm() {
                 <Form.Check
                     type="switch"
                     label="frequency"
+                    defaultChecked
                     onChange={() => setDisplayFreq(!displayFreq)}
                 />
             </Form.Group>
 
+            {/* frequency */}
             {displayFreq ?
                 <div className='w-100 d-flex justify-content-between align-items-center gap-2'>
                     <Form.Group className="mb-3">
@@ -188,14 +200,13 @@ function NewTaskForm() {
                     </Form.Group>
 
                 </div>
-
                 : null
             }
             <Button variant="primary" className='w-100' type="submit"
                 disabled={isLoading}
-            >{isLoading ? "Working on it..." : "Create Task"}</Button>
+            >{isLoading ? "Working on it..." : "Update Message"}</Button>
         </Form >
     )
 }
 
-export default NewTaskForm
+export default UpdateMessageForm

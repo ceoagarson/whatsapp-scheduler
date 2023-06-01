@@ -25,7 +25,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                         updated_at: new Date()
                     })
                     if (TaskManager.exists(task.running_trigger.key)) {
-                        TaskManager.update(task.running_trigger.key, runstring, () => { SendTaskWhatsapp(task.running_trigger.key) })
+                        TaskManager.update(task.running_trigger.key, runstring, () => { SendTaskWhatsapp(task._id) })
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {
@@ -40,7 +40,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                         updated_at: new Date()
                     })
                     if (TaskManager.exists(task.refresh_trigger.key)) {
-                        TaskManager.update(task.refresh_trigger.key, refstring, () => { RefreshTask(task.refresh_trigger.key) })
+                        TaskManager.update(task.refresh_trigger.key, refstring, () => { RefreshTask(task._id) })
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {

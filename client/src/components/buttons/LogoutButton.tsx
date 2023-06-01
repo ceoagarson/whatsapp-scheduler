@@ -4,6 +4,7 @@ import { Logout } from '../../services/UserServices'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '../../Routes'
 import { UserContext } from '../../contexts/UserContext'
+import { Button } from 'react-bootstrap'
 
 function LogoutButton() {
     const goto = useNavigate()
@@ -15,16 +16,12 @@ function LogoutButton() {
         }
     }, [goto, isSuccess])
     return (
-        <img
-            onClick={() => {
-                mutate()
-                setUser(undefined)
-            }}
-            height="20"
-            className='bg-danger p-1 rounded border border-light'
-            width="20"
-            style={{ "cursor": "pointer" }}
-            src="https://img.icons8.com/ios/50/exit--v1.png" />
+        <Button className='p-0 m-0' size="sm" onClick={() => {
+            mutate()
+            setUser(undefined)
+        }}>
+            <img title="logout" className="m-1" alt="icon" src="https://img.icons8.com/plasticine/100/logout-rounded.png" height="24" width="24" />
+        </Button>
     )
 
 }

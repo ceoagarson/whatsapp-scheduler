@@ -5,7 +5,7 @@ import * as Yup from "yup"
 import { Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import { IFrequency, ITask } from '../../../types/task.type'
-import { NewTask, UpdateTask } from '../../../services/TaskServices'
+import {  UpdateTask } from '../../../services/TaskServices'
 import { BackendError } from '../../../types'
 import { useFormik } from 'formik'
 import moment from 'moment'
@@ -14,7 +14,7 @@ import AlertBar from '../../alert/AlertBar'
 
 function UpdateTaskForm({ task }: { task: ITask }) {
     const [displayFreq, setDisplayFreq] = useState(true)
-    const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+    const { mutate,  isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<ITask>,
             BackendError,
             {
@@ -62,14 +62,14 @@ function UpdateTaskForm({ task }: { task: ITask }) {
                 .required(),
             frequencyValue: Yup.string()
                 .test("required", (data) => {
-                    if (!data)
+                    if (displayFreq && !data)
                         return false
                     else
                         return true
                 }),
             frequencyType: Yup.string()
                 .test("required", (data) => {
-                    if (!data)
+                    if (displayFreq && !data)
                         return false
                     else
                         return true

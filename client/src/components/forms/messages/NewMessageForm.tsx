@@ -4,36 +4,37 @@ import { useMutation } from 'react-query'
 import * as Yup from "yup"
 import {  Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
-import { IFrequency, ITask } from '../../../types/task.type'
-import { NewTask } from '../../../services/TaskServices'
+import {  IMessage } from '../../../types/messages.type'
+import { NewMessage } from '../../../services/MessageServices'
 import { BackendError } from '../../../types'
 import { useFormik } from 'formik'
 import moment from 'moment'
 import { queryClient } from '../../..'
 import AlertBar from '../../alert/AlertBar'
+import { IFrequency } from '../../../types/task.type'
 
-function NewTaskForm() {
+function NewMessageForm() {
     const [displayFreq, setDisplayFreq] = useState(false)
     const { mutate,  isSuccess, isLoading, isError, error } = useMutation
-        <AxiosResponse<ITask>,
+        <AxiosResponse<IMessage>,
             BackendError,
             {
-                task_title: string,
-                task_detail: string,
+                message_image: string,
+                message_detail: string,
                 person: string,
                 phone: number,
                 start_date: string,
                 frequency?: IFrequency
             }
-        >(NewTask, {
+        >(NewMessage, {
             onSuccess: () => {
-                queryClient.invalidateQueries('tasks')
+                queryClient.invalidateQueries('messages')
             }
         })
     const formik = useFormik({
         initialValues: {
-            task_title: "",
-            task_detail: "",
+            message_image: "https://fplogoimages.withfloats.com/tile/605af6c3f7fc820001c55b20.jpg",
+            message_detail: "",
             person: "",
             phone: 0,
             start_date: moment(new Date((new Date().getTime() + 60000))).format("YYYY-MM-DDThh:mm"),
@@ -41,11 +42,11 @@ function NewTaskForm() {
             frequencyType: ""
         },
         validationSchema: Yup.object({
-            task_title: Yup.string()
+            message_image: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(50, 'Must be 500 characters or less')
+                .max(500, 'Must be 500 characters or less')
                 .required(),
-            task_detail: Yup.string()
+            message_detail: Yup.string()
                 .min(10, 'Must be 10 characters or more')
                 .max(500, 'Must be 500 characters or less')
                 .required(),
@@ -79,8 +80,8 @@ function NewTaskForm() {
             })
         }),
         onSubmit: (values: {
-            task_title: string,
-            task_detail: string,
+            message_image: string,
+            message_detail: string,
             person: string,
             phone: number,
             start_date: string,
@@ -91,7 +92,7 @@ function NewTaskForm() {
                 mutate({
                     ...values,
                     frequency: {
-                        type: "task",
+                        type: "message",
                         frequency: values.frequencyValue,
                         frequencyType: values.frequencyType
                     }
@@ -105,7 +106,7 @@ function NewTaskForm() {
 
     return (
         <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-            <h1 className="d-block fs-4 text-center">New task Form</h1>
+            <h1 className="d-block fs-4 text-center">New message Form</h1>
             {
                 isError ? (
                     <AlertBar message={error?.response.data.message} variant="danger"
@@ -119,19 +120,19 @@ function NewTaskForm() {
                     />
                 ) : null
             }
-            {/* task title */}
+            {/* message title */}
             <Form.Group className="pt-3 mb-3" >
-                <Form.Control className="border border-primary" placeholder="Task Title"
-                    {...formik.getFieldProps('task_title')}
+                <Form.Control className="border border-primary" placeholder="Message Image"
+                    {...formik.getFieldProps('message_image')}
                 />
-                <Form.Text className='text-muted'>{formik.touched.task_title && formik.errors.task_title ? formik.errors.task_title : ""}</Form.Text>
+                <Form.Text className='text-muted'>{formik.touched.message_image && formik.errors.message_image ? formik.errors.message_image : ""}</Form.Text>
             </Form.Group>
-            {/* task detail */}
+            {/* message detail */}
             <Form.Group className="mb-3" >
-                <Form.Control className="border border-primary" placeholder="Task"
-                    {...formik.getFieldProps('task_detail')}
+                <Form.Control className="border border-primary" placeholder="Message"
+                    {...formik.getFieldProps('message_detail')}
                 />
-                <Form.Text className='text-muted'>{formik.touched.task_detail && formik.errors.task_detail ? formik.errors.task_detail : ""}</Form.Text>
+                <Form.Text className='text-muted'>{formik.touched.message_detail && formik.errors.message_detail ? formik.errors.message_detail : ""}</Form.Text>
             </Form.Group>
             {/* person */}
             <Form.Group className="mb-3" >
@@ -193,9 +194,9 @@ function NewTaskForm() {
             }
             <Button variant="primary" className='w-100' type="submit"
                 disabled={isLoading}
-            >{isLoading ? "Working on it..." : "Create Task"}</Button>
+            >{isLoading ? "Working on it..." : "Create Message"}</Button>
         </Form >
     )
 }
 
-export default NewTaskForm
+export default NewMessageForm

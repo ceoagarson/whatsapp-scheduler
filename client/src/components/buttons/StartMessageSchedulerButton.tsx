@@ -1,19 +1,19 @@
 import { AxiosResponse } from 'axios'
-import { ITask } from '../../types/task.type'
+import { IMessage } from '../../types/messages.type'
 import { BackendError } from '../../types'
-import { StartTaskScheduler } from '../../services/TaskServices'
+import { StartMessageScheduler } from '../../services/MessageServices'
 import { useMutation } from 'react-query'
 import { queryClient } from '../..'
 import { Button } from 'react-bootstrap'
 import AlertBar from '../alert/AlertBar'
 
-function StartTaskSchedulerButton() {
+function StartMessageSchedulerButton() {
     const { mutate: Start_scheduler, isSuccess,  isError, error } = useMutation
-        <AxiosResponse<ITask>,
+        <AxiosResponse<IMessage>,
             BackendError
-        >(StartTaskScheduler, {
+        >(StartMessageScheduler, {
             onSuccess: () => {
-                queryClient.invalidateQueries('tasks')
+                queryClient.invalidateQueries('messages')
             }
         })
     return (
@@ -35,9 +35,9 @@ function StartTaskSchedulerButton() {
                 Start_scheduler()
             }}>
                 <img className="m-1" src="https://img.icons8.com/color/48/restart--v1.png" alt="icon" height="30" width="30"/>
-                Start Task Scheduler</Button>
+                Start Messages Scheduler</Button>
         </>
     )
 }
 
-export default StartTaskSchedulerButton
+export default StartMessageSchedulerButton

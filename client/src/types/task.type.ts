@@ -36,7 +36,7 @@ export interface ITask {
     task_timestamp: Date | null,
     run_once: boolean,
     autoRefresh: boolean,
-    autostop: boolean,
+    autoStop: boolean,
 
     frequency: IFrequency,
     running_trigger: ITaskTrigger,

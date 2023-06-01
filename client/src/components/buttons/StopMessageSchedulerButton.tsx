@@ -1,18 +1,18 @@
 import { Button } from 'react-bootstrap'
 import { useMutation } from 'react-query'
-import { ITask } from '../../types/task.type'
+import { IMessage } from '../../types/messages.type'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../../types'
-import { StopTaskScheduler } from '../../services/TaskServices'
+import { StopMessageScheduler } from '../../services/MessageServices'
 import { queryClient } from '../..'
 import AlertBar from '../alert/AlertBar'
 
-function StopSchedulerButton() {
+function StopMessageSchedulerButton() {
 
-    const { mutate: Stop_Scheduler, isSuccess, isLoading, isError, error } = useMutation
-        <AxiosResponse<ITask>,
+    const { mutate: Stop_Scheduler, isSuccess,  isError, error } = useMutation
+        <AxiosResponse<IMessage>,
             BackendError
-        >(StopTaskScheduler, {
+        >(StopMessageScheduler, {
             onSuccess: () => {
                 queryClient.invalidateQueries('tasks')
             }
@@ -28,15 +28,17 @@ function StopSchedulerButton() {
             }
             {
                 isSuccess ? (
-                    <AlertBar message='Successfull stopped' variant="success"
+                    <AlertBar message='Successfull stopped' variant="danger"
                     />
                 ) : null
             }
-            <Button size="sm"  variant="outline-danger" onClick={() => {
+            <Button size="sm" variant="outline-danger" onClick={() => {
                 Stop_Scheduler()
-            }}>Stop Scheduler</Button>
+            }}>
+                <img className="m-1" src="https://img.icons8.com/color/48/stop--v1.png" height="30" width="30" alt="icon" />
+                Stop Messages Scheduler</Button>
         </>
     )
 }
 
-export default StopSchedulerButton
+export default StopMessageSchedulerButton

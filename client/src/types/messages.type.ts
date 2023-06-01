@@ -31,7 +31,7 @@ export interface IMessage {
     message_timestamp: Date | null,
     run_once: boolean,
     autoRefresh: boolean,
-    autostop: boolean,
+    autoStop: boolean,
 
     frequency: IFrequency,
     running_trigger: IMessageTrigger,

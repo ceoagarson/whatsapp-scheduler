@@ -63,7 +63,9 @@ export default function UsersPage() {
             <Container className='d-flex justify-content-end p-2'>
               <Button variant="outline-primary" onClick={() => {
                 setChoice({ type: AppChoiceActions.new_user })
-              }}>Add User</Button>
+              }}>
+                <img className="m-1" src=" https://img.icons8.com/3d-fluency/94/person-male--v4.png" height="30" width="30" />
+                Add User</Button>
               {/* modals */}
               <AddUserModel />
               {user ?
@@ -119,42 +121,55 @@ export default function UsersPage() {
                             width="24" height="24" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
 
                           {/* block and unblock user */}
-                          {user.is_active ?
-                            <img style={{ "cursor": "pointer" }} title="block"
-                              onClick={() => {
-                                setSelectedUser(users, user._id)
-                                setChoice({ type: AppChoiceActions.block_user })
-                              }
-                              }
-                              width="24" height="24" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="cancel-2" /> :
-                            <img style={{ "cursor": "pointer" }} title="unblock"
-                              onClick={() => {
-                                setSelectedUser(users, user._id)
-                                setChoice({ type: AppChoiceActions.unblock_user })
-                              }
-                              }
-                              width="24" height="24" src="https://img.icons8.com/external-tal-revivo-filled-tal-revivo/24/external-unlock-security-lock-with-permission-granted-to-access-login-filled-tal-revivo.png" alt="edit--v1" />
+                          {
+                            user.created_by._id !== user._id ?
+                              <>
+                                {
+                                  user.is_active ?
+                                    <img style={{ "cursor": "pointer" }} title="block"
+                                      onClick={() => {
+                                        setSelectedUser(users, user._id)
+                                        setChoice({ type: AppChoiceActions.block_user })
+                                      }
+                                      }
+                                      width="24" height="24" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="cancel-2" /> :
+                                    <img style={{ "cursor": "pointer" }} title="unblock"
+                                      onClick={() => {
+                                        setSelectedUser(users, user._id)
+                                        setChoice({ type: AppChoiceActions.unblock_user })
+                                      }
+                                      }
+                                      width="24" height="24" src="https://img.icons8.com/external-tal-revivo-filled-tal-revivo/24/external-unlock-security-lock-with-permission-granted-to-access-login-filled-tal-revivo.png" alt="edit--v1" />
+                                }
+                              </>
+                              : null
                           }
 
                           {
-                            user.is_admin ?
-                              <img style={{ "cursor": "pointer" }} title="make admin"
-                                onClick={() => {
-                                  setSelectedUser(users, user._id)
-                                  setChoice({ type: AppChoiceActions.remove_admin })
-                                }
-                                }
-                                width="24" height="24" src="https://img.icons8.com/fluency/100/administrator-male.png"
-                                alt="cross-mark-button-emoji" /> :
-                              <img style={{ "cursor": "pointer" }} title="remove admin"
-                                onClick={() => {
-                                  setSelectedUser(users, user._id)
-                                  setChoice({ type: AppChoiceActions.make_admin })
-                                }
-                                }
+                            user.created_by._id !== user._id ?
+                              <>
+                                {
+                                  user.is_admin ?
 
-                                width="24" height="24" src="https://img.icons8.com/emoji/48/cross-mark-button-emoji.png" alt="administrator-male" />
-                          }
+                                    <img style={{ "cursor": "pointer" }} title="remove admin"
+                                      onClick={() => {
+                                        setSelectedUser(users, user._id)
+                                        setChoice({ type: AppChoiceActions.remove_admin })
+                                      }
+                                      }
+
+                                      width="24" height="24" src="https://img.icons8.com/color/48/remove-user-male--v1.png" alt="administrator-male" /> :
+                                    <img style={{ "cursor": "pointer" }} title="make admin"
+                                      onClick={() => {
+                                        setSelectedUser(users, user._id)
+                                        setChoice({ type: AppChoiceActions.make_admin })
+                                      }
+                                      }
+                                      width="24" height="24" src="https://img.icons8.com/fluency/100/administrator-male.png"
+                                      alt="cross-mark-button-emoji" />
+                                }</>
+                              : null}
+
                         </td>
                       </tr>
                     )
