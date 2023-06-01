@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
-import { Container, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import Button from "react-bootstrap/Button"
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom'
@@ -57,46 +57,44 @@ function UpdatePasswordForm() {
     }, [goto, isSuccess])
 
     return (
-        <Container className='d-flex  fluid justify-content-center h-100 min-vw-100'>
-            <Form onSubmit={formik.handleSubmit} className='shadow mt-5  p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
-                {
-                    isError ? (
-                        <Alert variant="danger">
-                            {error?.response.data.message}
-                        </Alert>
+        <Form onSubmit={formik.handleSubmit} className='shadow w-100 p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
+            {
+                isError ? (
+                    <Alert variant="danger">
+                        {error?.response.data.message}
+                    </Alert>
 
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <Alert color="success">
-                            Successful
-                        </Alert>
-                    ) : null
-                }
-                <Form.Group className="mb-3" >
-                    <Form.Control className="border border-primary" type="password" placeholder="old password"
-                        {...formik.getFieldProps('oldPassword')}
-                    />
-                    <Form.Text className='pl-2 text-muted'>{formik.touched.oldPassword && formik.errors.oldPassword ? formik.errors.oldPassword : ""}</Form.Text>
-                </Form.Group>
-                <Form.Group className="mb-3" >
-                    <Form.Control className="border border-primary" type="password" placeholder="new password"
-                        {...formik.getFieldProps('newPassword')}
-                    />
-                    <Form.Text className='pl-2 text-muted'>{formik.touched.newPassword && formik.errors.newPassword ? formik.errors.newPassword : ""}</Form.Text>
-                </Form.Group>
-                <Form.Group className="mb-3" >
-                    <Form.Control className="border border-primary" type="password" placeholder="confirm password"
-                        {...formik.getFieldProps('confirmPassword')}
-                    />
-                    <Form.Text className='pl-2 text-muted'>{formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""}</Form.Text>
-                </Form.Group>
-                <Button variant="primary" className='w-100' type="submit"
-                    disabled={isLoading}
-                >{isLoading ? "Working on it..." : "Update Password"}</Button>
-            </Form>
-        </Container>
+                ) : null
+            }
+            {
+                isSuccess ? (
+                    <Alert color="success">
+                        Successful
+                    </Alert>
+                ) : null
+            }
+            <Form.Group className="mb-3" >
+                <Form.Control className="border border-primary"  placeholder="old password"
+                    {...formik.getFieldProps('oldPassword')}
+                />
+                <Form.Text className='pl-2 text-muted'>{formik.touched.oldPassword && formik.errors.oldPassword ? formik.errors.oldPassword : ""}</Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+                <Form.Control className="border border-primary"  placeholder="new password"
+                    {...formik.getFieldProps('newPassword')}
+                />
+                <Form.Text className='pl-2 text-muted'>{formik.touched.newPassword && formik.errors.newPassword ? formik.errors.newPassword : ""}</Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+                <Form.Control className="border border-primary"  placeholder="confirm password"
+                    {...formik.getFieldProps('confirmPassword')}
+                />
+                <Form.Text className='pl-2 text-muted'>{formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""}</Form.Text>
+            </Form.Group>
+            <Button variant="primary" className='w-100' type="submit"
+                disabled={isLoading}
+            >{isLoading ? "Working on it..." : "Update Password"}</Button>
+        </Form>
     )
 }
 

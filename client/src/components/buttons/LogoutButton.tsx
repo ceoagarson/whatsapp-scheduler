@@ -16,11 +16,12 @@ function LogoutButton() {
         }
     }, [goto, isSuccess])
     return (
-        <Button className='p-0 m-0' size="sm" onClick={() => {
+        <Button variant="text" className='p-0 m-0' size="sm" onClick={() => {
             mutate()
             setUser(undefined)
         }}>
             <img title="logout" className="m-1" alt="icon" src="https://img.icons8.com/plasticine/100/logout-rounded.png" height="24" width="24" />
+            Logout
         </Button>
     )
 

@@ -126,7 +126,7 @@ export default function MessagesPage() {
               <th>Whatsapp Timestamp</th>
               <th>Message Status</th>
               <th>Message TimeStamp</th>
-              <th className='.text-nowrap'>Message Title</th>
+              <th className='.text-nowrap'>Message Image</th>
               <th>Message Description</th>
               <th>Phone</th>
               <th>Start date</th>

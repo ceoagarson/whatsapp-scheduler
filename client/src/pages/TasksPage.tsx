@@ -17,6 +17,7 @@ import StartTaskModal from '../components/modals/tasks/StartTaskModal'
 import StopTaskModal from '../components/modals/tasks/StopTaskModal'
 import FuzzySearch from "fuzzy-search"
 import ViewTaskModal from '../components/modals/tasks/ViewTaskModal'
+import { UserContext } from '../contexts/UserContext'
 
 const StyledTable = styled.table`
  {
@@ -48,6 +49,7 @@ const StyledTable = styled.table`
 `
 export default function TasksPage() {
   const { setChoice } = useContext(ChoiceContext)
+  const { user } = useContext(UserContext)
   const [tasks, setTasks] = useState<ITask[]>([])
   const [task, setTask] = useState<ITask>()
   const [filter, setFilter] = useState<string | undefined>()
@@ -85,11 +87,17 @@ export default function TasksPage() {
       <AddTaskModal />
       {task ?
         <>
-          <UpdateTaskModal task={task} />
-          <DeleteTaskModal task={task} />
-          <StartTaskModal task={task} />
-          <StopTaskModal task={task} />
-          <ViewTaskModal task={task}/>
+          {
+            user?.is_admin ?
+              <>
+                <UpdateTaskModal task={task} />
+                <DeleteTaskModal task={task} />
+                <StartTaskModal task={task} />
+                <StopTaskModal task={task} />
+              </>
+              : null
+          }
+          <ViewTaskModal task={task} />
         </>
         : null}
       <div className='d-flex flex-column flex-md-row justify-content-between  align-items-center  p-2 gap-2'>
@@ -170,50 +178,63 @@ export default function TasksPage() {
                   <td>{task.created_by.username}</td>
                   <td>{task.updated_by.username}</td>
                   <td>
-                    {/* update task */}
-                    <img style={{ "cursor": "pointer" }} title="edit"
-                      onClick={() => {
-                        setSelectedTask(tasks, task._id)
-                        setChoice({ type: TaskChoiceActions.edit_task })
-                      }
-                      }
-                      width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
-                    {/* view task */}
-                    <img style={{ "cursor": "pointer" }} title="edit"
-                      onClick={() => {
-                        setSelectedTask(tasks, task._id)
-                        setChoice({ type: TaskChoiceActions.view_task })
-                      }
-                      }
-                      width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
-
-
-                    {/* start and stop task scheduler */}
                     {
-                      task.autoStop ?
-                        <img style={{ "cursor": "pointer" }} title="Restart"
+                      user?.is_admin ?
+                        <>
+                          {/* update task */}
+                          <img style={{ "cursor": "pointer" }} title="edit"
+                            onClick={() => {
+                              setSelectedTask(tasks, task._id)
+                              setChoice({ type: TaskChoiceActions.edit_task })
+                            }
+                            }
+                            width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
+                          {/* view task */}
+                          <img style={{ "cursor": "pointer" }} title="edit"
+                            onClick={() => {
+                              setSelectedTask(tasks, task._id)
+                              setChoice({ type: TaskChoiceActions.view_task })
+                            }
+                            }
+                            width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
+
+                          {/* start and stop task scheduler */}
+                          {
+                            task.autoStop ?
+                              <img style={{ "cursor": "pointer" }} title="Restart"
+                                onClick={() => {
+                                  setSelectedTask(tasks, task._id)
+                                  setChoice({ type: TaskChoiceActions.start_task })
+                                }
+                                }
+                                width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
+                              <img style={{ "cursor": "pointer" }} title="Stop"
+                                onClick={() => {
+                                  setSelectedTask(tasks, task._id)
+                                  setChoice({ type: TaskChoiceActions.stop_task })
+                                }
+                                }
+                                width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                          }
+                          {/* delete task */}
+                          <img style={{ "cursor": "pointer" }} title="delete"
+                            onClick={() => {
+                              setSelectedTask(tasks, task._id)
+                              setChoice({ type: TaskChoiceActions.delete_task })
+                            }
+                            }
+                            width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
+                        </>
+                        : <img style={{ "cursor": "pointer" }} title="edit"
                           onClick={() => {
                             setSelectedTask(tasks, task._id)
-                            setChoice({ type: TaskChoiceActions.start_task })
+                            setChoice({ type: TaskChoiceActions.view_task })
                           }
                           }
-                          width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
-                        <img style={{ "cursor": "pointer" }} title="Stop"
-                          onClick={() => {
-                            setSelectedTask(tasks, task._id)
-                            setChoice({ type: TaskChoiceActions.stop_task })
-                          }
-                          }
-                          width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                          width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
                     }
-                    {/* delete task */}
-                    <img style={{ "cursor": "pointer" }} title="delete"
-                      onClick={() => {
-                        setSelectedTask(tasks, task._id)
-                        setChoice({ type: TaskChoiceActions.delete_task })
-                      }
-                      }
-                      width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
                   </td>
                 </tr>
               )
