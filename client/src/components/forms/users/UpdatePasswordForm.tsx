@@ -51,7 +51,7 @@ function UpdatePasswordForm() {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                goto(paths.dashboard)
+                goto(paths.users)
             }, 1000)
         }
     }, [goto, isSuccess])

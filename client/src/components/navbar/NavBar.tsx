@@ -9,7 +9,7 @@ function NavBar() {
     return (
         <div className="bg-primary justify-content-between align-items-between d-flex gap-1 w-100">
             <div className="d-flex align-items-center">
-                <Link to={paths.dashboard}>
+                <Link to={paths.users}>
                     <img
                         className="m-2 d-inline-block rounded-circle"
                         alt=""

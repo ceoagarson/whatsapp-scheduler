@@ -8,14 +8,12 @@ import { useContext } from "react"
 import { UserContext } from "./contexts/UserContext"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import UpdatePasswordPage from "./pages/auth/UpdatePassword"
-import DashboardPage from "./pages/DashboardPage"
 
 export enum paths {
     login = "/login",
     reset_password = "/password/reset/:token",
     update_password = "/password/update",
     users = "/users",
-    dashboard = "/dashboard",
     signup = "/signup",
     tasks = "/tasks",
     messages = "/messages"
@@ -27,8 +25,6 @@ function AppRoutes() {
             <Route path={paths.login} element={<LoginPage />} />
             <Route path={paths.signup} element={<SignUpPage />} />
             <Route path={paths.reset_password} element={<ResetPasswordPage />} />
-
-            <Route path={paths.dashboard} element={user ? <DashboardPage /> : <LoginPage />} />
             <Route path={paths.users} element={user ? <UsersPage /> : <LoginPage />} />
             <Route path={paths.tasks} element={user ? <TasksPage /> : <LoginPage />} />
             <Route path={paths.messages} element={user ? <MessagesPage /> : <LoginPage />} />

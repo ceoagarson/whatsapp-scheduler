@@ -49,7 +49,7 @@ function LoginForm() {
     useEffect(() => {
         if (isSuccess) {
             setUser(data.data)
-            goto(paths.dashboard)
+            goto(paths.users)
         }
     }, [setUser, goto, isSuccess, data])
 
