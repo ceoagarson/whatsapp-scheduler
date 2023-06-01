@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.route("/messages")
     .get(GetMessages)
-    .post(isAuthenticatedUser, isAdmin, CreateMessage)
+    .post(isAuthenticatedUser,  CreateMessage)
 router.route("/messages/:id")
     .delete(isAuthenticatedUser, isAdmin, DeleteMessage)
     .put(isAuthenticatedUser, isAdmin, UpdateMessage)

@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.route("/tasks")
     .get(GetTasks)
-    .post(isAuthenticatedUser, isAdmin, CreateTask)
+    .post(isAuthenticatedUser,  CreateTask)
 router.route("/tasks/:id")
     .delete(isAuthenticatedUser, isAdmin, DeleteTask)
     .put(isAuthenticatedUser, isAdmin, UpdateTask)
