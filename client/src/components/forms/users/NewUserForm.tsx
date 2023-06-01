@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useState } from 'react'
+import {  useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { BackendError } from '../../../types'
 import { IUser } from '../../../types/user.type'
 import { NewUser } from '../../../services/UserServices'
-import { UserContext } from '../../../contexts/UserContext'
 import { paths } from '../../../Routes'
 import { queryClient } from '../../..'
 
@@ -27,7 +26,6 @@ function NewUserForm() {
             }
         })
     const [display, setDisplay] = useState<string | undefined>()
-    const { setUser } = useContext(UserContext)
 
     const formik = useFormik({
         initialValues: {
@@ -66,11 +64,10 @@ function NewUserForm() {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setUser(data.data)
                 goto(paths.users)
             }, 2000)
         }
-    }, [setUser, goto, isSuccess, data])
+    }, [goto, isSuccess, data])
 
     return (
         <Form onSubmit={formik.handleSubmit} className='p-4 shadow w-100 bg-body-tertiary border border-2 rounded bg-light align-self-center'>

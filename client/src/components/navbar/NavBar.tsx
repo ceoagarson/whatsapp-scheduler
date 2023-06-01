@@ -25,7 +25,7 @@ function NavBar() {
                         />
                     </Link>
                     {user ? <>
-                        <DropdownButton id="dropdown-basic-button" title="">
+                        <DropdownButton id="dropdown-basic-button" title={user.username}>
                             <Dropdown.Item onClick={() => setChoice({ type: AppChoiceActions.update_password })}><img height="30" width="30" src="https://img.icons8.com/color/48/keys-holder.png" alt="icons" />Update Password</Dropdown.Item>
                             <Dropdown.Item><LogoutButton /></Dropdown.Item>
                         </DropdownButton>

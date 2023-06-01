@@ -17,6 +17,7 @@ import StartMessageModal from '../components/modals/messages/StartMessageModal'
 import StopMessageModal from '../components/modals/messages/StopMessageModal'
 import FuzzySearch from "fuzzy-search"
 import ViewMessageModal from '../components/modals/messages/ViewMessageModal'
+import { UserContext } from '../contexts/UserContext'
 
 const StyledTable = styled.table`
  {
@@ -48,6 +49,7 @@ const StyledTable = styled.table`
 `
 export default function MessagesPage() {
   const { setChoice } = useContext(ChoiceContext)
+  const { user } = useContext(UserContext)
   const [messages, setMessages] = useState<IMessage[]>([])
   const [message, setMessage] = useState<IMessage>()
   const [filter, setFilter] = useState<string | undefined>()
@@ -107,7 +109,7 @@ export default function MessagesPage() {
           <Button variant="primary" onClick={() => {
             setChoice({ type: MessageChoiceActions.new_message })
           }}>
-            <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" alt="icon" />
+            <img className="m-1" src="https://img.icons8.com/color/48/whatsapp--v1.png" height="30" width="30" alt="icon" />
 
             Add Message</Button>
           {/* modals */}
@@ -169,49 +171,63 @@ export default function MessagesPage() {
                   <td>{message.created_by.username}</td>
                   <td>{message.updated_by.username}</td>
                   <td>
-                    {/* update message */}
-                    <img style={{ "cursor": "pointer" }} title="edit"
-                      onClick={() => {
-                        setSelectedMessage(messages, message._id)
-                        setChoice({ type: MessageChoiceActions.edit_message })
-                      }
-                      }
-                      width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
-                    {/* view message */}
-                    <img style={{ "cursor": "pointer" }} title="edit"
-                      onClick={() => {
-                        setSelectedMessage(messages, message._id)
-                        setChoice({ type: MessageChoiceActions.view_message })
-                      }
-                      }
-                      width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
-
-                    {/* start and stop message scheduler */}
                     {
-                      message.autoStop ?
-                        <img style={{ "cursor": "pointer" }} title="Restart"
+                      user?.is_admin ?
+                        <>
+                          {/* update message */}
+                          <img style={{ "cursor": "pointer" }} title="edit"
+                            onClick={() => {
+                              setSelectedMessage(messages, message._id)
+                              setChoice({ type: MessageChoiceActions.edit_message })
+                            }
+                            }
+                            width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
+                          {/* view message */}
+                          <img style={{ "cursor": "pointer" }} title="edit"
+                            onClick={() => {
+                              setSelectedMessage(messages, message._id)
+                              setChoice({ type: MessageChoiceActions.view_message })
+                            }
+                            }
+                            width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
+
+                          {/* start and stop message scheduler */}
+                          {
+                            message.autoStop ?
+                              <img style={{ "cursor": "pointer" }} title="Restart"
+                                onClick={() => {
+                                  setSelectedMessage(messages, message._id)
+                                  setChoice({ type: MessageChoiceActions.start_message })
+                                }
+                                }
+                                width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
+                              <img style={{ "cursor": "pointer" }} title="Stop"
+                                onClick={() => {
+                                  setSelectedMessage(messages, message._id)
+                                  setChoice({ type: MessageChoiceActions.stop_message })
+                                }
+                                }
+                                width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                          }
+                          {/* delete message */}
+                          <img style={{ "cursor": "pointer" }} title="delete"
+                            onClick={() => {
+                              setSelectedMessage(messages, message._id)
+                              setChoice({ type: MessageChoiceActions.delete_message })
+                            }
+                            }
+                            width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
+                        </>
+                        : <img style={{ "cursor": "pointer" }} title="edit"
                           onClick={() => {
                             setSelectedMessage(messages, message._id)
-                            setChoice({ type: MessageChoiceActions.start_message })
+                            setChoice({ type: MessageChoiceActions.view_message })
                           }
                           }
-                          width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
-                        <img style={{ "cursor": "pointer" }} title="Stop"
-                          onClick={() => {
-                            setSelectedMessage(messages, message._id)
-                            setChoice({ type: MessageChoiceActions.stop_message })
-                          }
-                          }
-                          width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                          width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
                     }
-                    {/* delete message */}
-                    <img style={{ "cursor": "pointer" }} title="delete"
-                      onClick={() => {
-                        setSelectedMessage(messages, message._id)
-                        setChoice({ type: MessageChoiceActions.delete_message })
-                      }
-                      }
-                      width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
                   </td>
                 </tr>
               )

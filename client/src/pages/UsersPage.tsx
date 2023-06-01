@@ -13,6 +13,7 @@ import BlockUserModel from '../components/modals/users/BlockUserModal'
 import UnBlockUserModel from '../components/modals/users/UnBlockUserModal'
 import MakeAdminModal from '../components/modals/users/MakeAdmin'
 import RemoveAdminModal from '../components/modals/users/RemoveAdmin'
+import { UserContext } from '../contexts/UserContext'
 
 const StyledTable = styled.table`
  {
@@ -40,6 +41,7 @@ export default function UsersPage() {
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
     refetchOnMount: true
   })
+  const { user: LoggedINuser } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
   const [user, setUser] = useState<IUser>()
   const [users, setUsers] = useState<IUser[]>([])
@@ -95,7 +97,10 @@ export default function UsersPage() {
                     <th>Last Login</th>
                     <th>Created At</th>
                     <th>Created By</th>
-                    <th>Actions</th>
+                    {
+                      LoggedINuser?.is_admin ?
+                        <th>Actions</th>
+                        : null}
                   </tr>
                 </thead>
                 <tbody>
@@ -110,67 +115,60 @@ export default function UsersPage() {
                         <td>{new Date(user.last_login).toLocaleString()}</td>
                         <td>{new Date(user.last_login).toLocaleString()}</td>
                         <td>{user.created_by.username}</td>
-                        <td className="d-flex gap-2">
-                          {/* update user */}
-                          <img style={{ "cursor": "pointer" }} title="edit"
-                            onClick={() => {
-                              setSelectedUser(users, user._id)
-                              setChoice({ type: AppChoiceActions.update_user })
-                            }
-                            }
-                            width="24" height="24" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
-
-                          {/* block and unblock user */}
-                          {
-                            user.created_by._id !== user._id ?
-                              <>
-                                {
-                                  user.is_active ?
-                                    <img style={{ "cursor": "pointer" }} title="block"
-                                      onClick={() => {
-                                        setSelectedUser(users, user._id)
-                                        setChoice({ type: AppChoiceActions.block_user })
-                                      }
-                                      }
-                                      width="24" height="24" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="cancel-2" /> :
-                                    <img style={{ "cursor": "pointer" }} title="unblock"
-                                      onClick={() => {
-                                        setSelectedUser(users, user._id)
-                                        setChoice({ type: AppChoiceActions.unblock_user })
-                                      }
-                                      }
-                                      width="24" height="24" src="https://img.icons8.com/external-tal-revivo-filled-tal-revivo/24/external-unlock-security-lock-with-permission-granted-to-access-login-filled-tal-revivo.png" alt="edit--v1" />
+                        {
+                          LoggedINuser?.is_admin && user.created_by._id !== user._id ?
+                            <>
+                              {/* update user */}
+                              <img style={{ "cursor": "pointer" }} title="edit"
+                                onClick={() => {
+                                  setSelectedUser(users, user._id)
+                                  setChoice({ type: AppChoiceActions.update_user })
                                 }
-                              </>
-                              : null
-                          }
+                                }
+                                width="24" height="24" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
 
-                          {
-                            user.created_by._id !== user._id ?
-                              <>
-                                {
-                                  user.is_admin ?
+                              {/* block and unblock user */}
 
-                                    <img style={{ "cursor": "pointer" }} title="remove admin"
-                                      onClick={() => {
-                                        setSelectedUser(users, user._id)
-                                        setChoice({ type: AppChoiceActions.remove_admin })
-                                      }
-                                      }
+                              {user.is_active ?
+                                <img style={{ "cursor": "pointer" }} title="block"
+                                  onClick={() => {
+                                    setSelectedUser(users, user._id)
+                                    setChoice({ type: AppChoiceActions.block_user })
+                                  }
+                                  }
+                                  width="24" height="24" src="https://img.icons8.com/ios-filled/24/cancel-2.png" alt="cancel-2" />
+                                :
+                                <img style={{ "cursor": "pointer" }} title="unblock"
+                                  onClick={() => {
+                                    setSelectedUser(users, user._id)
+                                    setChoice({ type: AppChoiceActions.unblock_user })
+                                  }
+                                  }
+                                  width="24" height="24" src="https://img.icons8.com/external-tal-revivo-filled-tal-revivo/24/external-unlock-security-lock-with-permission-granted-to-access-login-filled-tal-revivo.png" alt="edit--v1" />
+                              }
 
-                                      width="24" height="24" src="https://img.icons8.com/color/48/remove-user-male--v1.png" alt="administrator-male" /> :
-                                    <img style={{ "cursor": "pointer" }} title="make admin"
-                                      onClick={() => {
-                                        setSelectedUser(users, user._id)
-                                        setChoice({ type: AppChoiceActions.make_admin })
-                                      }
-                                      }
-                                      width="24" height="24" src="https://img.icons8.com/fluency/100/administrator-male.png"
-                                      alt="cross-mark-button-emoji" />
-                                }</>
-                              : null}
+                              {
+                                user.is_admin ?
+                                  <img style={{ "cursor": "pointer" }} title="remove admin"
+                                    onClick={() => {
+                                      setSelectedUser(users, user._id)
+                                      setChoice({ type: AppChoiceActions.remove_admin })
+                                    }
+                                    }
 
-                        </td>
+                                    width="24" height="24" src="https://img.icons8.com/color/48/remove-user-male--v1.png" alt="administrator-male" />
+                                  :
+                                  <img style={{ "cursor": "pointer" }} title="make admin"
+                                    onClick={() => {
+                                      setSelectedUser(users, user._id)
+                                      setChoice({ type: AppChoiceActions.make_admin })
+                                    }
+                                    }
+                                    width="24" height="24" src="https://img.icons8.com/fluency/100/administrator-male.png"
+                                    alt="cross-mark-button-emoji" />
+                              }
+                            </>
+                            : null}
                       </tr>
                     )
                   })}
