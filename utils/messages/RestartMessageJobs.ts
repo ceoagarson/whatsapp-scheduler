@@ -12,13 +12,13 @@ export async function RestartMessageJobs() {
         let refstring = refresh_trigger?.cronString
         if (running_trigger && runsring) {
             MessageManager.add(running_trigger.key, runsring, () => {
-                SendMessageWhatsapp(running_trigger.key)
+                SendMessageWhatsapp(message._id)
             })
             MessageManager.start(running_trigger.key)
         }
         if (refresh_trigger && refstring) {
             MessageManager.add(refresh_trigger.key, refstring, () => {
-                RefreshMessage(refresh_trigger.key)
+                RefreshMessage(message._id)
             })
             MessageManager.start(refresh_trigger.key)
         }

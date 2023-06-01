@@ -12,13 +12,13 @@ export async function RestartTaskJobs() {
         let refstring = refresh_trigger?.cronString
         if (running_trigger && runsring) {
             TaskManager.add(running_trigger.key, runsring, () => {
-                SendTaskWhatsapp(running_trigger.key)
+                SendTaskWhatsapp(task._id)
             })
             TaskManager.start(running_trigger.key)
         }
         if (refresh_trigger && refstring) {
             TaskManager.add(refresh_trigger.key, refstring, () => {
-                RefreshTask(refresh_trigger.key)
+                RefreshTask(task._id)
             })
             TaskManager.start(refresh_trigger.key)
         }
