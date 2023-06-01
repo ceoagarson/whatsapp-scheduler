@@ -16,6 +16,7 @@ import UpdateMessageModal from '../components/modals/messages/UpdateMessageModal
 import StartMessageModal from '../components/modals/messages/StartMessageModal'
 import StopMessageModal from '../components/modals/messages/StopMessageModal'
 import FuzzySearch from "fuzzy-search"
+import ViewMessageModal from '../components/modals/messages/ViewMessageModal'
 
 const StyledTable = styled.table`
  {
@@ -28,15 +29,12 @@ const StyledTable = styled.table`
   overflow: hidden;
   padding:5px;
   border: 1px solid #ddd;
-  min-width:180px;
+  max-width:180px;
   max-height:20px;
   font-size:12px;
   
 }
-td:hover{
-  white-space: normal;
-  overflow: auto;  
-}
+
 
  tr:nth-child(even){background-color: #f2f2f2;}
 
@@ -91,6 +89,7 @@ export default function MessagesPage() {
           <DeleteMessageModal message={message} />
           <StartMessageModal message={message} />
           <StopMessageModal message={message} />
+          <ViewMessageModal message={message}/>
         </>
         : null}
       <div className='d-flex flex-column flex-md-row justify-content-between  align-items-center  p-2 gap-2'>
@@ -110,7 +109,7 @@ export default function MessagesPage() {
           }}>
             <img className="m-1" src="https://img.icons8.com/stickers/100/task-completed--v2.png" height="30" width="30" alt="icon" />
 
-            Add Task</Button>
+            Add Message</Button>
           {/* modals */}
           <StartMessageSchedulerButton />
           <StopSchedulerButton />
@@ -178,6 +177,15 @@ export default function MessagesPage() {
                       }
                       }
                       width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
+                    {/* view message */}
+                    <img style={{ "cursor": "pointer" }} title="edit"
+                      onClick={() => {
+                        setSelectedMessage(messages, message._id)
+                        setChoice({ type: MessageChoiceActions.view_message })
+                      }
+                      }
+                      width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
                     {/* start and stop message scheduler */}
                     {
                       message.autoStop ?

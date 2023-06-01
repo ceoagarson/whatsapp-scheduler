@@ -43,11 +43,11 @@ function NewTaskForm() {
         validationSchema: Yup.object({
             task_title: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(50, 'Must be 500 characters or less')
+                .max(50, 'Must be 50 characters or less')
                 .required(),
             task_detail: Yup.string()
                 .min(10, 'Must be 10 characters or more')
-                .max(500, 'Must be 500 characters or less')
+                .max(1000, 'Must be 1000 characters or less')
                 .required(),
             person: Yup.string()
                 .min(4, 'Must be 4 characters or more')

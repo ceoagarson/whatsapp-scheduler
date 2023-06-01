@@ -16,6 +16,7 @@ import UpdateTaskModal from '../components/modals/tasks/UpdateTaskModal'
 import StartTaskModal from '../components/modals/tasks/StartTaskModal'
 import StopTaskModal from '../components/modals/tasks/StopTaskModal'
 import FuzzySearch from "fuzzy-search"
+import ViewTaskModal from '../components/modals/tasks/ViewTaskModal'
 
 const StyledTable = styled.table`
  {
@@ -28,15 +29,12 @@ const StyledTable = styled.table`
   overflow: hidden;
   padding:5px;
   border: 1px solid #ddd;
-  min-width:180px;
+  max-width:180px;
   max-height:20px;
   font-size:12px;
   
 }
-td:hover{
-  white-space: normal;
-  overflow: auto;  
-}
+
 
  tr:nth-child(even){background-color: #f2f2f2;}
 
@@ -73,7 +71,7 @@ export default function TasksPage() {
   //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(tasks, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "task_title","task_detail", "task_status", "task_timestamp", "next_refresh_date", "next_run_date", "person", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
+      const searcher = new FuzzySearch(tasks, ["autoRefresh", "autoStop", "created_at", "created_by.username", "frequency.frequency", "frequency.frequencyType", "task_title", "task_detail", "task_status", "task_timestamp", "next_refresh_date", "next_run_date", "person", "phone", "start_date", "updated_at", "whatsapp_status", "updated_by.username", "whatsapp_timestamp"], {
         caseSensitive: false,
       });
       const result = searcher.search(filter);
@@ -91,6 +89,7 @@ export default function TasksPage() {
           <DeleteTaskModal task={task} />
           <StartTaskModal task={task} />
           <StopTaskModal task={task} />
+          <ViewTaskModal task={task}/>
         </>
         : null}
       <div className='d-flex flex-column flex-md-row justify-content-between  align-items-center  p-2 gap-2'>
@@ -179,6 +178,16 @@ export default function TasksPage() {
                       }
                       }
                       width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
+                    {/* view task */}
+                    <img style={{ "cursor": "pointer" }} title="edit"
+                      onClick={() => {
+                        setSelectedTask(tasks, task._id)
+                        setChoice({ type: TaskChoiceActions.view_task })
+                      }
+                      }
+                      width="18" height="18" src="https://img.icons8.com/emoji/48/eye-emoji.png" alt="edit--v1" />
+
+
                     {/* start and stop task scheduler */}
                     {
                       task.autoStop ?

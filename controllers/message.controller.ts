@@ -84,15 +84,17 @@ export const CreateMessage = async (req: Request, res: Response, next: NextFunct
         }
         let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
         freq = SortUniqueNumbers(tmpMonthdays).toString()
+        let fq = new Frequency({
+            type: frequency?.type,
+            frequency: frequency.frequency,
+            frequencyType: frequency.frequencyType
+        })
+        if (fq) {
+            await fq.save()
+            message.frequency = fq
+        }
     }
-    let fq = new Frequency({
-        type: frequency?.type,
-        frequency: frequency.frequency,
-        frequencyType: frequency.frequencyType
-    })
-    if (fq)
-        await fq.save()
-    message.frequency = fq
+
     message = await message.save()
     return res.status(201).json({ message: message })
 }
