@@ -26,7 +26,7 @@ function NavBar() {
                     </Link>
                     {user ? <>
                         <Dropdown>
-                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            <Dropdown.Toggle variant="dark" id="dropdown-basic">
                                 {user.username.toUpperCase()}
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -48,7 +48,7 @@ function NavBar() {
                             </div>
                             <Dropdown className="d-sm-block d-md-none">
                                 <Dropdown.Toggle variant="dark" id="dropdown-basic">
-                                    ::
+                                    {":: "}  
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="bg-dark">
                                     <Dropdown.Item className="border border-bottom-1">

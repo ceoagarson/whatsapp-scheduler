@@ -99,7 +99,7 @@ export default function MessagesPage() {
         <div>
           <Form.Control
             className="border border-primary"
-            placeholder={`${messages && messages.length} records`}
+            placeholder={`${messages && messages.length} messages`}
             type="search"
             onChange={(e) => setFilter(e.currentTarget
               .value)}

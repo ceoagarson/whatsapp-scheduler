@@ -53,8 +53,13 @@ function RecordsPage() {
     })
 
     useEffect(() => {
-        if (isSuccess && phone && data)
+        if (phone) {
+            refetch()
+
+        }
+        if (isSuccess && data) {
             setRecords(data.data)
+        }
 
     }, [isSuccess, phone, data])
 

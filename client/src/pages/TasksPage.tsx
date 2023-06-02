@@ -105,7 +105,7 @@ export default function TasksPage() {
         <div>
           <Form.Control
             className="border border-primary"
-            placeholder={`${tasks && tasks.length} records`}
+            placeholder={`${tasks && tasks.length} tasks`}
             type="search"
             onChange={(e) => setFilter(e.currentTarget
               .value)}
