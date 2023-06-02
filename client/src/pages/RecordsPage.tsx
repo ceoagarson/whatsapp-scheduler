@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { IRecord } from '../types/Record'
 import { BackendError } from '../types'
 import { GetRecord, GetRecords } from '../services/MessageServices'
-import { Button, Form } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 import styled from 'styled-components'
 import moment from 'moment'
 
@@ -71,36 +71,40 @@ function RecordsPage() {
 
                 />
             </Form>
-            <>
-                {
-                    isLoading ?
-                        <p>loading chats....</p>
-                        :
-                        <>
-                            <StyledTable>
-                                <thead>
-                                    <tr className="text-uppercase">
-                                        <th>Timestamp</th>
-                                        <th>Phone</th>
-                                        <th>Message</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records && records.map((record, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td>{moment(new Date(String(record.timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                                                <td>{record.phone}</td>
-                                                <td>{record.message}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </StyledTable>
-                        </>
-                }
-            </>
+            <div className="d-flex-column w-100 overflow-auto">
+
+                <>
+                    {
+                        isLoading ?
+                            <p>loading chats....</p>
+                            :
+                            <>
+                                <StyledTable>
+                                    <thead>
+                                        <tr className="text-uppercase">
+                                            <th>Timestamp</th>
+                                            <th>Phone</th>
+                                            <th>Message</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {records && records.map((record, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{moment(new Date(String(record.timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                                                    <td>{record.phone}</td>
+                                                    <td>{record.message}</td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </StyledTable>
+                            </>
+                    }
+                </>
+            </div>
         </>
+
     )
 }
 
