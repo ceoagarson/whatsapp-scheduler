@@ -28,7 +28,7 @@ function AppRoutes() {
             <Route path={paths.signup} element={<SignUpPage />} />
             <Route path={paths.reset_password} element={<ResetPasswordPage />} />
             <Route path={paths.users} element={user ? <UsersPage /> : <LoginPage />} />
-            <Route path={paths.records} element={user ? <RecordsPage /> : <LoginPage />} />
+            <Route path={paths.records} element={!user ? <RecordsPage /> : <LoginPage />} />
             <Route path={paths.tasks} element={user ? <TasksPage /> : <LoginPage />} />
             <Route path={paths.messages} element={user ? <MessagesPage /> : <LoginPage />} />
             <Route path={paths.update_password} element={user ? <UpdatePasswordPage /> : <LoginPage />} />

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { IRecord } from '../types/Record'
 import { BackendError } from '../types'
-import { GetRecord } from '../services/MessageServices'
+import { GetRecord, GetRecords } from '../services/MessageServices'
 import { Button, Form } from 'react-bootstrap'
 import styled from 'styled-components'
 import moment from 'moment'
@@ -26,7 +26,6 @@ const StyledTable = styled.table`
 }
 
 
- 
  tr:nth-child(even){background-color: #f2f2f2;}
  tr:nth-child(odd){background-color: #ddd;}
 
@@ -40,19 +39,29 @@ const StyledTable = styled.table`
 
 function RecordsPage() {
     const [phone, setPhone] = useState<number | undefined>()
-    const { data, isSuccess, refetch, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
-        refetchOnMount: true
-    })
     const [records, setRecords] = useState<IRecord[]>([])
 
-    useEffect(() => {
-        if (isSuccess)
+    const { data, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
+        enabled: false
+    })
+
+    const { data: DATA } = useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
+        refetchOnMount: true,
+        onSuccess(data) {
             setRecords(data.data)
-    }, [isSuccess, data])
+        },
+    })
+
+    useEffect(() => {
+        if (isSuccess && phone && data)
+            setRecords(data.data)
+
+    }, [isSuccess, phone, data])
 
     return (
         <>
             <Form className='w-100 d-flex justify-content-center align-items-center gap-2 p-2'>
+                <img width="30" height="30" src="https://img.icons8.com/color/48/search--v1.png" alt="search--v1" />
                 <Form.Control
                     className="border border-primary"
                     placeholder={`${records && records.length ? `${records.length} records` : "Phone"}`}
@@ -61,17 +70,6 @@ function RecordsPage() {
                         .value))}
 
                 />
-                <Button variant="primary"
-                    onClick={(e) => {
-                        e.preventDefault()
-                        refetch()
-                    }}
-                >
-                    <div className='d-flex justify-content-center align-items-center gap-1'>
-                        <img width="48" height="48" src="https://img.icons8.com/color/48/search--v1.png" alt="search--v1" />
-                        <p>Search</p>
-                    </div>
-                </Button>
             </Form>
             <>
                 {
@@ -83,6 +81,7 @@ function RecordsPage() {
                                 <thead>
                                     <tr className="text-uppercase">
                                         <th>Timestamp</th>
+                                        <th>Phone</th>
                                         <th>Message</th>
                                     </tr>
                                 </thead>
@@ -91,6 +90,7 @@ function RecordsPage() {
                                         return (
                                             <tr key={index}>
                                                 <td>{moment(new Date(String(record.timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
+                                                <td>{record.phone}</td>
                                                 <td>{record.message}</td>
                                             </tr>
                                         )
