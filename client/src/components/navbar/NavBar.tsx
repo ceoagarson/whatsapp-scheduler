@@ -13,7 +13,7 @@ function NavBar() {
     return (
         <>
         <UpdatePasswordModal/>
-            <div className="bg-primary justify-content-between align-items-between d-flex gap-1 w-100">
+            <div className="bg-dark justify-content-between align-items-between d-flex gap-1 w-100">
                 <div className="d-flex align-items-center">
                     <Link to={paths.users}>
                         <img
@@ -25,7 +25,7 @@ function NavBar() {
                         />
                     </Link>
                     {user ? <>
-                        <DropdownButton id="dropdown-basic-button" title={user.username}>
+                        <DropdownButton variant="dark" id="dropdown-basic-button" title={user.username.toUpperCase()}>
                             <Dropdown.Item onClick={() => setChoice({ type: AppChoiceActions.update_password })}><img height="30" width="30" src="https://img.icons8.com/color/48/keys-holder.png" alt="icons" />Update Password</Dropdown.Item>
                             <Dropdown.Item><LogoutButton /></Dropdown.Item>
                         </DropdownButton>

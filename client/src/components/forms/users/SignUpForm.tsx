@@ -128,7 +128,7 @@ function SignUpForm() {
                     <Link className="d-block text-decoration-none text-center " to={paths.reset_password} >forgot password ?</Link>
                 </Form>
             </Container>
-            <p className="text-capitalize position-absolute w-100 bottom-0 mt-4 p-2 bg-primary text-light text-center">Copyright @ Agarson shoes pvt. ltd.</p>
+            <p className="text-capitalize position-absolute w-100 bottom-0 m-0 p-1 bg-primary text-light text-center">Copyright @ Agarson shoes pvt. ltd.</p>
         </>
     )
 }

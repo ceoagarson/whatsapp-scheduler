@@ -28,8 +28,9 @@ const StyledTable = styled.table`
 }
 
  tr:nth-child(even){background-color: #f2f2f2;}
+ tr:nth-child(odd){background-color: #ddd;}
 
- tr:hover {background-color: #ddd;}
+ tr:hover {background-color: lightgrey;}
 
  th {
   text-align: left;

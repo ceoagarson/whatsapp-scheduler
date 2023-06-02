@@ -36,7 +36,7 @@ function NewMessageForm() {
             message_image: "https://fplogoimages.withfloats.com/tile/605af6c3f7fc820001c55b20.jpg",
             message_detail: "",
             person: "",
-            phone: 0,
+            phone: 91,
             start_date: moment(new Date((new Date().getTime() + 60000))).format("YYYY-MM-DDThh:mm"),
             frequencyValue: "",
             frequencyType: ""

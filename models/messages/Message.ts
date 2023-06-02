@@ -20,6 +20,9 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
         required: true,
         lowercase: true,
     },
+      message_id: {
+        type: String,
+    },
     phone: {
         type: String,
         trim: true,
@@ -48,9 +51,6 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage>>({
     run_once: {
         type: Boolean,
         default: false
-    },
-    message_id: {
-        type: String,
     },
     frequency: {
         type: mongoose.Schema.Types.ObjectId,

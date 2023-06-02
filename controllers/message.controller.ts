@@ -244,16 +244,19 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
             let tmpMonthdays = freq.split(",").map((item) => { return Number(item) })
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
+
         if (message.frequency) {
-            await Frequency.findByIdAndUpdate(message.frequency._id, {
-                frequency: freq,
-                frequencyType: ftype
-            })
-            let updatedMessage = await Message.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
-            if (updatedMessage)
-                UpdateMessageTrigger(updatedMessage)
-            return res.status(200).json({ message: "message updated SuccessFully" })
+            let fq = await Frequency.findById(message.frequency._id)
+            if (fq) {
+                fq.frequency = freq
+                fq.frequencyType = ftype
+                await fq.save()
+                message.frequency = fq
+                UpdateMessageTrigger(message)
+                return res.status(200).json({ message: "message updated SuccessFully" })
+            }
         }
+       
 
         else {
             let fq = new Frequency({

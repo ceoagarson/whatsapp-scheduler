@@ -31,7 +31,7 @@ function StartTaskSchedulerButton() {
                     />
                 ) : null
             }
-            <Button  variant="outline-success" size="sm" onClick={() => {
+            <Button  variant="success" size="sm" onClick={() => {
                 Start_scheduler()
             }}>
                 <img className="m-1" src="https://img.icons8.com/color/48/restart--v1.png" alt="icon" height="30" width="30"/>

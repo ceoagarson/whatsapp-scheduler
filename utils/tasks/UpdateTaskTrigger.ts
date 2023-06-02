@@ -17,7 +17,6 @@ export async function UpdateTaskTrigger(task: ITask) {
         if (frequency) {
             let runstring = GetRunningDateCronString(frequency, task.start_date)
             let refstring = GetRefreshDateCronString(frequency, task.start_date)
-
             if (task.running_trigger && task.refresh_trigger && task.frequency) {
                 if (runstring) {
                     await TaskTrigger.findByIdAndUpdate(task.running_trigger._id, {
@@ -26,14 +25,12 @@ export async function UpdateTaskTrigger(task: ITask) {
                     })
                     if (TaskManager.exists(task.running_trigger.key)) {
                         TaskManager.update(task.running_trigger.key, runstring, () => { SendTaskWhatsapp(task._id) })
-                        await Task.findByIdAndUpdate(task._id,
-                            {
-                                next_run_date: cronParser.parseExpression(runstring).next().toDate(),
-                                autoStop: false,
-                                autoRefresh: true
-                            })
                     }
-                   
+                    await Task.findByIdAndUpdate(task._id,
+                        {
+                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
+                        }
+                    )
                 }
 
                 if (refstring) {
@@ -43,15 +40,12 @@ export async function UpdateTaskTrigger(task: ITask) {
                     })
                     if (TaskManager.exists(task.refresh_trigger.key)) {
                         TaskManager.update(task.refresh_trigger.key, refstring, () => { RefreshTask(task._id) })
-                        await Task.findByIdAndUpdate(task._id,
-                            {
-                                next_refresh_date: cronParser.parseExpression(refstring).next().toDate(),
-                                autoStop: false,
-                                autoRefresh: true
-                            })
                     }
-                   
-
+                    await Task.findByIdAndUpdate(task._id,
+                        {
+                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
+                        }
+                    )
                 }
             }
         }

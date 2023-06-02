@@ -20,6 +20,9 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
         required: true,
         lowercase: true,
     },
+    message_id: {
+        type: String,
+    },
     phone: {
         type: String,
         trim: true,
@@ -42,9 +45,6 @@ const TaskSchema = new mongoose.Schema<ITask, mongoose.Model<ITask>>({
     autoRefresh: {
         type: Boolean,
         default: false
-    },
-    message_id:{
-        type: String,
     },
     autoStop: {
         type: Boolean,

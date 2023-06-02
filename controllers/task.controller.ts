@@ -244,14 +244,15 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
             freq = SortUniqueNumbers(tmpMonthdays).toString()
         }
         if (task.frequency) {
-            await Frequency.findByIdAndUpdate(task.frequency._id, {
-                frequency: freq,
-                frequencyType: ftype
-            })
-            let updatedTask = await Task.findById(id).populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
-            if (updatedTask)
-                UpdateTaskTrigger(updatedTask)
-            return res.status(200).json({ message: "task updated SuccessFully" })
+            let fq = await Frequency.findById(task.frequency._id)
+            if(fq){
+                fq.frequency=freq
+                fq.frequencyType=ftype
+                await fq.save()
+                task.frequency=fq
+                UpdateTaskTrigger(task)
+                return res.status(200).json({ message: "task updated SuccessFully" })
+            }
         }
 
         else {

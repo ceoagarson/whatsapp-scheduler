@@ -26,15 +26,12 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     })
                     if (MessageManager.exists(message.running_trigger.key)) {
                         MessageManager.update(message.running_trigger.key, runstring, () => { SendMessageWhatsapp(message._id) })
-                        await Message.findByIdAndUpdate(message._id,
-                            {
-                                next_run_date: cronParser.parseExpression(runstring).next().toDate(),
-                                autoStop: false,
-                                autoRefresh: true
-                            })
-
                     }
-                    
+                    await Message.findByIdAndUpdate(message._id,
+                        {
+                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
+                        }
+                    )
                 }
 
                 if (refstring) {
@@ -44,14 +41,12 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     })
                     if (MessageManager.exists(message.refresh_trigger.key)) {
                         MessageManager.update(message.refresh_trigger.key, refstring, () => { RefreshMessage(message._id) })
-                        await Message.findByIdAndUpdate(message._id,
-                            {
-                                next_refresh_date: cronParser.parseExpression(refstring).next().toDate(),
-                                autoStop: false,
-                                autoRefresh: true
-                            })
                     }
-                   
+                    await Message.findByIdAndUpdate(message._id,
+                        {
+                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
+                        }
+                    )
                 }
             }
         }

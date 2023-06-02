@@ -16,7 +16,7 @@ export const GetRefreshDateCronString = (frequency: IFrequency, start_date:Date)
     }
     
     if (ftype === "months" && freq && Number(freq) > 0) {
-        cronString =`${date.getMinutes()} ` + `${date.getHours()} ` + `${date.getDate()} ` + `${Number(freq) === 12 ? date.getMonth() + 1 : `1 / ${Number(freq)}`}` + " *"
+        cronString =`${date.getMinutes()} ` + `${date.getHours()} ` + `${date.getDate()} ` + `${Number(freq) === 12 ? date.getMonth() : `1/${Number(freq)}`}` + " *"
     }
 
     if (ftype === "weekdays" && freq && freq.length > 0) {
