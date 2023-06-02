@@ -40,24 +40,25 @@ const StyledTable = styled.table`
 function RecordsPage() {
     const [phone, setPhone] = useState<number | undefined>()
     const [records, setRecords] = useState<IRecord[]>([])
-
+    const [backupRecords, setbackupRecords] = useState<IRecord[]>([])
     const { data, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
         enabled: false
     })
 
     const { isLoading: ISLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
-        refetchOnMount: true,
         onSuccess(data) {
-            setRecords(data.data)
+            setbackupRecords(data.data)
         },
     })
 
     useEffect(() => {
-        if (isSuccess && data && !phone) {
+        if (!phone) {
+            setRecords(backupRecords)
+        }
+        if (isSuccess && phone) {
             setRecords(data.data)
         }
-
-    }, [isSuccess, phone, data])
+    }, [isSuccess, phone, backupRecords, data])
 
     return (
         <>

@@ -24,7 +24,7 @@ export const GetRecords = async (req: Request, res: Response, next: NextFunction
 }
 export const GetRecord = async (req: Request, res: Response, next: NextFunction) => {
     let phone = req.params.phone
-    if (!phone)
+    if (!Boolean(Number(phone)))
         return res.status(400).json({ message: "please provide phone number" })
     else {
         let messages = await Record.find({ phone: Number(phone) }).sort({ timestamp: 'desc' })
