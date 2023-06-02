@@ -5,6 +5,12 @@ export const GetMessages = async () => {
     return await apiClient.get(`messages`)
 }
 
+export const GetRecords= async () => {
+    return await apiClient.get(`records`)
+}
+export const GetRecord = async (phone:number) => {
+    return await apiClient.get(`records/${phone}`)
+}
 export const NewMessage = async (body: {
     message_image: string,
     message_detail: string,
