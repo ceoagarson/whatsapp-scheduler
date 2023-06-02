@@ -21,7 +21,7 @@ const StyledTable = styled.table`
   border: 1px solid #ddd;
   min-width:180px;
   max-height:20px;
-  font-size:14px;
+  font-size:12px;
   
 }
 
@@ -52,21 +52,24 @@ function RecordsPage() {
 
     return (
         <>
-            <Form>
+            <Form className='w-100 d-flex justify-content-center align-items-center gap-2 p-2'>
                 <Form.Control
                     className="border border-primary"
-                    placeholder={`${records && records.length ? `${records.length} records` : "Search By Phone Number"}`}
+                    placeholder={`${records && records.length ? `${records.length} records` : "Phone"}`}
                     type="search"
                     onChange={(e) => setPhone(Number(e.currentTarget
                         .value))}
 
                 />
-
                 <Button variant="primary"
                     onClick={() => {
                         refetch()
                     }}
                 >
+                    <div className='d-flex justify-content-center align-items-center gap-1'>
+                        <img width="48" height="48" src="https://img.icons8.com/color/48/search--v1.png" alt="search--v1" />
+                        <p>Search</p>
+                   </div>
                 </Button>
             </Form>
             <>
