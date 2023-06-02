@@ -20,14 +20,16 @@ export const GetMessages = async (req: Request, res: Response, next: NextFunctio
 }
 export const GetRecords = async (req: Request, res: Response, next: NextFunction) => {
     let messages = await Record.find().sort({ timestamp: 'desc' })
-    res.status(200).json(messages)
+    return res.status(200).json(messages)
 }
 export const GetRecord = async (req: Request, res: Response, next: NextFunction) => {
     let phone = req.params.phone
     if (!phone)
         return res.status(400).json({ message: "please provide phone number" })
-    let messages = await Record.find({ phone: Number(phone) }).sort({ timestamp: 'desc' })
-    res.status(200).json(messages)
+    else {
+        let messages = await Record.find({ phone: Number(phone) }).sort({ timestamp: 'desc' })
+        return res.status(200).json(messages)
+    }
 }
 
 
