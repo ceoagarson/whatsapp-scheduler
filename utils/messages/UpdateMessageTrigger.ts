@@ -29,7 +29,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {
-                            next_run_date: cronParser.parseExpression(message.running_trigger.cronString).next().toDate()
+                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
                         }
                     )
                 }
@@ -44,7 +44,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {
-                            next_refresh_date: cronParser.parseExpression(message.refresh_trigger.cronString).next().toDate()
+                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
                         }
                     )
                 }

@@ -29,7 +29,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            next_run_date: cronParser.parseExpression(task.running_trigger.cronString).next().toDate()
+                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
                         }
                     )
                 }
@@ -44,7 +44,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            next_refresh_date: cronParser.parseExpression(task.refresh_trigger.cronString).next().toDate()
+                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
                         }
                     )
                 }
