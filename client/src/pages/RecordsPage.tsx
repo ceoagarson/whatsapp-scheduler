@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { IRecord } from '../types/Record'
 import { BackendError } from '../types'
 import { GetRecord, GetRecords } from '../services/MessageServices'
-import { Button, Container, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import styled from 'styled-components'
 import moment from 'moment'
 
@@ -41,11 +41,11 @@ function RecordsPage() {
     const [phone, setPhone] = useState<number | undefined>()
     const [records, setRecords] = useState<IRecord[]>([])
 
-    const { data, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
+    const { data: DATA, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
         enabled: false
     })
 
-    const { data: DATA } = useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
+    useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
         refetchOnMount: true,
         onSuccess(data) {
             setRecords(data.data)
@@ -57,11 +57,11 @@ function RecordsPage() {
             refetch()
 
         }
-        if (isSuccess && data) {
-            setRecords(data.data)
+        if (isSuccess && DATA) {
+            setRecords(DATA.data)
         }
 
-    }, [isSuccess, phone, data])
+    }, [isSuccess, phone, DATA, refetch])
 
     return (
         <>

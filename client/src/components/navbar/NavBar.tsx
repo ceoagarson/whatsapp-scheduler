@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { Link } from 'react-router-dom';
 import { paths } from '../../Routes';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { AppChoiceActions, ChoiceContext } from '../../contexts/DialogContext';
 import UpdatePasswordModal from '../modals/users/UpdatePasswordModal';
 
