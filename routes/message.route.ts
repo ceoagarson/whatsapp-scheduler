@@ -20,8 +20,8 @@ router.route("/messages/stop/:id")
     .post(isAuthenticatedUser, isAdmin, StopSingleMessageScheduler)
 
 router.route("/records")
-    .get(GetRecords)
+    .get(isAuthenticatedUser, isAdmin, GetRecords)
 router.route("/records/:phone")
-    .get(GetRecord)
+    .get(isAuthenticatedUser, isAdmin, GetRecord)
 
 export default router
