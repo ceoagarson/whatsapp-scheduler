@@ -62,14 +62,15 @@ function RecordsPage() {
 
                 />
                 <Button variant="primary"
-                    onClick={() => {
+                    onClick={(e) => {
+                        e.preventDefault()
                         refetch()
                     }}
                 >
                     <div className='d-flex justify-content-center align-items-center gap-1'>
                         <img width="48" height="48" src="https://img.icons8.com/color/48/search--v1.png" alt="search--v1" />
                         <p>Search</p>
-                   </div>
+                    </div>
                 </Button>
             </Form>
             <>
