@@ -41,7 +41,7 @@ function RecordsPage() {
     const [phone, setPhone] = useState<number | undefined>()
     const [records, setRecords] = useState<IRecord[]>([])
 
-    const { data: DATA, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
+    const { data, refetch, isSuccess, isLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>(["records", phone], () => GetRecord(phone), {
         enabled: false
     })
 
@@ -53,15 +53,11 @@ function RecordsPage() {
     })
 
     useEffect(() => {
-        if (phone) {
-            refetch()
-
-        }
-        if (isSuccess && DATA) {
-            setRecords(DATA.data)
+        if (isSuccess && data) {
+            setRecords(data.data)
         }
 
-    }, [isSuccess, phone, DATA, refetch])
+    }, [isSuccess, data])
 
     return (
         <>
@@ -73,6 +69,11 @@ function RecordsPage() {
                     type="search"
                     onChange={(e) => setPhone(Number(e.currentTarget
                         .value))}
+                        onKeyUp={(e)=>{
+                            if(e.key==="Enter"){
+                                refetch()
+                            }
+                        }}
 
                 />
             </Form>
