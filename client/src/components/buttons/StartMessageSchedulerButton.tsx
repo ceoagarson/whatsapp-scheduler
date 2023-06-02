@@ -35,7 +35,9 @@ function StartMessageSchedulerButton() {
                 Start_scheduler()
             }}>
                 <img className="m-1" src="https://img.icons8.com/color/48/restart--v1.png" alt="icon" height="30" width="30"/>
-                Start Messages Scheduler</Button>
+                <span className='d-none d-md-inline-block'>Start Messages Scheduler</span>
+                
+                </Button>
         </>
     )
 }

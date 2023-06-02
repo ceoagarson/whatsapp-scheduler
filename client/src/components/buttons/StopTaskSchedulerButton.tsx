@@ -9,7 +9,7 @@ import AlertBar from '../alert/AlertBar'
 
 function StopTaskSchedulerButton() {
 
-    const { mutate: Stop_Scheduler, isSuccess,  isError, error } = useMutation
+    const { mutate: Stop_Scheduler, isSuccess, isError, error } = useMutation
         <AxiosResponse<ITask>,
             BackendError
         >(StopTaskScheduler, {
@@ -32,11 +32,14 @@ function StopTaskSchedulerButton() {
                     />
                 ) : null
             }
-            <Button size="sm"  variant="danger" onClick={() => {
+            <Button size="sm" variant="danger" onClick={() => {
                 Stop_Scheduler()
             }}>
                 <img className="m-1" src="https://img.icons8.com/color/48/stop--v1.png" height="30" width="30" alt="icon" />
-                Stop Task Scheduler</Button>
+                <span className='d-none d-md-inline-block'>
+                    Stop Task Scheduler
+                </span>
+            </Button>
         </>
     )
 }

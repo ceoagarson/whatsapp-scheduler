@@ -9,7 +9,7 @@ import AlertBar from '../alert/AlertBar'
 
 function StopMessageSchedulerButton() {
 
-    const { mutate: Stop_Scheduler, isSuccess,  isError, error } = useMutation
+    const { mutate: Stop_Scheduler, isSuccess, isError, error } = useMutation
         <AxiosResponse<IMessage>,
             BackendError
         >(StopMessageScheduler, {
@@ -36,7 +36,10 @@ function StopMessageSchedulerButton() {
                 Stop_Scheduler()
             }}>
                 <img className="m-1" src="https://img.icons8.com/color/48/stop--v1.png" height="30" width="30" alt="icon" />
-                Stop Messages Scheduler</Button>
+                <span className='d-none d-md-inline-block'>
+                    Stop Messages Scheduler
+                </span>
+            </Button>
         </>
     )
 }

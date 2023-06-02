@@ -49,7 +49,7 @@ function ResetPasswordSendMailForm() {
     }, [goto, isSuccess])
     return (
         <Container className='d-flex  fluid justify-content-center h-100 min-vw-100'>
-            <Form onSubmit={formik.handleSubmit} className='shadow mt-5  p-3 bg-body-tertiary border border-2 rounded bg-light align-self-center'>
+            <Form onSubmit={formik.handleSubmit} className='shadow mt-5  p-3 bg-body-tertiary border border-1 rounded bg-light align-self-center'>
                 {
                     isError ? (
                         <Alert variant="danger">

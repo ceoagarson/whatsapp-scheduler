@@ -69,11 +69,12 @@ function RecordsPage() {
                     type="search"
                     onChange={(e) => setPhone(Number(e.currentTarget
                         .value))}
-                        onKeyUp={(e)=>{
-                            if(e.key==="Enter"){
-                                refetch()
-                            }
-                        }}
+                    onKeyUp={(e) => {
+                        e.preventDefault()
+                        if (e.key === "Enter") {
+                            refetch()
+                        }
+                    }}
 
                 />
             </Form>
