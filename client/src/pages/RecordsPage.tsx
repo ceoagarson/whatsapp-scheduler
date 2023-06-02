@@ -45,7 +45,7 @@ function RecordsPage() {
         enabled: false
     })
 
-    useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
+    const { isLoading: ISLoading } = useQuery<AxiosResponse<IRecord[]>, BackendError>("records", GetRecords, {
         refetchOnMount: true,
         onSuccess(data) {
             setRecords(data.data)
@@ -61,7 +61,8 @@ function RecordsPage() {
 
     return (
         <>
-            <Form className='w-100 d-flex justify-content-center align-items-center gap-2 p-2'>
+            {ISLoading ? "Loading chats..." : null}
+            <div className='w-100 d-flex justify-content-center align-items-center gap-2 p-2'>
                 <img width="30" height="30" src="https://img.icons8.com/color/48/search--v1.png" alt="search--v1" />
                 <Form.Control
                     className="border border-primary"
@@ -70,14 +71,14 @@ function RecordsPage() {
                     onChange={(e) => setPhone(Number(e.currentTarget
                         .value))}
                     onKeyUp={(e) => {
-                        e.preventDefault()
                         if (e.key === "Enter") {
+                            e.preventDefault()
                             refetch()
                         }
                     }}
 
                 />
-            </Form>
+            </div>
             <div className="d-flex-column w-100 overflow-auto">
 
                 <>
