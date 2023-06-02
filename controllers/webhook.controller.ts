@@ -2,6 +2,7 @@ import { Request, NextFunction, Response } from "express";
 import Task from "../models/tasks/Task";
 import axios from "axios"
 import Message from "../models/messages/Message";
+import Record from "../models/records/Record";
 
 export const ConnectWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
     let myToken = process.env.myToken
@@ -39,7 +40,15 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
                     }
                         break;
                     case "text": {
-                        sendTextMessage(`Hi , We Got Your Message`, from, token)
+                        let response = entry[0].changes[0].value.messages[0].text.body;
+                        let timestamp = new Date(entry[0].changes[0].value.messages[0].timestamp * 1000);
+                        let record=new Record({
+                                phone:from,
+                                message: response,
+                                timestamp: timestamp
+                        })
+                        await record.save()
+                        sendTextMessage(`Hi , We Got Your Message, Reply soon`, from, token)
                     }
                         break;
                     default: sendTextMessage(`failed to parse message `, from, token)

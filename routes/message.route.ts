@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateMessage, DeleteMessage, GetMessages, StartMessageScheduler, StopSingleMessageScheduler, StopMessageScheduler, UpdateMessage, StartSingleMessageScheduler } from "../controllers/message.controller";
+import { CreateMessage, DeleteMessage, GetMessages, StartMessageScheduler, StopSingleMessageScheduler, StopMessageScheduler, UpdateMessage, StartSingleMessageScheduler, GetRecords, GetRecord } from "../controllers/message.controller";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
 
 const router = express.Router()
@@ -19,6 +19,9 @@ router.route("/messages/stop")
 router.route("/messages/stop/:id")
     .post(isAuthenticatedUser, isAdmin, StopSingleMessageScheduler)
 
-
+router.route("/records")
+    .get(GetRecords)
+router.route("/records/:phone")
+    .get(GetRecord)
 
 export default router

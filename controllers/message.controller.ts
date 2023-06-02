@@ -9,6 +9,7 @@ import { CreateMessageTrigger } from "../utils/messages/CreateMessageTrigger";
 import { UpdateMessageTrigger } from "../utils/messages/UpdateMessageTrigger";
 import { SortUniqueNumbers } from "../utils/SortUniqueNumbers";
 import Frequency from "../models/Frequency";
+import Record from "../models/records/Record";
 
 
 
@@ -17,6 +18,18 @@ export const GetMessages = async (req: Request, res: Response, next: NextFunctio
     let messages = await Message.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
     res.status(200).json(messages)
 }
+export const GetRecords = async (req: Request, res: Response, next: NextFunction) => {
+    let messages = await Record.find().sort({ timestamp: 'desc' })
+    res.status(200).json(messages)
+}
+export const GetRecord = async (req: Request, res: Response, next: NextFunction) => {
+    let phone = req.params.phone
+    if (!phone)
+        return res.status(400).json({ message: "please provide phone number" })
+    let messages = await Record.find({ phone: phone }).sort({ timestamp: 'desc' })
+    res.status(200).json(messages)
+}
+
 
 //create new message
 export const CreateMessage = async (req: Request, res: Response, next: NextFunction) => {
@@ -256,7 +269,7 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
                 return res.status(200).json({ message: "message updated SuccessFully" })
             }
         }
-       
+
 
         else {
             let fq = new Frequency({
