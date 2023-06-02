@@ -8,6 +8,7 @@ import { useContext } from "react"
 import { UserContext } from "./contexts/UserContext"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import UpdatePasswordPage from "./pages/auth/UpdatePassword"
+import RecordsPage from "./pages/RecordsPage"
 
 export enum paths {
     login = "/login",
@@ -16,7 +17,8 @@ export enum paths {
     users = "/users",
     signup = "/signup",
     tasks = "/tasks",
-    messages = "/messages"
+    messages = "/messages",
+    records = "/records"
 }
 function AppRoutes() {
     const { user } = useContext(UserContext)
@@ -26,6 +28,7 @@ function AppRoutes() {
             <Route path={paths.signup} element={<SignUpPage />} />
             <Route path={paths.reset_password} element={<ResetPasswordPage />} />
             <Route path={paths.users} element={user ? <UsersPage /> : <LoginPage />} />
+            <Route path={paths.records} element={user ? <RecordsPage /> : <LoginPage />} />
             <Route path={paths.tasks} element={user ? <TasksPage /> : <LoginPage />} />
             <Route path={paths.messages} element={user ? <MessagesPage /> : <LoginPage />} />
             <Route path={paths.update_password} element={user ? <UpdatePasswordPage /> : <LoginPage />} />

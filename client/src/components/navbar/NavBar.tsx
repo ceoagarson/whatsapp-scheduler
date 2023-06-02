@@ -37,6 +37,7 @@ function NavBar() {
                             <Link className="text-white text-decoration-none rounded shadow p-2 text-uppercase fw-bold fs-6" to={paths.users}>Users</Link>
                             <Link className="text-white text-decoration-none rounded shadow p-2 text-uppercase fw-bold fs-6" to={paths.tasks}>Tasks</Link>
                             <Link className="text-white text-decoration-none rounded shadow p-2 text-uppercase fw-bold fs-6" to={paths.messages}>Messages</Link>
+                            <Link className="text-white text-decoration-none rounded shadow p-2 text-uppercase fw-bold fs-6" to={paths.records}>Records</Link>
 
                         </div>
                         : null
