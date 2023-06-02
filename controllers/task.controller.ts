@@ -192,14 +192,14 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    task.task_title=task_title
+    task.task_title = task_title
     task.task_detail = task_detail
     task.person = person
     task.phone = phone
     task.start_date = new Date(start_date)
     task.updated_at = new Date()
-    task.updated_by=req.user
-      
+    task.updated_by = req.user
+    task = await task.save()
     if (frequency) {
         let ftype = frequency.frequencyType
         let freq = frequency.frequency
@@ -263,12 +263,12 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
             if (fq)
                 await fq.save()
             task.frequency = fq
-            task=await task.save()
+            task = await task.save()
             CreateTaskTrigger(task)
             return res.status(200).json({ message: "task updated SuccessFully" })
         }
-    }      
-    else{
+    }
+    else {
         return res.status(200).json({ message: "task updated SuccessFully" })
     }
 }

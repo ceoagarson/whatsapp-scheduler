@@ -200,7 +200,7 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
     message.start_date = new Date(start_date)
     message.updated_at = new Date()
     message.updated_by = req.user
-
+    message = await message.save()
     if (frequency) {
         let ftype = frequency.frequencyType
         let freq = frequency.frequency
