@@ -192,18 +192,14 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Task.findByIdAndUpdate(task._id, {
-        task_title,
-        task_detail,
-        person,
-        phone,
-        start_date,
-        created_at: task.created_at,
-        updated_at: task.updated_at,
-        created_by: task.created_by,
-        updated_by: task.updated_by
-    })
-    
+    task.task_title=task_title
+    task.task_detail = task_detail
+    task.person = person
+    task.phone = phone
+    task.start_date = new Date(start_date)
+    task.updated_at = new Date()
+    task.updated_by=req.user
+      
     if (frequency) {
         let ftype = frequency.frequencyType
         let freq = frequency.frequency

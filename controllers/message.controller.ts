@@ -155,7 +155,7 @@ export const StopSingleMessageScheduler = async (req: Request, res: Response, ne
     if (message) {
         await Message.findByIdAndUpdate(message._id, {
             autoStop: true,
-            autoRefresh:false
+            autoRefresh: false
         })
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
@@ -193,17 +193,13 @@ export const UpdateMessage = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "please provide valid date" })
     if (new Date(start_date) < new Date())
         return res.status(400).json({ message: `Select valid  date ,date could not be in the past` })
-    await Message.findByIdAndUpdate(message._id, {
-        message_image,
-        message_detail,
-        person,
-        phone,
-        start_date,
-        created_at: message.created_at,
-        updated_at: message.updated_at,
-        created_by: message.created_by,
-        updated_by: message.updated_by
-    })
+    message.message_image = message_image
+    message.message_detail = message_detail
+    message.person = person
+    message.phone = phone
+    message.start_date = new Date(start_date)
+    message.updated_at = new Date()
+    message.updated_by = req.user
 
     if (frequency) {
         let ftype = frequency.frequencyType
