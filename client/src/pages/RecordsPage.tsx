@@ -53,11 +53,11 @@ function RecordsPage() {
     })
 
     useEffect(() => {
-        if (isSuccess && data) {
+        if (isSuccess && data && !phone) {
             setRecords(data.data)
         }
 
-    }, [isSuccess, data])
+    }, [isSuccess, phone, data])
 
     return (
         <>
