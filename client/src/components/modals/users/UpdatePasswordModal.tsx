@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { AppChoiceActions, ChoiceContext } from '../../../contexts/DialogContext'
-import { IUser } from '../../../types/user.type'
 import { Modal } from 'react-bootstrap'
 import UpdatePasswordForm from '../../forms/users/UpdatePasswordForm'
 
