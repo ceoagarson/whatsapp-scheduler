@@ -1,4 +1,4 @@
-import cronParser from "cron-parser"
+import cronParser from "cron"
 import Message from "../../models/messages/Message"
 import axios from "axios"
 
@@ -66,7 +66,7 @@ export const SendMessageWhatsapp = async (task_id: string) => {
             }
         }
         if (message && message.running_trigger) {
-            await Message.findByIdAndUpdate(message._id, { next_run_date: cronParser.parseExpression(message.running_trigger.cronString).next().toDate() })
+            await Message.findByIdAndUpdate(message._id, { next_run_date: new Date(cronParser.sendAt(message.running_trigger.cronString).toJSDate()) })
         }
     }
 

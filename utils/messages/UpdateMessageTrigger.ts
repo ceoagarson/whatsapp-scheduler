@@ -8,7 +8,7 @@ import { GetRefreshDateCronString } from "../GetRefreshDateCronString";
 import { GetRunningDateCronString } from "../GetRunningDateCronString";
 import { RefreshMessage } from "./RefreshMessage";
 import { SendMessageWhatsapp } from "./SendMessageWhatsapp";
-import cronParser from "cron-parser";
+import cronParser from "cron";
 
 
 export async function UpdateMessageTrigger(message: IMessage) {
@@ -29,7 +29,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {
-                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
+                            next_run_date: new Date(cronParser.sendAt(runstring).toJSDate())
                         }
                     )
                 }
@@ -44,7 +44,7 @@ export async function UpdateMessageTrigger(message: IMessage) {
                     }
                     await Message.findByIdAndUpdate(message._id,
                         {
-                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
+                            next_refresh_date: new Date(cronParser.sendAt(refstring).toJSDate())
                         }
                     )
                 }
