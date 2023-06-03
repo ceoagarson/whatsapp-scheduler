@@ -11,7 +11,6 @@ import { UpdateTaskTrigger } from "../utils/tasks/UpdateTaskTrigger";
 import { SortUniqueNumbers } from "../utils/SortUniqueNumbers";
 
 
-
 //get tasks
 export const GetTasks = async (req: Request, res: Response, next: NextFunction) => {
     let tasks = await Task.find().populate('updated_by').populate('created_by').populate('refresh_trigger').populate('running_trigger').populate('frequency')
