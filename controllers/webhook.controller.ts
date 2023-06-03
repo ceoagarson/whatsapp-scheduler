@@ -48,7 +48,6 @@ export const ResponseWhatsapp = async (req: Request, res: Response, next: NextFu
                                 timestamp: timestamp
                         })
                         await record.save()
-                        sendTextMessage(`Hi , We Got Your Message, Reply soon`, from, token)
                     }
                         break;
                     default: sendTextMessage(`failed to parse message `, from, token)
