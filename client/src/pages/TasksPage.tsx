@@ -180,7 +180,7 @@ export default function TasksPage() {
                   <td>{
                       task.frequency && task.frequency.frequencyType === "months" ?
 
-                        moment(new Date(task.next_run_date.setMonth(new Date(task.next_run_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
+                      moment(new Date(new Date(task.next_run_date).setMonth(new Date(task.next_run_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
 
                         : moment(task.next_run_date).format('MMMM Do YYYY, h:mm:ss a')
                     
@@ -188,7 +188,7 @@ export default function TasksPage() {
                   <td>{
                     task.frequency && task.frequency.frequencyType === "months" ?
 
-                      moment(new Date(task.next_refresh_date.setMonth(new Date(task.next_refresh_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
+                      moment(new Date(new Date(task.next_refresh_date).setMonth(new Date(task.next_refresh_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
 
                       : moment(task.next_refresh_date).format('MMMM Do YYYY, h:mm:ss a')
 

@@ -166,7 +166,7 @@ export default function MessagesPage() {
                   <td>{
                     message.frequency && message.frequency.frequencyType === "months" ?
 
-                      moment(new Date(message.next_run_date.setMonth(new Date(message.next_run_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
+                      moment(new Date(new Date(message.next_run_date).setMonth(new Date(message.next_run_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
 
                       : moment(message.next_run_date).format('MMMM Do YYYY, h:mm:ss a')
 
@@ -174,7 +174,7 @@ export default function MessagesPage() {
                   <td>{
                     message.frequency && message.frequency.frequencyType === "months" ?
 
-                      moment(new Date(message.next_refresh_date.setMonth(new Date(message.next_refresh_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
+                      moment(new Date(new Date(message.next_refresh_date).setMonth(new Date(message.next_refresh_date).getMonth() - 1))).format('MMMM Do YYYY, h:mm:ss a')
 
                       : moment(message.next_refresh_date).format('MMMM Do YYYY, h:mm:ss a')
 
