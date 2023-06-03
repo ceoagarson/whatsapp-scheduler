@@ -8,9 +8,8 @@ import { GetRefreshDateCronString } from "../GetRefreshDateCronString";
 import { GetRunningDateCronString } from "../GetRunningDateCronString";
 import { RefreshTask } from "./RefreshTask";
 import { SendTaskWhatsapp } from "./SendTaskWhatsapp";
-import cronParser from "cron-parser";
 import CronJobManager from "cron-job-manager";
-
+import cronParser from "cron"
 
 export  async function CreateTaskTrigger(task:ITask) {
     if (task.frequency) {
@@ -31,7 +30,7 @@ export  async function CreateTaskTrigger(task:ITask) {
                     await running_trigger.save()
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            running_trigger: running_trigger, next_run_date: cronParser.parseExpression(running_trigger.cronString).next().toDate(),
+                            running_trigger: running_trigger, next_run_date: new Date(cronParser.sendAt(runstring).toJSDate()),
                             autoStop: false,
                             autoRefresh: true
                         }
@@ -53,7 +52,7 @@ export  async function CreateTaskTrigger(task:ITask) {
                     await refresh_trigger.save()
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            refresh_trigger: refresh_trigger, next_refresh_date: cronParser.parseExpression(refresh_trigger.cronString).next().toDate(),
+                            refresh_trigger: refresh_trigger, next_refresh_date: new Date(cronParser.sendAt(refstring).toJSDate()),
                             autoStop:false,
                             autoRefresh:true
                         })

@@ -8,7 +8,7 @@ import { GetRefreshDateCronString } from "../GetRefreshDateCronString";
 import { GetRunningDateCronString } from "../GetRunningDateCronString";
 import { RefreshTask } from "./RefreshTask";
 import { SendTaskWhatsapp } from "./SendTaskWhatsapp";
-import cronParser from "cron-parser";
+import cronParser from "cron";
 
 
 export async function UpdateTaskTrigger(task: ITask) {
@@ -28,7 +28,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            next_run_date: cronParser.parseExpression(runstring).next().toDate()
+                            next_run_date: new Date(cronParser.sendAt(runstring).toJSDate())
                         }
                     )
                 }
@@ -43,7 +43,7 @@ export async function UpdateTaskTrigger(task: ITask) {
                     }
                     await Task.findByIdAndUpdate(task._id,
                         {
-                            next_refresh_date: cronParser.parseExpression(refstring).next().toDate()
+                            next_refresh_date: new Date(cronParser.sendAt(refstring).toJSDate())
                         }
                     )
                 }
