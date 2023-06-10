@@ -48,6 +48,11 @@ export async function UpdateMessageTrigger(message: IMessage) {
                         }
                     )
                 }
+                if (message.run_once) {
+                    if (MessageManager.exists(message._id + "once")) {
+                        MessageManager.update(message._id + "once", new Date(message.start_date), () => { SendMessageWhatsapp(message._id) })
+                    }
+                }
             }
         }
     }

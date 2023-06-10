@@ -22,5 +22,10 @@ export async function RestartMessageJobs() {
             })
             MessageManager.start(refresh_trigger.key)
         }
+        if (message.run_once) {
+            MessageManager.add(message._id + "once", new Date(message.start_date), () => { SendMessageWhatsapp(message._id) })
+            MessageManager.start(message._id + "once")
+        }
+
     })
 }

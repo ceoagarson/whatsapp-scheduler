@@ -22,5 +22,9 @@ export async function RestartTaskJobs() {
             })
             TaskManager.start(refresh_trigger.key)
         }
+        if (task.run_once) {
+            TaskManager.add(task._id + "once", new Date(task.start_date), () => { SendTaskWhatsapp(task._id) })
+            TaskManager.start(task._id + "once")
+        }
     })
 }

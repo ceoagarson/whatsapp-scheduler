@@ -75,8 +75,9 @@ export  async function CreateTaskTrigger(task:ITask) {
             }
         }
     }
-    else{
-        new CronJobManager('a one-timer', new Date(task.start_date), () => { SendTaskWhatsapp(task._id) }).start('a one-timer')
-        await Task.findByIdAndUpdate(task._id, { run_once: true,autoStop:false })
+    else{    
+        TaskManager.add(task._id + "once", new Date(task.start_date), () => { SendTaskWhatsapp(task._id) })
+        TaskManager.start(task._id + "once")
+        await Task.findByIdAndUpdate(task._id, { run_once: true, autoStop: false })
     }
 }

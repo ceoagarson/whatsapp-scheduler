@@ -47,6 +47,11 @@ export async function UpdateTaskTrigger(task: ITask) {
                         }
                     )
                 }
+                if(task.run_once){
+                    if (TaskManager.exists(task._id + "once")) {
+                        TaskManager.update(task._id + "once", new Date(task.start_date), () => { SendTaskWhatsapp(task._id) })
+                    }
+                }
             }
         }
     }
