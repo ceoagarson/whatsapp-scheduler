@@ -149,7 +149,13 @@ export default function MessagesPage() {
             {messages && messages.map((message, index) => {
               return (
                 <tr key={index}>
-                  <td>{!message.autoStop || message.run_once ? "running" : "stopped"}</td>
+                  <td>{
+                    !message.running_trigger && !message.run_once ? "stopped" :
+                      <>
+                        {!message.autoStop ? "running" : "paused"}
+                      </>
+                  }
+                  </td>
                   <td>{message.whatsapp_status}</td>
                   <td>{moment(new Date(String(message.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{message.message_status}</td>
@@ -190,7 +196,7 @@ export default function MessagesPage() {
                             }
                             width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
                           {/* view message */}
-                          <img style={{ "cursor": "pointer" }} title="edit"
+                          <img style={{ "cursor": "pointer" }} title="view"
                             onClick={() => {
                               setSelectedMessage(messages, message._id)
                               setChoice({ type: MessageChoiceActions.view_message })
@@ -201,21 +207,32 @@ export default function MessagesPage() {
 
                           {/* start and stop message scheduler */}
                           {
-                            message.autoStop ?
-                              <img style={{ "cursor": "pointer" }} title="Restart"
-                                onClick={() => {
-                                  setSelectedMessage(messages, message._id)
-                                  setChoice({ type: MessageChoiceActions.start_message })
-                                }
-                                }
-                                width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
-                              <img style={{ "cursor": "pointer" }} title="Stop"
-                                onClick={() => {
-                                  setSelectedMessage(messages, message._id)
-                                  setChoice({ type: MessageChoiceActions.stop_message })
-                                }
-                                }
-                                width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                            !message.running_trigger && !message.run_once ? <img style={{ "cursor": "pointer" }} title="Restart"
+                              onClick={() => {
+                                setSelectedMessage(messages, message._id)
+                                setChoice({ type: MessageChoiceActions.start_message })
+                              }
+                              }
+                              width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" />
+                              :
+                              <>
+                                {!message.autoStop ?
+                                  <img style={{ "cursor": "pointer" }} title="Stop"
+                                    onClick={() => {
+                                      setSelectedMessage(messages, message._id)
+                                      setChoice({ type: MessageChoiceActions.stop_message })
+                                    }
+                                    }
+                                    width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                                  :
+                                  <img style={{ "cursor": "pointer" }} title="Stop"
+                                    onClick={() => {
+                                      setSelectedMessage(messages, message._id)
+                                      setChoice({ type: MessageChoiceActions.stop_message })
+                                    }
+                                    }
+                                    width="20" height="20" src=" https://img.icons8.com/flat-round/64/pause--v1.png" alt="edit--v1" />}
+                              </>
                           }
                           {/* delete message */}
                           <img style={{ "cursor": "pointer" }} title="delete"
@@ -226,7 +243,7 @@ export default function MessagesPage() {
                             }
                             width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
                         </>
-                        : <img style={{ "cursor": "pointer" }} title="edit"
+                        : <img style={{ "cursor": "pointer" }} title="view"
                           onClick={() => {
                             setSelectedMessage(messages, message._id)
                             setChoice({ type: MessageChoiceActions.view_message })

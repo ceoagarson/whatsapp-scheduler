@@ -131,8 +131,7 @@ export const StopMessageScheduler = async (req: Request, res: Response, next: Ne
     messages.forEach(async (message) => {
         if (message) {
             await Message.findByIdAndUpdate(message._id, {
-                autoStop: true,
-                autoRefresh: false
+                autoStop: true
             })
         }
 
@@ -169,8 +168,7 @@ export const StopSingleMessageScheduler = async (req: Request, res: Response, ne
     let message = await Message.findById(id)
     if (message) {
         await Message.findByIdAndUpdate(message._id, {
-            autoStop: true,
-            autoRefresh: false
+            autoStop: true
         })
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }

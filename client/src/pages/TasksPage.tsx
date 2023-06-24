@@ -191,6 +191,8 @@ export default function TasksPage() {
                   <td>{moment(new Date(task.updated_at)).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.created_by.username}</td>
                   <td>{task.updated_by.username}</td>
+
+                 
                   <td>
                     {
                       user?.is_admin ?
@@ -204,7 +206,7 @@ export default function TasksPage() {
                             }
                             width="18" height="18" src="https://img.icons8.com/dusk/64/edit--v1.png" alt="edit--v1" />
                           {/* view task */}
-                          <img style={{ "cursor": "pointer" }} title="edit"
+                          <img style={{ "cursor": "pointer" }} title="view"
                             onClick={() => {
                               setSelectedTask(tasks, task._id)
                               setChoice({ type: TaskChoiceActions.view_task })
@@ -215,21 +217,32 @@ export default function TasksPage() {
 
                           {/* start and stop task scheduler */}
                           {
-                            task.autoStop ?
-                              <img style={{ "cursor": "pointer" }} title="Restart"
-                                onClick={() => {
-                                  setSelectedTask(tasks, task._id)
-                                  setChoice({ type: TaskChoiceActions.start_task })
-                                }
-                                }
-                                width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> :
-                              <img style={{ "cursor": "pointer" }} title="Stop"
-                                onClick={() => {
-                                  setSelectedTask(tasks, task._id)
-                                  setChoice({ type: TaskChoiceActions.stop_task })
-                                }
-                                }
-                                width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                            !task.running_trigger && !task.run_once ? <img style={{ "cursor": "pointer" }} title="Restart"
+                              onClick={() => {
+                                setSelectedTask(tasks, task._id)
+                                setChoice({ type: TaskChoiceActions.start_task })
+                              }
+                              }
+                              width="20" height="20" src="https://img.icons8.com/color/48/restart--v1.png" alt="edit--v1" /> 
+                              :
+                              <>
+                                {!task.autoStop ? 
+                                  <img style={{ "cursor": "pointer" }} title="Stop"
+                                    onClick={() => {
+                                      setSelectedTask(tasks, task._id)
+                                      setChoice({ type: TaskChoiceActions.stop_task })
+                                    }
+                                    }
+                                    width="20" height="20" src="https://img.icons8.com/color/48/stop--v1.png" alt="edit--v1" />
+                                     :
+                                  <img style={{ "cursor": "pointer" }} title="Stop"
+                                    onClick={() => {
+                                      setSelectedTask(tasks, task._id)
+                                      setChoice({ type: TaskChoiceActions.stop_task })
+                                    }
+                                    }
+                                    width="20" height="20" src=" https://img.icons8.com/flat-round/64/pause--v1.png" alt="edit--v1" />}
+                              </>
                           }
                           {/* delete task */}
                           <img style={{ "cursor": "pointer" }} title="delete"
@@ -240,7 +253,7 @@ export default function TasksPage() {
                             }
                             width="24" height="24" src="https://img.icons8.com/plasticine/100/filled-trash.png" alt="edit--v1" />
                         </>
-                        : <img style={{ "cursor": "pointer" }} title="edit"
+                        : <img style={{ "cursor": "pointer" }} title="view"
                           onClick={() => {
                             setSelectedTask(tasks, task._id)
                             setChoice({ type: TaskChoiceActions.view_task })
