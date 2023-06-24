@@ -155,7 +155,13 @@ export default function TasksPage() {
             {tasks && tasks.map((task, index) => {
               return (
                 <tr key={index}>
-                  <td>{!task.autoStop || task.run_once ? "running" : "stopped"}</td>
+                  <td>{
+                    !task.running_trigger || !task.run_once ? "disabled" :
+                      <>
+                        {!task.autoStop ? "running" : "halted"}
+                      </>
+                  }
+                  </td>
                   <td>{task.whatsapp_status}</td>
                   <td>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</td>
                   <td>{task.task_status}</td>
@@ -172,11 +178,11 @@ export default function TasksPage() {
                   }
 
                   <td>{
-                     moment(task.next_run_date).format('MMMM Do YYYY, h:mm:ss a')
-                    
-                    }</td>
+                    moment(task.next_run_date).format('MMMM Do YYYY, h:mm:ss a')
+
+                  }</td>
                   <td>{
-                   moment(task.next_refresh_date).format('MMMM Do YYYY, h:mm:ss a')
+                    moment(task.next_refresh_date).format('MMMM Do YYYY, h:mm:ss a')
 
                   }</td>
                   <td>{task.frequency && task.frequency.frequencyType ? task.frequency.frequencyType : ""}</td>
