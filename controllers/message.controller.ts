@@ -131,9 +131,24 @@ export const StopMessageScheduler = async (req: Request, res: Response, next: Ne
     messages.forEach(async (message) => {
         if (message) {
             await Message.findByIdAndUpdate(message._id, {
+                running_trigger: null,
+                refresh_trigger: null,
                 autoStop: true,
                 autoRefresh: false
             })
+            if (message.refresh_trigger) {
+                await MessageRefreshTrigger.findByIdAndDelete(message.refresh_trigger._id)
+                if (MessageManager.exists(message.refresh_trigger.key))
+                    MessageManager.deleteJob(message.refresh_trigger.key)
+            }
+            if (message.running_trigger) {
+                await MessageTrigger.findByIdAndDelete(message.running_trigger._id)
+                if (MessageManager.exists(message.running_trigger.key))
+                    MessageManager.deleteJob(message.running_trigger.key)
+            }
+            if (message.frequency)
+                await Frequency.findByIdAndDelete(message.frequency._id)
+            
         }
 
     })
@@ -169,9 +184,23 @@ export const StopSingleMessageScheduler = async (req: Request, res: Response, ne
     let message = await Message.findById(id)
     if (message) {
         await Message.findByIdAndUpdate(message._id, {
+            running_trigger: null,
+            refresh_trigger: null,
             autoStop: true,
             autoRefresh: false
         })
+        if (message.refresh_trigger) {
+            await MessageRefreshTrigger.findByIdAndDelete(message.refresh_trigger._id)
+            if (MessageManager.exists(message.refresh_trigger.key))
+                MessageManager.deleteJob(message.refresh_trigger.key)
+        }
+        if (message.running_trigger) {
+            await MessageTrigger.findByIdAndDelete(message.running_trigger._id)
+            if (MessageManager.exists(message.running_trigger.key))
+                MessageManager.deleteJob(message.running_trigger.key)
+        }
+        if (message.frequency)
+            await Frequency.findByIdAndDelete(message.frequency._id)
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
     else

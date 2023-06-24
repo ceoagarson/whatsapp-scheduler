@@ -115,11 +115,24 @@ export const StopTaskScheduler = async (req: Request, res: Response, next: NextF
     tasks.forEach(async (task) => {
         if (task) {
             await Task.findByIdAndUpdate(task._id, {
+                running_trigger: null,
+                refresh_trigger:null,
                 autoStop: true,
-                autoRefresh:false
+                autoRefresh: false
             })
+            if (task.refresh_trigger) {
+                await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
+                if (TaskManager.exists(task.refresh_trigger.key))
+                    TaskManager.deleteJob(task.refresh_trigger.key)
+            }
+            if (task.running_trigger) {
+                await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
+                if (TaskManager.exists(task.running_trigger.key))
+                    TaskManager.deleteJob(task.running_trigger.key)
+            }
+            if (task.frequency)
+                await Frequency.findByIdAndDelete(task.frequency._id)
         }
-
     })
     return res.status(200).json({ message: "Scheduler Stopped Successfully" })
 }
@@ -153,9 +166,23 @@ export const StopSingleTaskScheduler = async (req: Request, res: Response, next:
     let task = await Task.findById(id)
     if (task) {
         await Task.findByIdAndUpdate(task._id, {
-            autoStop: true,
-            autoRefresh: false
+            running_trigger: null,
+            refresh_trigger: null,
+            autoStop:true,
+            autoRefresh:false
         })
+        if (task.refresh_trigger) {
+            await TaskRefreshTrigger.findByIdAndDelete(task.refresh_trigger._id)
+            if (TaskManager.exists(task.refresh_trigger.key))
+                TaskManager.deleteJob(task.refresh_trigger.key)
+        }
+        if (task.running_trigger) {
+            await TaskTrigger.findByIdAndDelete(task.running_trigger._id)
+            if (TaskManager.exists(task.running_trigger.key))
+                TaskManager.deleteJob(task.running_trigger.key)
+        }
+        if (task.frequency)
+            await Frequency.findByIdAndDelete(task.frequency._id)
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
     else
@@ -244,11 +271,11 @@ export const UpdateTask = async (req: Request, res: Response, next: NextFunction
         }
         if (task.frequency) {
             let fq = await Frequency.findById(task.frequency._id)
-            if(fq){
-                fq.frequency=freq
-                fq.frequencyType=ftype
+            if (fq) {
+                fq.frequency = freq
+                fq.frequencyType = ftype
                 await fq.save()
-                task.frequency=fq
+                task.frequency = fq
                 UpdateTaskTrigger(task)
                 return res.status(200).json({ message: "task updated SuccessFully" })
             }
