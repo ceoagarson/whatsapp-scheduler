@@ -115,7 +115,8 @@ export const StopTaskScheduler = async (req: Request, res: Response, next: NextF
     tasks.forEach(async (task) => {
         if (task) {
             await Task.findByIdAndUpdate(task._id, {
-                autoStop: true
+                autoStop: true,
+                autoRefresh:false
             })
         }
 
@@ -152,7 +153,8 @@ export const StopSingleTaskScheduler = async (req: Request, res: Response, next:
     let task = await Task.findById(id)
     if (task) {
         await Task.findByIdAndUpdate(task._id, {
-            autoStop: true
+            autoStop: true,
+            autoRefresh: false
         })
         return res.status(200).json({ message: "Scheduler Stopped Successfully" })
     }
