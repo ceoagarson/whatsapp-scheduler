@@ -156,7 +156,7 @@ export default function TasksPage() {
               return (
                 <tr key={index}>
                   <td>{
-                    !task.running_trigger || !task.run_once ? "disabled" :
+                    !task.running_trigger || task.run_once ? "disabled" :
                       <>
                         {!task.autoStop ? "running" : "halted"}
                       </>
