@@ -4,6 +4,7 @@ import moment from "moment";
 import styled from 'styled-components';
 import { ChoiceContext, TaskChoiceActions } from '../../../contexts/DialogContext';
 import { useContext } from 'react';
+import { Button } from 'react-bootstrap';
 
 const StyledDiv = styled.div` 
 span{
@@ -22,7 +23,14 @@ export default function ViewTaskModal({ task }: { task: ITask }) {
             centered
         >
             <StyledDiv className='d-flex-column p-2 bg-light justify-content-left gap-1'>
-                <p><span>Scheduler : </span>{!task.autoStop || task.run_once ? "running" : "stopped"}</p>
+                <p><span>Scheduler : </span>
+                    {
+                        !task.running_trigger && !task.run_once ? "stopped" :
+                            <>
+                                {!task.autoStop ? "running" : "paused"}
+                            </>
+                    }
+                </p>
                 <p><span>Whatsapp Status :</span> {task.whatsapp_status}</p>
                 <p><span>Whatsapp Timestamp : </span>{moment(new Date(String(task.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 <p><span>Task Status: </span>{task.task_status}</p>
@@ -45,6 +53,7 @@ export default function ViewTaskModal({ task }: { task: ITask }) {
                 <p><span>Updated At :</span> {moment(new Date(task.updated_at)).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 <p><span>Created By : </span>{task.created_by.username}</p>
                 <p><span>Updated By : </span>{task.updated_by.username}</p>
+                <div className='d-flex w-100 justify-content-center align-items-center'><Button variant="outline-danger" onClick={() => setChoice({ type: TaskChoiceActions.close })}>Close</Button></div>
             </StyledDiv>
         </Modal>
     );

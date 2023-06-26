@@ -4,6 +4,7 @@ import moment from "moment";
 import styled from 'styled-components';
 import { ChoiceContext, MessageChoiceActions } from '../../../contexts/DialogContext';
 import { useContext } from 'react';
+import { Button } from 'react-bootstrap';
 
 const StyledDiv = styled.div` 
 span{
@@ -22,7 +23,14 @@ export default function ViewMessageModal({ message }: { message: IMessage }) {
             centered
         >
             <StyledDiv className='d-flex-column p-2 bg-light justify-content-left gap-1'>
-                <p><span>Scheduler : </span>{!message.autoStop || message.run_once ? "running" : "stopped"}</p>
+                <p><span>Scheduler : </span>
+                    {
+                        !message.running_trigger && !message.run_once ? "stopped" :
+                            <>
+                                {!message.autoStop ? "running" : "paused"}
+                            </>
+                    }
+                </p>
                 <p><span>Whatsapp Status :</span> {message.whatsapp_status}</p>
                 <p><span>Whatsapp Timestamp : </span>{moment(new Date(String(message.whatsapp_timestamp))).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 <p><span>Message Status: </span>{message.message_status}</p>
@@ -45,6 +53,7 @@ export default function ViewMessageModal({ message }: { message: IMessage }) {
                 <p><span>Updated At :</span> {moment(new Date(message.updated_at)).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 <p><span>Created By : </span>{message.created_by.username}</p>
                 <p><span>Updated By : </span>{message.updated_by.username}</p>
+                <div className='d-flex w-100 justify-content-center align-items-center'><Button variant="outline-danger" onClick={()=>setChoice({type:MessageChoiceActions.close})}>Close</Button></div>
             </StyledDiv>
         </Modal>
     );
